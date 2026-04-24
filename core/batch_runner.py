@@ -10,15 +10,21 @@ from dotenv import load_dotenv
 # Load from project root .env, overriding any stale shell exports
 _ENV_PATH = _pathlib.Path(__file__).parent.parent / '.env'
 load_dotenv(_ENV_PATH, override=True)
+
+# Fix SSL certificates for Python 3.13 on macOS
+try:
+    import ssl as _ssl, certifi as _certifi
+    _ssl._create_default_https_context = lambda: _ssl.create_default_context(
+        cafile=_certifi.where()
+    )
+except Exception:
+    pass
 logger = logging.getLogger(__name__)
 
 REFLECTION_FALLBACKS = [
-    "ollama/qwen3-coder:30b",              # local — fast, no rate limits, first fallback
-    "openrouter/qwen/qwen3-coder:free",    # 480B via OpenRouter
-    "openrouter/openai/gpt-oss-120b:free",
-    "openrouter/minimax/minimax-m2.5:free",
-    "openrouter/google/gemma-4-31b-it:free",
-    "openrouter/openai/gpt-oss-20b:free",
+    "openrouter/qwen/qwen3-coder",       # 480B paid — primary fallback
+    "openrouter/qwen/qwen3-coder:free",  # 480B free — secondary fallback
+    "ollama/qwen3-coder:30b",            # local 30B — last resort
 ]
 _LITELLM_PATCHED = False
 
@@ -275,7 +281,10 @@ class BatchRunner:
         checkpoint_path = out_dir / "progress.json"
 
         if (gepa_log_dir / "gepa_state.bin").exists():
-            print(f"  [{problem_id}] Resuming GEPA from saved state", file=sys.stderr, flush=True)
+            try:
+                print(f"  [{problem_id}] Resuming GEPA from saved state", file=sys.stderr, flush=True)
+            except Exception:
+                pass
 
         eval_counter = [0]
         best_so_far = [0.0]
@@ -292,9 +301,12 @@ class BatchRunner:
             eval_counter[0] += 1
             if score > best_so_far[0]:
                 best_so_far[0] = score
-            print(f"  [{problem_id}] eval={eval_counter[0]}  "
-                  f"score={score:.4f}  best={best_so_far[0]:.4f}",
-                  file=sys.stderr, flush=True)
+            try:
+                print(f"  [{problem_id}] eval={eval_counter[0]}  "
+                      f"score={score:.4f}  best={best_so_far[0]:.4f}",
+                      file=sys.stderr, flush=True)
+            except Exception:
+                pass
             # Write checkpoint after every eval — survives power loss
             try:
                 checkpoint_path.write_text(json.dumps({
@@ -310,16 +322,12 @@ class BatchRunner:
             return score, {"asi": asi, "problem_id": str(problem_id)}
 
         # Use configured reflection model (OpenRouter with retry/fallback)
-        # Use local Ollama if running (no rate limits), else OpenRouter
-        _use_ollama = False
+        reflection_lm = self.cfg.effective_reflection_model()
         try:
-            import urllib.request as _ur
-            _ur.urlopen("http://localhost:11434/v1/models", timeout=2)
-            _use_ollama = True
+            print(f"  [{problem_id}] reflection_lm: {reflection_lm}", file=sys.stderr, flush=True)
         except Exception:
             pass
-        reflection_lm = "ollama/qwen3-coder:30b" if _use_ollama else self.cfg.effective_reflection_model()
-        print(f"  [{problem_id}] reflection_lm: {reflection_lm}", file=__import__("sys").stderr, flush=True)
+        # Ollama is in REFLECTION_FALLBACKS as last resort — no need to auto-detect
 
         gepa_cfg = GEPAConfig(
             engine=EngineConfig(

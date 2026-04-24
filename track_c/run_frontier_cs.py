@@ -64,6 +64,15 @@ from dotenv import load_dotenv
 _ENV_PATH = pathlib.Path(__file__).parent.parent / '.env'
 load_dotenv(_ENV_PATH, override=True)
 
+# Fix SSL certificates for Python 3.13 on macOS
+try:
+    import ssl as _ssl, certifi as _certifi
+    _ssl._create_default_https_context = lambda: _ssl.create_default_context(
+        cafile=_certifi.where()
+    )
+except Exception:
+    pass
+
 _ROOT = pathlib.Path(__file__).parent.parent
 sys.path.insert(0, str(_ROOT))
 sys.path.insert(0, str(_ROOT.parent))
@@ -143,6 +152,7 @@ def _run_single(
         resume=args.resume,
         timeout_per_problem=args.timeout,
         experiment_tag="track_c",
+        run_tag=args.run_tag,
     )
     runner = BatchRunner(cfg)
     t0 = time.monotonic()
@@ -227,6 +237,8 @@ def _parse_args() -> argparse.Namespace:
     infra_grp.add_argument("--results-dir", default="results")
     infra_grp.add_argument("--resume", action="store_true", default=True)
     infra_grp.add_argument("--no-resume", dest="resume", action="store_false")
+    infra_grp.add_argument("--run-tag", default="", dest="run_tag",
+                    help="Reuse existing run_tag to resume a previous run.")
     infra_grp.add_argument("--label", default="",
                            help="Human-readable label for the run (used in paper tables).")
 
