@@ -1,0 +1,25 @@
+{
+  "label": "GEPA gpt-oss-120b:free",
+  "run_tag": "gepa-algorithmic-gpt-oss-120b_x_minimax-m2.5-20260424_031541",
+  "track": "algorithmic",
+  "optimizer": "gepa",
+  "n_problems": 1,
+  "n_ok": 1,
+  "n_error": 0,
+  "n_timeout": 0,
+  "score_mean": 27.810517627142843,
+  "score_median": 27.810517627142843,
+  "score_max": 27.810517627142843,
+  "score_std": 0.0,
+  "solve_rate": 1.0,
+  "total_tokens": 0,
+  "tokens_per_mutation_avg": 0.0,
+  "prompt_tokens_fraction": 0.0,
+  "total_latency_s": 0,
+  "latency_per_call_avg_s": 0.0,
+  "acceptance_rate": 1.0,
+  "evaluations_to_best_avg": NaN,
+  "scores_by_problem": {
+    "0": 27.810517627142843
+  }
+}

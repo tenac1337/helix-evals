@@ -1,0 +1,8 @@
+# Ignore logs folder anywhere in the repo
+logs/
+
+# Or more broadly, ignore any folder named logs (case-insensitive)
+/[Ll]ogs/
+
+# Also common: ignore log files
+*.log

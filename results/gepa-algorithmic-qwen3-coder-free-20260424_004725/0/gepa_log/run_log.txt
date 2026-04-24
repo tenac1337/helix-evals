@@ -1,0 +1,133 @@
+    [0] evaluating 440 chars, first 80: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_w'
+    [0] score=0.0000
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.0
+    [0] evaluating 440 chars, first 80: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_w'
+    [0] score=0.0000
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    if (!(cin >> n)) return 0;
+
+    vector<int> width(n), height(n);
+    int totalWidth = 0;
+    int maxHeight = 0;
+
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        int minx = 0, maxx = 0, miny = 0, maxy = 0;
+        bool first = true;
+        for (int j = 0; j < k; ++j) {
+            int x, y;
+            cin >> x >> y;
+            if (first) {
+                minx = maxx = x;
+                miny = maxy = y;
+                first = false;
+            } else {
+                if (x < minx) minx = x;
+                if (x > maxx) maxx = x;
+                if (y < miny) miny = y;
+                if (y > maxy) maxy = y;
+            }
+        }
+        width[i] = maxx - minx + 1;
+        height[i] = maxy - miny + 1;
+        totalWidth += width[i];
+        if (height[i] > maxHeight) maxHeight = height[i];
+    }
+
+    cout << totalWidth << ' ' << maxHeight << '\n';
+
+    int prefix = 0;
+    for (int i = 0; i < n; ++i) {
+        cout << prefix << " 0 0 0\n";
+        prefix += width[i];
+    }
+
+    return 0;
+}
+    [0] evaluating 1169 chars, first 80: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_s'
+    [0] score=0.0000
+Iteration 1: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 2: Selected program 0 score: 0.0
+    [0] evaluating 440 chars, first 80: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_w'
+    [0] score=0.0000
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    if (!(cin >> n)) return 0;
+
+    vector<int> heights;
+    heights.reserve(n);
+    int max_width = 0;
+    long long total_height = 0;
+
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        int minx = 0, maxx = 0, miny = 0, maxy = 0;
+        bool first = true;
+        for (int j = 0; j < k; ++j) {
+            int x, y;
+            cin >> x >> y;
+            if (first) {
+                minx = maxx = x;
+                miny = maxy = y;
+                first = false;
+            } else {
+                if (x < minx) minx = x;
+                if (x > maxx) maxx = x;
+                if (y < miny) miny = y;
+                if (y > maxy) maxy = y;
+            }
+        }
+        int w = maxx - minx + 1;
+        int h = maxy - miny + 1;
+        if (w > max_width) max_width = w;
+        heights.push_back(h);
+        total_height += h;
+    }
+
+    cout << max_width << ' ' << total_height << '\n';
+
+    long long cur_y = 0;
+    for (int h : heights) {
+        cout << 0 << ' ' << cur_y << ' ' << 0 << ' ' << 0 << '\n';
+        cur_y += h;
+    }
+
+    return 0;
+}
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+    [0] evaluating 1218 chars, first 80: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_w'
+    [0] score=0.0000
+Iteration 2: New subsample score 0.0 is not better than old score 0.0, skipping

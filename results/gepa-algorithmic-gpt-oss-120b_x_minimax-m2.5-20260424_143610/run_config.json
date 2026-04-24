@@ -1,0 +1,20 @@
+{
+  "optimizer": "gepa",
+  "track": "algorithmic",
+  "problem_ids": [
+    0
+  ],
+  "task_model": "openrouter/openai/gpt-oss-120b:free",
+  "reflection_model": "openrouter/minimax/minimax-m2.5:free",
+  "helix_claude_model": "sonnet",
+  "max_metric_calls": 5,
+  "max_generations": 5,
+  "max_evaluations": 20,
+  "max_turns": 10,
+  "max_workers": 1,
+  "run_tag": "gepa-algorithmic-gpt-oss-120b_x_minimax-m2.5-20260424_143610",
+  "results_root": "results",
+  "resume": true,
+  "timeout_per_problem": 1800,
+  "experiment_tag": "track_c"
+}

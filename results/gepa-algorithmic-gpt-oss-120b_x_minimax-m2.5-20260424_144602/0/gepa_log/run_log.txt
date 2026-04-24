@@ -1,0 +1,818 @@
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.0
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+// Structure to represent a polyomino
+struct Polyomino {
+    vector<pair<int, int>> cells; // cells in local coordinates
+    int size;
+    vector<vector<pair<int, int>>> all_transforms; // all 8 transformations (4 rotations * 2 reflections)
+
+    Polyomino(const vector<pair<int, int>>& input_cells) : cells(input_cells), size(input_cells.size()) {
+        generate_all_transforms();
+    }
+
+    void generate_all_transforms() {
+        all_transforms.clear();
+        vector<pair<int, int>> current = cells;
+
+        // Generate 4 rotations
+        for (int r = 0; r < 4; ++r) {
+            vector<pair<int, int>> rotated;
+            for (auto& p : current) {
+                rotated.push_back({p.first, p.second});
+            }
+            all_transforms.push_back(rotated);
+            // Rotate 90 degrees clockwise
+            for (auto& p : current) {
+                int x = p.first, y = p.second;
+                p.first = y;
+                p.second = -x;
+            }
+        }
+
+        // Generate reflections of each rotation
+        int sz = all_transforms.size();
+        for (int i = 0; i < sz; ++i) {
+            vector<pair<int, int>> reflected = all_transforms[i];
+            for (auto& p : reflected) {
+                p.first = -p.first;
+            }
+            all_transforms.push_back(reflected);
+        }
+    }
+
+    // Get the bounding box of the polyomino in local coordinates
+    pair<int, int> get_min_max() const {
+        int min_x = INT_MAX, max_x = INT_MIN;
+        int min_y = INT_MAX, max_y = INT_MIN;
+        for (auto& p : cells) {
+            min_x = min(min_x, p.first);
+            max_x = max(max_x, p.first);
+            min_y = min(min_y, p.second);
+            max_y = max(max_y, p.second);
+        }
+        return {min_x, max_x};
+    }
+
+    // Get the bounding box of a transformed version
+    pair<int, int> get_bounding_box(const vector<pair<int, int>>& transformed_cells) const {
+        int min_x = INT_MAX, max_x = INT_MIN;
+        int min_y = INT_MAX, max_y = INT_MIN;
+        for (auto& p : transformed_cells) {
+            min_x = min(min_x, p.first);
+            max_x = max(max_x, p.first);
+            min_y = min(min_y, p.second);
+            max_y = max(max_y, p.second);
+        }
+        return {min_x, max_x};
+    }
+};
+
+// Helper to check if two rectangles overlap
+bool overlap(const pair<int, int>& a1, const pair<int, int>& a2, const pair<int, int>& b1, const pair<int, int>& b2) {
+    return !(a2.first <= b1.first || b2.first <= a1.first || a2.second <= b1.second || b2.second <= a1.second);
+}
+
+// Check if a polyomino can be placed at (x,y) with given rotation and reflection
+bool can_place(const vector<pair<int, int>>& cells, int x, int y, int rot, int reflect, int W, int H) {
+    vector<pair<int, int>> transformed;
+    for (auto& p : cells) {
+        int px = p.first, py = p.second;
+        if (reflect) px = -px;
+        // Apply rotation
+        for (int i = 0; i < rot; ++i) {
+            int nx = py, ny = -px;
+            px = nx;
+            py = ny;
+        }
+        transformed.push_back({px + x, py + y});
+    }
+
+    for (auto& p : transformed) {
+        if (p.first < 0 || p.first >= W || p.second < 0 || p.second >= H) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Check if a set of placements is valid
+bool is_valid_placement(const vector<vector<pair<int, int>>>& placements, int W, int H) {
+    vector<vector<bool>> grid(W, vector<bool>(H, false));
+    for (const auto& cells : placements) {
+        for (auto& p : cells) {
+            if (p.first < 0 || p.first >= W || p.second < 0 || p.second >= H) {
+                return false;
+            }
+            if (grid[p.first][p.second]) {
+                return false;
+            }
+            grid[p.first][p.second] = true;
+        }
+    }
+    return true;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+    vector<Polyomino> pieces(n);
+    vector<vector<pair<int, int>>> input_pieces(n);
+
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        vector<pair<int, int>> cells(k);
+        for (int j = 0; j < k; ++j) {
+            int x, y;
+            cin >> x >> y;
+            cells[j] = {x, y};
+        }
+        input_pieces[i] = cells;
+        pieces[i] = Polyomino(cells);
+    }
+
+    // Simple greedy approach: place all polyominoes in a grid-like pattern
+    int W = 1000000, H = 1000000;
+    vector<pair<int, int>> positions(n);
+    vector<int> rotations(n, 0);
+    vector<int> reflections(n, 0);
+
+    // For simplicity, let's use a fixed arrangement for now
+    // This is a placeholder; in real implementation, this should be optimized
+
+    // Place all pieces in a single row (for now)
+    int total_width = 0;
+    for (int i = 0; i < n; ++i) {
+        total_width += pieces[i].size;
+    }
+
+    // Try to pack them efficiently
+    int area = total_width * 10; // rough estimate
+    int best_W = 1000000, best_H = 1000000;
+    vector<pair<int, int>> best_positions(n);
+    vector<int> best_rotations(n, 0);
+    vector<int> best_reflections(n, 0);
+
+    // Try placing them in a row
+    int x = 0;
+    for (int i = 0; i < n; ++i) {
+        positions[i] = {x, 0};
+        x += pieces[i].size;
+        rotations[i] = 0;
+        reflections[i] = 0;
+    }
+
+    // Estimate dimensions
+    int max_width = 0;
+    int max_height = 0;
+    for (int i = 0; i < n; ++i) {
+        max_width = max(max_width, (int)pieces[i].size);
+        max_height = max(max_height, 1);
+    }
+
+    W = max_width;
+    H = max_height;
+
+    // Output the result
+    cout << W << " " << H << "\n";
+    for (int i = 0; i < n; ++i) {
+        cout << positions[i].first << " " << positions[i].second << " " << rotations[i] << " " << reflections[i] << "\n";
+    }
+
+    return 0;
+}
+Iteration 1: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 2: Selected program 0 score: 0.0
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Polyomino {
+    vector<pair<int, int>> cells;
+    int min_x, min_y, max_x, max_y;
+    
+    Polyomino() : min_x(0), min_y(0), max_x(0), max_y(0) {}
+    
+    void normalize() {
+        min_x = min_y = INT_MAX;
+        max_x = max_y = INT_MIN;
+        for (auto& p : cells) {
+            min_x = min(min_x, p.first);
+            min_y = min(min_y, p.second);
+            max_x = max(max_x, p.first);
+            max_y = max(max_y, p.second);
+        }
+    }
+    
+    vector<vector<pair<int, int>>> get_transforms() {
+        vector<vector<pair<int, int>>> transforms;
+        vector<pair<int, int>> tmp = cells;
+        
+        // 4 rotations + 4 reflections
+        for (int r = 0; r < 4; ++r) {
+            vector<pair<int, int>> rotated = tmp;
+            for (auto& p : rotated) {
+                int x = p.first, y = p.second;
+                p.first = x;
+                p.second = y;
+            }
+            transforms.push_back(rotated);
+            
+            // Rotate 90 degrees clockwise
+            for (auto& p : tmp) {
+                int x = p.first, y = p.second;
+                p.first = y;
+                p.second = -x;
+            }
+        }
+        
+        // Reflection + rotations
+        vector<pair<int, int>> reflected = tmp;
+        for (auto& p : reflected) {
+            p.first = -p.first;
+        }
+        for (int r = 0; r < 4; ++r) {
+            vector<pair<int, int>> rotated = reflected;
+            for (auto& p : rotated) {
+                int x = p.first, y = p.second;
+                p.first = x;
+                p.second = y;
+            }
+            transforms.push_back(rotated);
+            
+            // Rotate 90 degrees clockwise
+            for (auto& p : reflected) {
+                int x = p.first, y = p.second;
+                p.first = y;
+                p.second = -x;
+            }
+        }
+        
+        return transforms;
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    cin >> n;
+    vector<Polyomino> pieces(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        pieces[i].cells.resize(k);
+        for (int j = 0; j < k; ++j) {
+            cin >> pieces[i].cells[j].first >> pieces[i].cells[j].second;
+        }
+        pieces[i].normalize();
+    }
+    
+    // Simple greedy approach: place each piece in the top-left corner
+    // This is a placeholder that satisfies basic constraints
+    cout << "1 1\n";
+    for (int i = 0; i < n; ++i) {
+        cout << "0 0 0 0\n";
+    }
+    
+    return 0;
+}
+Iteration 2: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 3: Selected program 0 score: 0.0
+Iteration 3: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+// Structure to represent a polyomino
+struct Polyomino {
+    vector<pair<int, int>> cells;
+    int id;
+    
+    // Generate all possible transformations (rotations and reflections)
+    vector<vector<pair<int, int>>> get_transformations() {
+        vector<vector<pair<int, int>>> transformations;
+        vector<pair<int, int>> current = cells;
+        
+        // Add original
+        transformations.push_back(current);
+        
+        // Add 90, 180, 270 degree rotations
+        for (int i = 0; i < 3; ++i) {
+            vector<pair<int, int>> rotated;
+            for (auto& p : current) {
+                rotated.push_back({p.second, -p.first});
+            }
+            current = rotated;
+            transformations.push_back(current);
+        }
+        
+        // Add reflections of each
+        vector<vector<pair<int, int>>> reflected;
+        for (auto& t : transformations) {
+            vector<pair<int, int>> r;
+            for (auto& p : t) {
+                r.push_back({-p.first, p.second});
+            }
+            reflected.push_back(r);
+        }
+        transformations.insert(transformations.end(), reflected.begin(), reflected.end());
+        
+        return transformations;
+    }
+};
+
+// Function to check if placing a polyomino at (x,y) with a given rotation/reflection is valid
+bool can_place(const vector<pair<int, int>>& shape, int x, int y, const vector<vector<bool>>& grid) {
+    for (auto& p : shape) {
+        int nx = x + p.first;
+        int ny = y + p.second;
+        if (nx < 0 || ny < 0 || nx >= grid[0].size() || ny >= grid.size()) {
+            return false;
+        }
+        if (grid[ny][nx]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Function to place a polyomino
+void place(const vector<pair<int, int>>& shape, int x, int y, vector<vector<bool>>& grid) {
+    for (auto& p : shape) {
+        int nx = x + p.first;
+        int ny = y + p.second;
+        grid[ny][nx] = true;
+    }
+}
+
+// Function to calculate the bounding box of a shape
+pair<int, int> get_min_max(const vector<pair<int, int>>& shape) {
+    int min_x = INT_MAX, max_x = INT_MIN;
+    int min_y = INT_MAX, max_y = INT_MIN;
+    
+    for (auto& p : shape) {
+        min_x = min(min_x, p.first);
+        max_x = max(max_x, p.first);
+        min_y = min(min_y, p.second);
+        max_y = max(max_y, p.second);
+    }
+    
+    return {max_x - min_x + 1, max_y - min_y + 1};
+}
+
+// Function to get the total area of all polyominoes
+long long total_area(const vector<Polyomino>& pieces) {
+    long long area = 0;
+    for (const auto& p : pieces) {
+        area += p.cells.size();
+    }
+    return area;
+}
+
+// Function to compute the minimal rectangle size for a given arrangement
+pair<int, int> compute_min_rect(const vector<Polyomino>& pieces, const vector<vector<pair<int, int>>>& shapes) {
+    // Simple greedy approach: try placing each piece in the top-left corner
+    vector<vector<bool>> grid(1000, vector<bool>(1000, false));
+    int max_x = 0, max_y = 0;
+    
+    for (int i = 0; i < pieces.size(); ++i) {
+        const auto& piece = pieces[i];
+        const auto& shape = shapes[i];
+        
+        int x = 0, y = 0;
+        while (!can_place(shape, x, y, grid)) {
+            y++;
+        }
+        
+        place(shape, x, y, grid);
+        max_x = max(max_x, x + 1);
+        max_y = max(max_y, y + 1);
+    }
+    
+    return {max_x, max_y};
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    cin >> n;
+    vector<Polyomino> pieces(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        pieces[i].id = i;
+        pieces[i].cells.resize(k);
+        for (int j = 0; j < k; ++j) {
+            int x, y;
+            cin >> x >> y;
+            pieces[i].cells[j] = {x, y};
+        }
+    }
+    
+    // Precompute all transformations for each piece
+    vector<vector<pair<int, int>>> all_shapes(n);
+    for (int i = 0; i < n; ++i) {
+        auto transformations = pieces[i].get_transformations();
+        // For now, just use the first transformation (no rotation/reflection)
+        all_shapes[i] = transformations[0];
+    }
+    
+    // Compute minimum rectangle size
+    auto min_rect = compute_min_rect(pieces, all_shapes);
+    
+    cout << min_rect.first << " " << min_rect.second << "\n";
+    
+    // Output placement for each piece
+    vector<vector<bool>> grid(min_rect.second, vector<bool>(min_rect.first, false));
+    int max_x = 0, max_y = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        const auto& piece = pieces[i];
+        const auto& shape = all_shapes[i];
+        
+        int x = 0, y = 0;
+        while (!can_place(shape, x, y, grid)) {
+            y++;
+        }
+        
+        place(shape, x, y, grid);
+        max_x = max(max_x, x + 1);
+        max_y = max(max_y, y + 1);
+        
+        // Output: X Y R F
+        cout << x << " " << y << " 0 0\n";
+    }
+    
+    return 0;
+}
+Iteration 3: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 4: Selected program 0 score: 0.0
+Iteration 4: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+// Structure to represent a polyomino
+struct Polyomino {
+    vector<pair<int, int>> cells; // cells in local coordinates
+    int k; // number of cells
+    int id;
+};
+
+// Function to generate all possible rotations and reflections of a polyomino
+vector<vector<pair<int, int>>> generate_transforms(const vector<pair<int, int>>& cells) {
+    vector<vector<pair<int, int>>> transforms;
+    
+    // 4 rotations + 4 reflections = 8 total
+    for (int r = 0; r < 4; ++r) {
+        vector<pair<int, int>> rotated = cells;
+        for (int i = 0; i < r; ++i) {
+            for (auto& p : rotated) {
+                swap(p.first, p.second);
+                p.second = -p.second;
+            }
+        }
+        transforms.push_back(rotated);
+        
+        // Reflection across y-axis
+        vector<pair<int, int>> reflected = rotated;
+        for (auto& p : reflected) {
+            p.first = -p.first;
+        }
+        transforms.push_back(reflected);
+    }
+    
+    return transforms;
+}
+
+// Function to find bounding box of a set of cells
+pair<int, int> get_bounding_box(const vector<pair<int, int>>& cells) {
+    int min_x = INT_MAX, max_x = INT_MIN;
+    int min_y = INT_MAX, max_y = INT_MIN;
+    
+    for (const auto& p : cells) {
+        min_x = min(min_x, p.first);
+        max_x = max(max_x, p.first);
+        min_y = min(min_y, p.second);
+        max_y = max(max_y, p.second);
+    }
+    
+    return {max_x - min_x + 1, max_y - min_y + 1}; // width, height
+}
+
+// Function to check if placing a polyomino at (x, y) with given rotation/reflection is valid
+bool is_valid_placement(const vector<pair<int, int>>& shape, 
+                        const vector<vector<pair<int, int>>>& all_shapes,
+                        int x, int y, int r, int f, 
+                        vector<vector<bool>>& grid) {
+    auto transformed = all_shapes[r * 2 + f];
+    
+    for (const auto& p : transformed) {
+        int new_x = x + p.first;
+        int new_y = y + p.second;
+        
+        if (new_x < 0 || new_y < 0 || grid[new_y][new_x]) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Function to place a polyomino
+void place_polyomino(const vector<pair<int, int>>& shape,
+                     vector<vector<pair<int, int>>>& all_shapes,
+                     int x, int y, int r, int f,
+                     vector<vector<bool>>& grid) {
+    auto transformed = all_shapes[r * 2 + f];
+    
+    for (const auto& p : transformed) {
+        int new_x = x + p.first;
+        int new_y = y + p.second;
+        grid[new_y][new_x] = true;
+    }
+}
+
+// Function to solve the problem
+void solve() {
+    int n;
+    cin >> n;
+    
+    vector<Polyomino> polyominoes(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        polyominoes[i].k = k;
+        polyominoes[i].id = i;
+        polyominoes[i].cells.resize(k);
+        
+        for (int j = 0; j < k; ++j) {
+            int x, y;
+            cin >> x >> y;
+            polyominoes[i].cells[j] = {x, y};
+        }
+    }
+    
+    // Precompute all transformations for each polyomino
+    vector<vector<vector<pair<int, int>>>> all_transforms(n);
+    
+    for (int i = 0; i < n; ++i) {
+        all_transforms[i] = generate_transforms(polyominoes[i].cells);
+    }
+    
+    // Try different arrangements and find the one with minimum area
+    int min_area = INT_MAX;
+    vector<pair<int, int>> best_solution(n);
+    int best_w = 0, best_h = 0;
+    
+    // For small test cases, we can try all combinations
+    // For larger ones, use heuristics
+    
+    // Simple greedy approach: place polyominoes one by one in a grid
+    int max_width = 0, max_height = 0;
+    
+    for (const auto& p : polyominoes) {
+        auto bb = get_bounding_box(p.cells);
+        max_width = max(max_width, bb.first);
+        max_height = max(max_height, bb.second);
+    }
+    
+    // Try placing all polyominoes in a rectangle of size max_width x max_height
+    int w = max_width;
+    int h = max_height;
+    
+    // Create a grid to track occupied cells
+    vector<vector<bool>> grid(h, vector<bool>(w, false));
+    
+    // Place each polyomino greedily
+    vector<pair<int, int>> placements(n);
+    vector<int> rotations(n, 0);
+    vector<int> reflections(n, 0);
+    
+    for (int i = 0; i < n; ++i) {
+        bool placed = false;
+        for (int r = 0; r < 4 && !placed; ++r) {
+            for (int f = 0; f < 2 && !placed; ++f) {
+                auto& transform = all_transforms[i][r * 2 + f];
+                int min_x = INT_MAX, max_x = INT_MIN;
+                int min_y = INT_MAX, max_y = INT_MIN;
+                
+                for (const auto& p : transform) {
+                    min_x = min(min_x, p.first);
+                    max_x = max(max_x, p.first);
+                    min_y = min(min_y, p.second);
+                    max_y = max(max_y, p.second);
+                }
+                
+                int width = max_x - min_x + 1;
+                int height = max_y - min_y + 1;
+                
+                // Try placing at different positions
+                for (int x = 0; x <= w - width && !placed; ++x) {
+                    for (int y = 0; y <= h - height && !placed; ++y) {
+                        // Check if this placement is valid
+                        bool valid = true;
+                        for (const auto& p : transform) {
+                            int new_x = x + p.first;
+                            int new_y = y + p.second;
+                            if (new_x < 0 || new_y < 0 || new_x >= w || new_y >= h || grid[new_y][new_x]) {
+                                valid = false;
+                                break;
+                            }
+                        }
+                        
+                        if (valid) {
+                            // Place the polyomino
+                            for (const auto& p : transform) {
+                                int new_x = x + p.first;
+                                int new_y = y + p.second;
+                                grid[new_y][new_x] = true;
+                            }
+                            placements[i] = {x, y};
+                            rotations[i] = r;
+                            reflections[i] = f;
+                            placed = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Output the result
+    cout << w << " " << h << "\n";
+    
+    for (int i = 0; i < n; ++i) {
+        cout << placements[i].first << " " << placements[i].second << " "
+             << rotations[i] << " " << reflections[i] << "\n";
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    solve();
+    
+    return 0;
+}
+Iteration 4: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 5: Selected program 0 score: 0.0
+Iteration 5: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Polyomino {
+    vector<pair<int, int>> cells;
+    int min_x, max_x, min_y, max_y;
+    int area;
+
+    Polyomino() : min_x(0), max_x(0), min_y(0), max_y(0), area(0) {}
+
+    void normalize() {
+        min_x = min_y = INT_MAX;
+        max_x = max_y = INT_MIN;
+        for (auto& p : cells) {
+            min_x = min(min_x, p.first);
+            max_x = max(max_x, p.first);
+            min_y = min(min_y, p.second);
+            max_y = max(max_y, p.second);
+        }
+        area = cells.size();
+    }
+
+    vector<vector<pair<int, int>>> get_transforms() {
+        vector<vector<pair<int, int>>> transforms;
+        // Generate all 8 transformations (4 rotations + 4 reflections)
+        for (int r = 0; r < 4; ++r) {
+            vector<pair<int, int>> rotated = cells;
+            for (auto& p : rotated) {
+                int x = p.first, y = p.second;
+                for (int i = 0; i < r; ++i) {
+                    int tmp = x;
+                    x = y;
+                    y = -tmp;
+                }
+                p = {x, y};
+            }
+            transforms.push_back(rotated);
+        }
+
+        for (int r = 0; r < 4; ++r) {
+            vector<pair<int, int>> reflected = cells;
+            for (auto& p : reflected) {
+                int x = p.first, y = p.second;
+                for (int i = 0; i < r; ++i) {
+                    int tmp = x;
+                    x = y;
+                    y = -tmp;
+                }
+                x = -x;
+                p = {x, y};
+            }
+            transforms.push_back(reflected);
+        }
+
+        return transforms;
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+    vector<Polyomino> pieces(n);
+
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        pieces[i].cells.resize(k);
+        for (int j = 0; j < k; ++j) {
+            cin >> pieces[i].cells[j].first >> pieces[i].cells[j].second;
+        }
+        pieces[i].normalize();
+    }
+
+    // Simple greedy packing strategy
+    vector<pair<int, int>> positions(n);
+    vector<int> rotations(n);
+    vector<int> reflections(n);
+
+    // Initialize a large enough grid
+    int max_dim = 1000;
+    vector<vector<bool>> grid(max_dim, vector<bool>(max_dim, false));
+
+    // Start with a small rectangle
+    int W = 100, H = 100;
+    vector<pair<int, int>> placements(n);
+
+    // Try to fit each piece greedily
+    for (int i = 0; i < n; ++i) {
+        vector<vector<pair<int, int>>> transforms = pieces[i].get_transforms();
+        bool placed = false;
+        for (const auto& t : transforms) {
+            int min_x = INT_MAX, max_x = INT_MIN, min_y = INT_MAX, max_y = INT_MIN;
+            for (auto& p : t) {
+                min_x = min(min_x, p.first);
+                max_x = max(max_x, p.first);
+                min_y = min(min_y, p.second);
+                max_y = max(max_y, p.second);
+            }
+
+            int w = max_x - min_x + 1;
+            int h = max_y - min_y + 1;
+
+            // Try to place at (0,0) for now
+            int x = 0, y = 0;
+            bool valid = true;
+
+            for (auto& p : t) {
+                int px = p.first - min_x;
+                int py = p.second - min_y;
+                if (x + px >= W || y + py >= H || grid[x + px][y + py]) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) {
+                // Place the piece
+                for (auto& p : t) {
+                    int px = p.first - min_x;
+                    int py = p.second - min_y;
+                    grid[x + px][y + py] = true;
+                }
+                placements[i] = {x, y};
+                placed = true;
+                break;
+            }
+        }
+
+        if (!placed) {
+            // If not placed, increase size
+            W = max(W, 1000);
+            H = max(H, 1000);
+            grid.assign(W, vector<bool>(H, false));
+            i--; // Retry this piece
+        }
+    }
+
+    // Output result
+    cout << W << " " << H << "\n";
+    for (int i = 0; i < n; ++i) {
+        cout << placements[i].first << " " << placements[i].second << " 0 0\n";
+    }
+
+    return 0;
+}
+Iteration 5: New subsample score 0.0 is not better than old score 0.0, skipping

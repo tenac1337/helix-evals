@@ -1,0 +1,17 @@
+{
+  "run_tag": "gepa-algorithmic-qwen3-coder-free-20260424_002649",
+  "optimizer": "gepa",
+  "track": "algorithmic",
+  "task_model": "openrouter/qwen/qwen3-coder:free",
+  "reflection_model": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+  "n_total": 1,
+  "n_ok": 0,
+  "n_error": 1,
+  "n_timeout": 0,
+  "n_skipped": 0,
+  "score_mean": 0.0,
+  "score_median": 0.0,
+  "score_max": 0.0,
+  "total_tokens": 0,
+  "scores_by_problem": {}
+}

@@ -1,0 +1,6 @@
+  [0] eval=1  score=0.0000  best=0.0000
+  [0] eval=2  score=0.0000  best=0.0000
+  [0] eval=3  score=0.0000  best=0.0000
+  [0] eval=4  score=0.0000  best=0.0000
+  [0] eval=5  score=63.5977  best=63.5977
+  [0] eval=6  score=63.5977  best=63.5977

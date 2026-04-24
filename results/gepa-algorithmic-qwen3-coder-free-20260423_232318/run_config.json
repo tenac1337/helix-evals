@@ -1,0 +1,20 @@
+{
+  "optimizer": "gepa",
+  "track": "algorithmic",
+  "problem_ids": [
+    0
+  ],
+  "task_model": "openrouter/qwen/qwen3-coder:free",
+  "reflection_model": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+  "helix_claude_model": "sonnet",
+  "max_metric_calls": 3,
+  "max_generations": 5,
+  "max_evaluations": 20,
+  "max_turns": 10,
+  "max_workers": 1,
+  "run_tag": "gepa-algorithmic-qwen3-coder-free-20260423_232318",
+  "results_root": "results",
+  "resume": true,
+  "timeout_per_problem": 1800,
+  "experiment_tag": "track_c"
+}
