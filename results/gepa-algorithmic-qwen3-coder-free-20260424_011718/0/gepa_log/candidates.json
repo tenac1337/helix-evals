@@ -1,8 +1,0 @@
-[
-  {
-    "current_candidate": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    // Read all input so we don't deadlock on problems that pipe data.\n    string line;\n    while (getline(cin, line)) { /* discard */ }\n\n    // Trivial placeholder answer. GEPA's reflection LM should replace this\n    // with real logic based on the per-test-case scoring feedback.\n    cout << 0 << endl;\n\n    return 0;\n}\n"
-  },
-  {
-    "current_candidate": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    if (!(cin >> n)) return 0;\n\n    vector<int> width(n), height(n), startY(n);\n    int curY = 0, maxW = 0;\n\n    for (int i = 0; i < n; ++i) {\n        int k;\n        cin >> k;\n        int minX = 0, maxX = 0, minY = 0, maxY = 0;\n        bool first = true;\n        for (int j = 0; j < k; ++j) {\n            int x, y;\n            cin >> x >> y;\n            if (first) {\n                minX = maxX = x;\n                minY = maxY = y;\n                first = false;\n            } else {\n                if (x < minX) minX = x;\n                if (x > maxX) maxX = x;\n                if (y < minY) minY = y;\n                if (y > maxY) maxY = y;\n            }\n        }\n        int w = maxX - minX + 1;\n        int h = maxY - minY + 1;\n        width[i] = w;\n        height[i] = h;\n        startY[i] = curY;\n        curY += h;\n        if (w > maxW) maxW = w;\n    }\n\n    cout << maxW << ' ' << curY << '\\n';\n    for (int i = 0; i < n; ++i) {\n        cout << \"0 \" << startY[i] << \" 0 0\\n\";\n    }\n    return 0;\n}"
-  }
-]
