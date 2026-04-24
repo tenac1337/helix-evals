@@ -282,7 +282,13 @@ class BatchRunner:
 
         if (gepa_log_dir / "gepa_state.bin").exists():
             try:
-                print(f"  [{problem_id}] Resuming GEPA from saved state", file=sys.stderr, flush=True)
+                try:
+
+                    print(f"  [{problem_id}] Resuming GEPA from saved state", file=sys.stderr, flush=True)
+
+                except Exception:
+
+                    pass
             except Exception:
                 pass
 
@@ -324,7 +330,13 @@ class BatchRunner:
         # Use configured reflection model (OpenRouter with retry/fallback)
         reflection_lm = self.cfg.effective_reflection_model()
         try:
-            print(f"  [{problem_id}] reflection_lm: {reflection_lm}", file=sys.stderr, flush=True)
+            try:
+
+                print(f"  [{problem_id}] reflection_lm: {reflection_lm}", file=sys.stderr, flush=True)
+
+            except Exception:
+
+                pass
         except Exception:
             pass
         # Ollama is in REFLECTION_FALLBACKS as last resort — no need to auto-detect
