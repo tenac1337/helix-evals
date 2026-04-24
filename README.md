@@ -1,4 +1,4 @@
-# HELIX: Hierarchical Evolution via LLM-Informed eXploration
+# HELIX: (Hierarchical Evolution via LLM-Informed eXploration) Evaluation Framework
 
 > **Evaluation framework for GEPA and HELIX optimizers on the Frontier-CS algorithmic benchmark.
 
