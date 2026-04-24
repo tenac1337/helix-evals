@@ -1,6 +1,0 @@
-    [0] evaluating 440 chars, first 80: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_w'
-    [0] score=0.0000
-Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
-Iteration 1: Selected program 0 score: 0.0
-    [0] evaluating 440 chars, first 80: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_w'
-    [0] score=0.0000

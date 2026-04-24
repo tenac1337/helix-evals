@@ -1,8 +1,12 @@
-# Ignore logs folder anywhere in the repo
+# Ignore entire logs folder
 logs/
 
-# Or more broadly, ignore any folder named logs (case-insensitive)
-/[Ll]ogs/
+# Ignore all contents of results/ (but keep results/ folder structure if needed)
+results/**/*
+# Or simply ignore entire results/ folder:
+# results/
 
-# Also common: ignore log files
+# Also ignore common log files everywhere
 *.log
+*.json  # if you want to ignore progress.json etc.
+gepa_state.bin
