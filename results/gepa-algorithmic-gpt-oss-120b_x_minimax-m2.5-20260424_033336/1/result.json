@@ -1,0 +1,15 @@
+{
+  "problem_id": 1,
+  "track": "algorithmic",
+  "optimizer": "gepa",
+  "status": "timeout",
+  "best_score": 0.0,
+  "token_summary": {},
+  "duration_s": 2950.445186875062,
+  "error": "Exceeded 1800s",
+  "best_candidate_path": null,
+  "run_tag": "gepa-algorithmic-gpt-oss-120b_x_minimax-m2.5-20260424_033336",
+  "task_model": "",
+  "reflection_model": "",
+  "eval_count": 0
+}

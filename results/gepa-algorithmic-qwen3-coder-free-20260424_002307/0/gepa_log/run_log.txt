@@ -1,0 +1,2 @@
+    [0] evaluating 440 chars, first 80: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_w'
+    [0] score=0.0000

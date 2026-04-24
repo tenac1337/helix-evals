@@ -1,0 +1,23 @@
+{
+  "label": "GEPA qwen3-coder:free",
+  "run_tag": "gepa-algorithmic-qwen3-coder-free-20260423_230210",
+  "track": "algorithmic",
+  "optimizer": "gepa",
+  "n_problems": 1,
+  "n_ok": 0,
+  "n_error": 1,
+  "n_timeout": 0,
+  "score_mean": 0.0,
+  "score_median": 0.0,
+  "score_max": 0.0,
+  "score_std": 0.0,
+  "solve_rate": 0.0,
+  "total_tokens": 0,
+  "tokens_per_mutation_avg": 0.0,
+  "prompt_tokens_fraction": 0.0,
+  "total_latency_s": 0,
+  "latency_per_call_avg_s": 0.0,
+  "acceptance_rate": 1.0,
+  "evaluations_to_best_avg": NaN,
+  "scores_by_problem": {}
+}

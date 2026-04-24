@@ -1,0 +1,18 @@
+{
+  "run_tag": "gepa-algorithmic-qwen3-coder_x_minimax-m2.5-20260424_030327",
+  "optimizer": "gepa",
+  "track": "algorithmic",
+  "task_model": "openrouter/qwen/qwen3-coder:free",
+  "reflection_model": "openrouter/minimax/minimax-m2.5:free",
+  "n_total": 1,
+  "n_ok": 1,
+  "n_error": 0,
+  "n_timeout": 0,
+  "n_skipped": 0,
+  "score_mean": 63.59774188285713,
+  "score_median": 63.59774188285713,
+  "score_max": 63.59774188285713,
+  "scores_by_problem": {
+    "0": 63.59774188285713
+  }
+}

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEPA Candidate Tree</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8f9fa; display: flex; flex-direction: column; }
+  #header { background: #fff; border-bottom: 1px solid #dee2e6; padding: 12px 20px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  #header h1 { font-size: 18px; font-weight: 600; color: #212529; }
+  .legend { display: flex; gap: 14px; font-size: 13px; color: #495057; }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #adb5bd; }
+  #graph-container { flex: 1 1 auto; width: 100%; overflow: auto; padding: 20px; text-align: center; }
+  #graph-container svg { width: 100%; height: 100%; }
+  #tooltip {
+    display: none; position: fixed; background: #fff; border: 1px solid #dee2e6;
+    border-radius: 8px; padding: 14px 16px; max-width: 560px; max-height: 70vh; overflow-y: auto;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18); z-index: 1000; font-size: 13px; line-height: 1.5;
+  }
+  #tooltip .tt-header { font-weight: 700; font-size: 15px; margin-bottom: 6px; color: #212529; }
+  #tooltip .tt-meta { color: #6c757d; margin-bottom: 4px; }
+  #tooltip .tt-hint { color: #adb5bd; font-size: 11px; font-style: italic; margin-bottom: 10px; }
+  #tooltip .tt-comp-name { font-weight: 600; color: #495057; margin-top: 10px; border-bottom: 1px solid #e9ecef; padding-bottom: 2px; }
+  #tooltip .tt-comp-text {
+    white-space: pre-wrap; word-break: break-word; background: #f8f9fa;
+    border: 1px solid #e9ecef; border-radius: 4px; padding: 8px 10px; margin-top: 4px;
+    font-family: "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px;
+    max-height: 200px; overflow-y: auto;
+  }
+  .role-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 6px; }
+  .role-best { background: #00e5ff33; color: #006064; }
+  .role-pareto { background: #ff980033; color: #e65100; }
+  .role-seed { background: #e0e0e0; color: #424242; }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>GEPA Candidate Tree</h1>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:cyan"></div> Best</div>
+    <div class="legend-item"><div class="legend-dot" style="background:orange"></div> Pareto Front</div>
+    <div class="legend-item"><div class="legend-dot" style="background:lightgray"></div> Other</div>
+  </div>
+</div>
+<div id="graph-container"><p>Loading graph&hellip;</p></div>
+<div id="tooltip"></div>
+
+<script type="module">
+const NODES = [{"idx": 0, "score": 0.0, "parents": "seed", "role": "Seed", "components": {"current_candidate": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n\n    // Read all input so we don't deadlock on problems that pipe data.\n    string line;\n    while (getline(cin, line)) { /* discard */ }\n\n    // Trivial placeholder answer. GEPA's reflection LM should replace this\n    // with real logic based on the per-test-case scoring feedback.\n    cout << 0 << endl;\n\n    return 0;\n}\n"}},
+{"idx": 1, "score": 216.1267, "parents": "0", "role": "", "components": {"current_candidate": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    \n    int t;\n    if (!(cin >> t)) return 0;\n    \n    for (int case_num = 0; case_num < t; ++case_num) {\n        int n, m, start, base_move_count;\n        cin >> n >> m >> start >> base_move_count;\n        \n        // Read and discard edges\n        for (int i = 0; i < m; ++i) {\n            int u, v;\n            cin >> u >> v;\n        }\n        \n        while (true) {\n            // Read the first token - could be a number (degree) or \"AC\" or \"F\"\n            string token;\n            if (!(cin >> token)) break;\n            \n            if (token == \"AC\" || token == \"F\") {\n                // Interaction ended for this test case\n                break;\n            }\n            \n            // It's a vertex description\n            int d = stoi(token);\n            \n            vector<pair<int, int>> neighbors;\n            for (int i = 0; i < d; ++i) {\n                int deg, flag;\n                cin >> deg >> flag;\n                neighbors.push_back({deg, flag});\n            }\n            \n            // Find an unvisited neighbor (flag = 0)\n            int choice = 1;\n            for (int i = 0; i < d; ++i) {\n                if (neighbors[i].second == 0) {\n                    choice = i + 1;\n                    break;\n                }\n            }\n            \n            cout << choice << \"\\n\" << flush;\n        }\n    }\n    \n    return 0;\n}"}},
+{"idx": 2, "score": 273.6833, "parents": "1", "role": "", "components": {"current_candidate": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    \n    int t;\n    if (!(cin >> t)) return 0;\n    \n    for (int case_num = 0; case_num < t; ++case_num) {\n        int n, m, start, base_move_count;\n        cin >> n >> m >> start >> base_move_count;\n        \n        // Read and discard edges\n        for (int i = 0; i < m; ++i) {\n            int u, v;\n            cin >> u >> v;\n        }\n        \n        // Track visited vertices using global IDs (we'll infer from flags)\n        // We maintain a local set to help with strategy decisions\n        unordered_set<int> visited_global;\n        // Start position - initial visited includes start vertex\n        // (we know our position implicitly from being there)\n        \n        while (true) {\n            string token;\n            if (!(cin >> token)) break;\n            \n            if (token == \"AC\" || token == \"F\") {\n                break;\n            }\n            \n            int d = stoi(token);\n            \n            // We won't know the actual vertex IDs of neighbors\n            // So we use the flags to infer which are visited\n            vector<int> neighbor_degrees;\n            vector<int> neighbor_flags;\n            \n            for (int i = 0; i < d; ++i) {\n                int deg, flag;\n                cin >> deg >> flag;\n                neighbor_degrees.push_back(deg);\n                neighbor_flags.push_back(flag);\n            }\n            \n            // Strategy: \n            // 1. If there are unvisited neighbors (flag=0), pick one with LOWEST degree\n            //    (these are likely dead-ends or leaves we should handle early)\n            // 2. If all neighbors are visited (flag=1), pick one with HIGHEST degree\n            //    (to maximize future exploration options)\n            \n            int choice = 1;\n            \n            // First, check if there are any unvisited neighbors\n            bool has_unvisited = false;\n            for (int flag : neighbor_flags) {\n                if (flag == 0) {\n                    has_unvisited = true;\n                    break;\n                }\n            }\n            \n            if (has_unvisited) {\n                // Find unvisited neighbor with minimum degree\n                int best_idx = -1;\n                int min_deg = INT_MAX;\n                for (int i = 0; i < d; ++i) {\n                    if (neighbor_flags[i] == 0 && neighbor_degrees[i] < min_deg) {\n                        min_deg = neighbor_degrees[i];\n                        best_idx = i;\n                    }\n                }\n                choice = best_idx + 1;\n            } else {\n                // All neighbors visited - pick one with maximum degree\n                // This tends to lead to vertices with more options\n                int best_idx = 0;\n                int max_deg = neighbor_degrees[0];\n                for (int i = 1; i < d; ++i) {\n                    if (neighbor_degrees[i] > max_deg) {\n                        max_deg = neighbor_degrees[i];\n                        best_idx = i;\n                    }\n                }\n                choice = best_idx + 1;\n            }\n            \n            cout << choice << \"\\n\" << flush;\n        }\n    }\n    \n    return 0;\n}"}},
+{"idx": 3, "score": 290.3233, "parents": "2", "role": "Best", "components": {"current_candidate": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    \n    int t;\n    if (!(cin >> t)) return 0;\n    \n    for (int case_num = 0; case_num < t; ++case_num) {\n        int n, m, start, base_move_count;\n        cin >> n >> m >> start >> base_move_count;\n        \n        // Read and discard edges\n        for (int i = 0; i < m; ++i) {\n            int u, v;\n            cin >> u >> v;\n        }\n        \n        // Track previous vertex degree to avoid immediate backtracking\n        int prev_degree = -1;\n        \n        while (true) {\n            string token;\n            if (!(cin >> token)) break;\n            \n            if (token == \"AC\" || token == \"F\") {\n                break;\n            }\n            \n            int d = stoi(token);\n            \n            vector<int> neighbor_degrees;\n            vector<int> neighbor_flags;\n            \n            for (int i = 0; i < d; ++i) {\n                int deg, flag;\n                cin >> deg >> flag;\n                neighbor_degrees.push_back(deg);\n                neighbor_flags.push_back(flag);\n            }\n            \n            // Strategy: \n            // 1. If there are unvisited neighbors (flag=0), pick one with LOWEST degree\n            //    (leaves/dead-ends first - reduces backtracking)\n            // 2. If all neighbors visited (flag=1):\n            //    a) First try to avoid going back to the vertex we just came from\n            //       (if prev_degree matches a neighbor, and there are other options)\n            //    b) Among remaining visited neighbors, pick HIGHEST degree\n            //       (more connections = more likely to reach unvisited areas)\n            \n            int choice = 1;\n            \n            // Check for unvisited neighbors\n            bool has_unvisited = false;\n            for (int flag : neighbor_flags) {\n                if (flag == 0) {\n                    has_unvisited = true;\n                    break;\n                }\n            }\n            \n            if (has_unvisited) {\n                // Find unvisited neighbor with minimum degree\n                int best_idx = -1;\n                int min_deg = INT_MAX;\n                for (int i = 0; i < d; ++i) {\n                    if (neighbor_flags[i] == 0 && neighbor_degrees[i] < min_deg) {\n                        min_deg = neighbor_degrees[i];\n                        best_idx = i;\n                    }\n                }\n                choice = best_idx + 1;\n            } else {\n                // All neighbors visited - need smarter selection\n                // First, identify if prev_degree is among neighbors\n                int prev_idx = -1;\n                if (prev_degree != -1) {\n                    for (int i = 0; i < d; ++i) {\n                        if (neighbor_degrees[i] == prev_degree) {\n                            prev_idx = i;\n                            break;\n                        }\n                    }\n                }\n                \n                // Count how many neighbors have the maximum degree\n                int max_deg = neighbor_degrees[0];\n                for (int i = 1; i < d; ++i) {\n                    if (neighbor_degrees[i] > max_deg) {\n                        max_deg = neighbor_degrees[i];\n                    }\n                }\n                \n                // Find best index: prefer highest degree, but avoid prev if possible\n                // and if there are multiple with max degree, pick one that's not prev\n                int best_idx = 0;\n                bool found_non_prev_max = false;\n                \n                // First pass: look for max degree that's not prev\n                for (int i = 0; i < d; ++i) {\n                    if (neighbor_degrees[i] == max_deg && i != prev_idx) {\n                        best_idx = i;\n                        found_non_prev_max = true;\n                        break;\n                    }\n                }\n                \n                // If we couldn't find a non-prev max, just use the first max degree\n                if (!found_non_prev_max) {\n                    for (int i = 0; i < d; ++i) {\n                        if (neighbor_degrees[i] == max_deg) {\n                            best_idx = i;\n                            break;\n                        }\n                    }\n                }\n                \n                choice = best_idx + 1;\n            }\n            \n            // Update prev_degree for next iteration (current vertex degree)\n            prev_degree = d;\n            \n            cout << choice << \"\\n\" << flush;\n        }\n    }\n    \n    return 0;\n}"}}];
+const DOT = `digraph G {
+    rankdir=TB;
+    node [style=filled, shape=circle, fontsize=14, width=0.6, height=0.6];
+    0 [label="0\\n(0.00)", fillcolor=lightgray, tooltip=" "];
+    1 [label="1\\n(216.13)", fillcolor=lightgray, tooltip=" "];
+    2 [label="2\\n(273.68)", fillcolor=lightgray, tooltip=" "];
+    3 [label="3\\n(290.32)", fillcolor=cyan, tooltip=" "];
+    0 -> 1;
+    1 -> 2;
+    2 -> 3;
+}`;
+
+const nodeMap = {};
+NODES.forEach(n => { nodeMap[n.idx] = n; });
+
+let pinnedIdx = null;   // non-null when tooltip is click-pinned (scrollable)
+let hoverIdx = null;    // non-null when hovering over a node
+
+function renderTooltip(idx) {
+  const n = nodeMap[idx];
+  if (!n) return "";
+  let roleBadge = "";
+  if (n.role === "Best") roleBadge = '<span class="role-badge role-best">BEST</span>';
+  else if (n.role === "Pareto Front") roleBadge = '<span class="role-badge role-pareto">PARETO</span>';
+  else if (n.role === "Seed") roleBadge = '<span class="role-badge role-seed">SEED</span>';
+
+  let comps = "";
+  for (const [name, text] of Object.entries(n.components)) {
+    const escaped = text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    comps += '<div class="tt-comp-name">' + name + '</div><div class="tt-comp-text">' + escaped + '</div>';
+  }
+
+  return '<div class="tt-header">Candidate ' + n.idx + roleBadge + '</div>' +
+    '<div class="tt-meta">Score: <strong>' + n.score + '</strong>&nbsp;&nbsp;|&nbsp;&nbsp;Parent(s): ' + n.parents +
+    '</div><div class="tt-hint">' + (pinnedIdx === idx ? 'Click node again to dismiss' : 'Click to pin &amp; scroll') + '</div>' +
+    comps;
+}
+
+function positionTooltip(x, y) {
+  const tt = document.getElementById("tooltip");
+  let tx = x + 16, ty = y + 16;
+  const r = tt.getBoundingClientRect();
+  if (tx + r.width > window.innerWidth - 8) tx = x - r.width - 16;
+  if (ty + r.height > window.innerHeight - 8) ty = y - r.height - 16;
+  if (tx < 8) tx = 8;
+  if (ty < 8) ty = 8;
+  tt.style.left = tx + "px";
+  tt.style.top = ty + "px";
+}
+
+function showTooltip(idx, x, y) {
+  const tt = document.getElementById("tooltip");
+  tt.innerHTML = renderTooltip(idx);
+  tt.style.display = "block";
+  positionTooltip(x, y);
+}
+
+function hideTooltip() {
+  pinnedIdx = null;
+  hoverIdx = null;
+  document.getElementById("tooltip").style.display = "none";
+}
+
+// Click outside tooltip and outside nodes dismisses pinned tooltip
+document.addEventListener("mousedown", function(e) {
+  const tt = document.getElementById("tooltip");
+  if (pinnedIdx !== null && tt.style.display === "block"
+      && !tt.contains(e.target) && !e.target.closest(".node")) {
+    hideTooltip();
+  }
+});
+
+async function render() {
+  const { instance } = await import("https://cdn.jsdelivr.net/npm/@viz-js/viz@3.11.0/lib/viz-standalone.mjs");
+  const viz = await instance();
+  const svg = viz.renderSVGElement(DOT);
+  const container = document.getElementById("graph-container");
+  container.innerHTML = "";
+  container.appendChild(svg);
+
+  // Attach hover listeners and strip native <title> tooltips to avoid double tooltips
+  svg.querySelectorAll(".node").forEach(node => {
+    const title = node.querySelector("title");
+    if (!title) return;
+    const idx = parseInt(title.textContent, 10);
+    if (isNaN(idx)) return;
+    title.remove();  // remove native SVG tooltip
+    node.style.cursor = "pointer";
+    // Hover: show tooltip following the mouse (non-interactive)
+    node.addEventListener("mouseenter", e => {
+      if (pinnedIdx !== null) return;  // don't override a pinned tooltip
+      hoverIdx = idx;
+      showTooltip(idx, e.clientX, e.clientY);
+    });
+    node.addEventListener("mousemove", e => {
+      if (pinnedIdx !== null || hoverIdx !== idx) return;
+      positionTooltip(e.clientX, e.clientY);
+    });
+    node.addEventListener("mouseleave", () => {
+      if (pinnedIdx !== null) return;
+      hoverIdx = null;
+      document.getElementById("tooltip").style.display = "none";
+    });
+    // Click: pin the tooltip so user can scroll it
+    node.addEventListener("click", e => {
+      e.stopPropagation();
+      if (pinnedIdx === idx) { hideTooltip(); return; }
+      pinnedIdx = idx;
+      showTooltip(idx, e.clientX, e.clientY);
+    });
+  });
+  // Also strip <title> from edges and the graph itself
+  svg.querySelectorAll(".edge title").forEach(t => t.remove());
+  const graphTitle = svg.querySelector(":scope > title");
+  if (graphTitle) graphTitle.remove();
+}
+
+render().catch(err => {
+  document.getElementById("graph-container").innerHTML =
+    "<p style='color:red'>Failed to render graph: " + err.message + "</p>" +
+    "<pre>" + DOT.replace(/</g,"&lt;") + "</pre>";
+});
+</script>
+</body>
+</html>

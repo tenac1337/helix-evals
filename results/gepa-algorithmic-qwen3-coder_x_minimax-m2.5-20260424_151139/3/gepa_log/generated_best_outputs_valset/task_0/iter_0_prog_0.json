@@ -1,0 +1,10 @@
+[
+    0.0,
+    {
+        "current_candidate": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    if (!(cin >> n)) return 0;\n    vector<int> minx(n), miny(n);\n    int max_width = 0;\n    int cur_y = 0;\n    vector<int> heights(n);\n    for (int i = 0; i < n; ++i) {\n        int k; cin >> k;\n        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;\n        for (int j = 0; j < k; ++j) {\n            int x, y; cin >> x >> y;\n            mnx=min(mnx,x); mxx=max(mxx,x);\n            mny=min(mny,y); mxy=max(mxy,y);\n        }\n        minx[i]=mnx; miny[i]=mny;\n        int w=mxx-mnx+1, h=mxy-mny+1;\n        heights[i]=h;\n        max_width=max(max_width,w);\n        cur_y+=h;\n    }\n    cout << max_width << \" \" << cur_y << \"\n\";\n    int y=0;\n    for (int i = 0; i < n; ++i) {\n        cout << -minx[i] << \" \" << y-miny[i] << \" 0 0\n\";\n        y+=heights[i];\n    }\n    return 0;\n}"
+    },
+    {
+        "asi": "Task: algorithmic:3\n\nScore: 0.0000\n\n--- message ---\nError: compile failed: main.cpp:27:42: warning: missing terminating \" character\n   27 |     cout << max_width << \" \" << cur_y << \"\n      |                                          ^\nmain.cpp:27:42: error: missing terminating \" character\nmain.cpp:28:1: warning: missing terminating \" character\n   28 | \";\n      | ^\nmain.cpp:28:1: error: missing terminating \" character\n   28 | \";\n      | ^~\nmain.cpp:31:49: warning: missing terminating \" character\n   31 |         cout << -minx[i] << \" \" << y-miny[i] << \" 0 0\n      |                                                 ^\nmain.cpp:31:49: error: missing terminating \" character\n   31 |         cout << -minx[i] << \" \" << y-miny[i] << \" 0 0\n      |                                                 ^~~~~\nmain.cpp:32:1: warning: missing terminating \" character\n   32 | \";\n      | ^\nmain.cpp:32:1: error: missing terminating \" character\n   32 | \";\n      | ^~\nmain.cpp: In function 'int main()':\nmain.cpp:29:5: error: expected primary-expression before 'int'\n  ",
+        "problem_id": "3"
+    }
+]

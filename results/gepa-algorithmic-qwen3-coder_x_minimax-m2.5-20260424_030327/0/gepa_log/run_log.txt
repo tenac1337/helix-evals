@@ -1,0 +1,382 @@
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.0
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 10000;
+const int MAXK = 10;
+
+struct Polyomino {
+    vector<pair<int, int>> cells;
+    int k;
+    int min_x, max_x, min_y, max_y;
+    
+    Polyomino() : k(0), min_x(0), max_x(0), min_y(0), max_y(0) {}
+    
+    void read(int k_) {
+        k = k_;
+        cells.clear();
+        min_x = max_x = min_y = max_y = 0;
+        
+        for (int i = 0; i < k; i++) {
+            int x, y;
+            cin >> x >> y;
+            cells.push_back({x, y});
+            min_x = min(min_x, x);
+            max_x = max(max_x, x);
+            min_y = min(min_y, y);
+            max_y = max(max_y, y);
+        }
+    }
+    
+    vector<vector<pair<int, int>>> get_transforms() {
+        vector<vector<pair<int, int>>> transforms;
+        vector<pair<int, int>> temp = cells;
+        
+        // Generate all rotations and reflections
+        for (int f = 0; f < 2; f++) {
+            if (f == 1) {
+                for (auto& p : temp) p.first = -p.first;
+            }
+            
+            for (int r = 0; r < 4; r++) {
+                vector<pair<int, int>> t;
+                for (auto p : temp) {
+                    if (r == 0) t.push_back({p.first, p.second});
+                    else if (r == 1) t.push_back({p.second, -p.first});
+                    else if (r == 2) t.push_back({-p.first, -p.second});
+                    else t.push_back({-p.second, p.first});
+                }
+                transforms.push_back(t);
+            }
+        }
+        
+        return transforms;
+    }
+};
+
+int n;
+Polyomino polyominoes[MAXN];
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        polyominoes[i].read();
+    }
+    
+    // Simple greedy approach
+    vector<pair<int, int>> placements(n);
+    vector<vector<pair<int, int>>> all_transforms(n);
+    
+    for (int i = 0; i < n; i++) {
+        all_transforms[i] = polyominoes[i].get_transforms();
+    }
+    
+    // Try to pack all polyominoes greedily into a rectangle
+    int W = 1000000, H = 1000000;
+    vector<pair<int, int>> best_positions(n);
+    vector<int> best_rotations(n);
+    vector<int> best_reflections(n);
+    
+    // Try small rectangles first
+    for (int w = 1; w <= 1000; w++) {
+        for (int h = 1; h <= 1000; h++) {
+            if (w * h > W * H) continue;
+            
+            vector<vector<bool>> grid(h, vector<bool>(w, false));
+            vector<pair<int, int>> positions(n);
+            vector<int> rotations(n);
+            vector<int> reflections(n);
+            bool valid = true;
+            
+            for (int i = 0; i < n; i++) {
+                bool placed = false;
+                for (int r = 0; r < 8 && !placed; r++) {
+                    for (int x = 0; x <= w && !placed; x++) {
+                        for (int y = 0; y <= h && !placed; y++) {
+                            bool can_place = true;
+                            vector<pair<int, int>> current_cells = all_transforms[i][r];
+                            
+                            for (auto p : current_cells) {
+                                int nx = x + p.first;
+                                int ny = y + p.second;
+                                
+                                if (nx < 0 || nx >= w || ny < 0 || ny >= h) {
+                                    can_place = false;
+                                    break;
+                                }
+                                
+                                if (grid[ny][nx]) {
+                                    can_place = false;
+                                    break;
+                                }
+                            }
+                            
+                            if (can_place) {
+                                for (auto p : current_cells) {
+                                    int nx = x + p.first;
+                                    int ny = y + p.second;
+                                    grid[ny][nx] = true;
+                                }
+                                positions[i] = {x, y};
+                                rotations[i] = r / 4;
+                                reflections[i] = r % 4 >= 4 ? 1 : 0;
+                                placed = true;
+                            }
+                        }
+                    }
+                }
+                
+                if (!placed) {
+                    valid = false;
+                    break;
+                }
+            }
+            
+            if (valid && w * h < W * H) {
+                W = w;
+                H = h;
+                best_positions = positions;
+                best_rotations = rotations;
+                best_reflections = reflections;
+            }
+        }
+    }
+    
+    cout << W << " " << H << "\n";
+    
+    for (int i = 0; i < n; i++) {
+        int x = best_positions[i].first;
+        int y = best_positions[i].second;
+        int r = best_rotations[i];
+        int f = best_reflections[i];
+        cout << x << " " << y << " " << r << " " << f << "\n";
+    }
+    
+    return 0;
+}
+Iteration 1: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 2: Selected program 0 score: 0.0
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+// Structure to represent a polyomino
+struct Polyomino {
+    vector<pair<int, int>> cells;
+    int id;
+};
+
+// Function to generate all rotations and reflections of a polyomino
+vector<vector<pair<int, int>>> generateTransformations(const vector<pair<int, int>>& cells) {
+    vector<vector<pair<int, int>>> transformations;
+    
+    // 4 rotations + 4 reflections = 8 total transformations
+    for (int i = 0; i < 4; ++i) {
+        vector<pair<int, int>> rotated = cells;
+        for (auto& p : rotated) {
+            if (i == 1) swap(p.first, p.second), p.second = -p.second;
+            if (i == 2) p.first = -p.first, p.second = -p.second;
+            if (i == 3) swap(p.first, p.second), p.first = -p.first;
+        }
+        transformations.push_back(rotated);
+    }
+    
+    for (int i = 0; i < 4; ++i) {
+        vector<pair<int, int>> reflected = cells;
+        for (auto& p : reflected) {
+            p.first = -p.first;
+        }
+        if (i == 1) swap(reflected[0].first, reflected[0].second), reflected[0].second = -reflected[0].second;
+        if (i == 2) reflected[0].first = -reflected[0].first, reflected[0].second = -reflected[0].second;
+        if (i == 3) swap(reflected[0].first, reflected[0].second), reflected[0].first = -reflected[0].first;
+        transformations.push_back(reflected);
+    }
+    
+    return transformations;
+}
+
+// Function to find bounding box of a polyomino
+pair<pair<int, int>, pair<int, int>> getBoundingBox(const vector<pair<int, int>>& cells) {
+    int minX = INT_MAX, maxX = INT_MIN;
+    int minY = INT_MAX, maxY = INT_MIN;
+    
+    for (const auto& p : cells) {
+        minX = min(minX, p.first);
+        maxX = max(maxX, p.first);
+        minY = min(minY, p.second);
+        maxY = max(maxY, p.second);
+    }
+    
+    return {{minX, minY}, {maxX, maxY}};
+}
+
+// Function to check if two polyominoes overlap
+bool overlaps(const vector<pair<int, int>>& cells1, const vector<pair<int, int>>& cells2,
+              int x1, int y1, int x2, int y2) {
+    set<pair<int, int>> s1, s2;
+    for (const auto& p : cells1) {
+        s1.insert({p.first + x1, p.second + y1});
+    }
+    for (const auto& p : cells2) {
+        s2.insert({p.first + x2, p.second + y2});
+    }
+    
+    for (const auto& p : s1) {
+        if (s2.count(p)) return true;
+    }
+    return false;
+}
+
+// Function to check if a polyomino fits in a given rectangle
+bool fitsIn(const vector<pair<int, int>>& cells, int width, int height, int x, int y) {
+    for (const auto& p : cells) {
+        int newX = p.first + x;
+        int newY = p.second + y;
+        if (newX < 0 || newX >= width || newY < 0 || newY >= height) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    cin >> n;
+    vector<Polyomino> pieces(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        pieces[i].cells.resize(k);
+        for (int j = 0; j < k; ++j) {
+            cin >> pieces[i].cells[j].first >> pieces[i].cells[j].second;
+        }
+        pieces[i].id = i;
+    }
+    
+    // Precompute all transformations for each piece
+    vector<vector<vector<pair<int, int>>>> allTransforms(n);
+    for (int i = 0; i < n; ++i) {
+        allTransforms[i] = generateTransformations(pieces[i].cells);
+    }
+    
+    // Simple greedy placement algorithm
+    vector<vector<pair<int, int>>> placements(n);
+    vector<pair<int, int>> positions(n);
+    vector<int> rotations(n);
+    vector<bool> reflected(n);
+    vector<bool> placed(n, false);
+    
+    int totalArea = 0;
+    for (int i = 0; i < n; ++i) {
+        totalArea += pieces[i].cells.size();
+    }
+    
+    // Initial estimate of area
+    int minArea = totalArea;
+    int width = ceil(sqrt(minArea));
+    int height = width;
+    
+    // Try different sizes
+    while (true) {
+        vector<vector<bool>> grid(width, vector<bool>(height, false));
+        vector<pair<int, int>> pos(n, {0, 0});
+        vector<int> rot(n, 0);
+        vector<bool> ref(n, false);
+        vector<bool> placed(n, false);
+        
+        bool success = true;
+        for (int i = 0; i < n; ++i) {
+            bool found = false;
+            for (int r = 0; r < 4; ++r) {
+                for (int f = 0; f < 2; ++f) {
+                    auto& trans = allTransforms[i][r + (f ? 4 : 0)];
+                    pair<pair<int, int>, pair<int, int>> bb = getBoundingBox(trans);
+                    int w = bb.second.first - bb.first.first;
+                    int h = bb.second.second - bb.first.second;
+                    
+                    for (int x = 0; x <= width - w; ++x) {
+                        for (int y = 0; y <= height - h; ++y) {
+                            bool valid = true;
+                            for (const auto& p : trans) {
+                                int newX = p.first + x;
+                                int newY = p.second + y;
+                                if (newX < 0 || newX >= width || newY < 0 || newY >= height) {
+                                    valid = false;
+                                    break;
+                                }
+                                if (grid[newX][newY]) {
+                                    valid = false;
+                                    break;
+                                }
+                            }
+                            
+                            if (valid) {
+                                for (const auto& p : trans) {
+                                    int newX = p.first + x;
+                                    int newY = p.second + y;
+                                    grid[newX][newY] = true;
+                                }
+                                pos[i] = {x, y};
+                                rot[i] = r;
+                                ref[i] = f;
+                                placed[i] = true;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) break;
+                    }
+                    if (found) break;
+                }
+                if (found) break;
+            }
+            
+            if (!found) {
+                success = false;
+                break;
+            }
+        }
+        
+        if (success) {
+            cout << width << " " << height << "\n";
+            for (int i = 0; i < n; ++i) {
+                cout << pos[i].first << " " << pos[i].second << " " << rot[i] << " " << ref[i] << "\n";
+            }
+            return 0;
+        }
+        
+        // Increase size
+        if (width * height < 2 * totalArea) {
+            width++;
+            if (width * height >= 2 * totalArea) {
+                height++;
+                width = (int)ceil(sqrt(width * height));
+            }
+        } else {
+            width++;
+            height++;
+        }
+    }
+    
+    return 0;
+}
+Iteration 2: New subsample score 63.59774188285713 is better than old score 0.0. Continue to full eval and add to candidate pool.
+Iteration 2: Found a better program on the valset with score 63.59774188285713.
+Iteration 2: Valset score for new program: 63.59774188285713 (coverage 1 / 1)
+Iteration 2: Val aggregate for new program: 63.59774188285713
+Iteration 2: Individual valset scores for new program: {0: 63.59774188285713}
+Iteration 2: New valset pareto front scores: {0: 63.59774188285713}
+Iteration 2: Valset pareto front aggregate score: 63.59774188285713
+Iteration 2: Updated valset pareto front programs: {0: {1}}
+Iteration 2: Best valset aggregate score so far: 63.59774188285713
+Iteration 2: Best program as per aggregate score on valset: 1
+Iteration 2: Best score on valset: 63.59774188285713
+Iteration 2: Linear pareto front program index: 1
+Iteration 2: New program candidate index: 1

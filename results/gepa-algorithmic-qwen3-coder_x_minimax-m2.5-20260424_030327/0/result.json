@@ -1,0 +1,28 @@
+{
+  "problem_id": 0,
+  "track": "algorithmic",
+  "optimizer": "gepa",
+  "status": "ok",
+  "best_score": 63.59774188285713,
+  "token_summary": {
+    "run_id": "gepa-algorithmic-qwen3-coder_x_minimax-m2.5-20260424_030327-0",
+    "problem_id": "0",
+    "experiment_tag": "track_c",
+    "total_calls": 0,
+    "task_calls": 0,
+    "reflection_calls": 0,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0,
+    "total_tokens": 0,
+    "tokens_per_call_avg": 0.0,
+    "total_latency_s": 0.0,
+    "latency_per_call_avg": 0.0
+  },
+  "duration_s": 68.34,
+  "error": null,
+  "best_candidate_path": "results/gepa-algorithmic-qwen3-coder_x_minimax-m2.5-20260424_030327/0/best_candidate.cpp",
+  "run_tag": "gepa-algorithmic-qwen3-coder_x_minimax-m2.5-20260424_030327",
+  "task_model": "openrouter/qwen/qwen3-coder:free",
+  "reflection_model": "openrouter/minimax/minimax-m2.5:free",
+  "eval_count": 6
+}

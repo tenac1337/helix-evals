@@ -1,0 +1,10 @@
+    [0] evaluating 440 chars
+    [0] score=0.0000
+    [0] evaluating 440 chars
+    [0] score=0.0000
+    [0] evaluating 1456 chars
+    [0] score=0.0000
+    [0] evaluating 440 chars
+    [0] score=0.0000
+    [0] evaluating 1088 chars
+    [0] score=0.0000

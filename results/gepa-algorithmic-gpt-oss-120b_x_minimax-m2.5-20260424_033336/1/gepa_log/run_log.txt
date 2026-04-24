@@ -1,0 +1,5768 @@
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.0
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.0
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.0
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.0
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    // First, read n from input
+    if (!(cin >> n)) {
+        return 0;
+    }
+
+    vector<int> answer(n + 1, -1);  // answer[v] = position where value v is located
+
+    // For each value v from 1 to n, query with value v at position v and 1 elsewhere
+    for (int v = 1; v <= n; v++) {
+        cout << 0 << " ";
+        for (int i = 1; i <= n; i++) {
+            if (i == v) {
+                cout << v << " ";
+            } else {
+                cout << 1 << " ";
+            }
+        }
+        cout << endl;
+        
+        int matches;
+        cin >> matches;
+        
+        if (matches == 1) {
+            // Position v contains value v
+            answer[v] = v;
+        } else {
+            // Position v contains some other value
+            // The value at position v is the one that got matched elsewhere
+            // Since each value appears exactly once, we need to find it
+            // But we know matches == 0 for this query
+            // The value at position v must be the one whose query returned 1
+        }
+    }
+
+    // We need to determine the mapping. Let me reconsider.
+    // Actually, if query for v returns 1, then perm[v] = v
+    // If query for v returns 0, then perm[v] != v, and the position where value v
+    // is located is the one whose query returned 1
+    
+    // Let's redo this more carefully
+    vector<int> pos_of_value(n + 1, -1);  // pos_of_value[v] = position where value v is
+    vector<int> value_at_pos(n + 1, -1);   // value_at_pos[p] = value at position p
+
+    // Re-run queries and track results
+    for (int v = 1; v <= n; v++) {
+        cout << 0 << " ";
+        for (int i = 1; i <= n; i++) {
+            if (i == v) {
+                cout << v << " ";
+            } else {
+                cout << 1 << " ";
+            }
+        }
+        cout << endl;
+        
+        int matches;
+        cin >> matches;
+        
+        if (matches == 1) {
+            // Position v contains value v
+            pos_of_value[v] = v;
+            value_at_pos[v] = v;
+        }
+    }
+
+    // For values whose position we haven't found, they must be at the positions
+    // where we got 0 matches. Since we know which positions are taken,
+    // we can deduce the remaining mapping.
+    // Actually, this is a permutation - each value appears exactly once.
+    // If pos_of_value[v] == -1, then value v is at some position p where value_at_pos[p] == -1
+    
+    // Let's find unmapped positions
+    vector<int> unmapped_positions;
+    for (int p = 1; p <= n; p++) {
+        if (value_at_pos[p] == -1) {
+            unmapped_positions.push_back(p);
+        }
+    }
+
+    vector<int> unmapped_values;
+    for (int v = 1; v <= n; v++) {
+        if (pos_of_value[v] == -1) {
+            unmapped_values.push_back(v);
+        }
+    }
+
+    // They should be the same size - pair them arbitrarily (they'll match correctly)
+    for (size_t i = 0; i < unmapped_positions.size(); i++) {
+        int p = unmapped_positions[i];
+        int v = unmapped_values[i];
+        value_at_pos[p] = v;
+        pos_of_value[v] = p;
+    }
+
+    // Now output the guess
+    cout << 1 << " ";
+    for (int i = 1; i <= n; i++) {
+        cout << value_at_pos[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+Iteration 1: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 2: Selected program 0 score: 0.0
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;
+    long long v;
+    long long m;
+    long long l;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Read entire input
+    string input((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());
+    
+    vector<Item> items;
+    map<string, int> name_to_idx;
+    
+    size_t pos = 0;
+    while (pos < input.size()) {
+        if (input[pos] == '"') {
+            size_t start = pos + 1;
+            size_t end = input.find('"', start);
+            string key = input.substr(start, end - start);
+            
+            size_t arr_start = input.find('[', end);
+            size_t arr_end = input.find(']', arr_start);
+            string arr_str = input.substr(arr_start + 1, arr_end - arr_start - 1);
+            
+            stringstream ss(arr_str);
+            vector<long long> nums;
+            string num;
+            while (getline(ss, num, ',')) {
+                nums.push_back(stoll(num));
+            }
+            
+            if (nums.size() >= 4) {
+                Item it;
+                it.name = key;
+                it.q = nums[0];
+                it.v = nums[1];
+                it.m = nums[2];
+                it.l = nums[3];
+                items.push_back(it);
+                name_to_idx[key] = items.size() - 1;
+            }
+            
+            pos = arr_end + 1;
+        } else {
+            pos++;
+        }
+    }
+    
+    const long long MAX_MASS = 20000000LL;
+    const long long MAX_VOL = 25000000LL;
+    
+    int n = items.size();
+    
+    // Binary decomposition of quantities
+    struct SplitItem {
+        int orig_idx;
+        long long count;
+        long long value;
+        long long mass;
+        long long volume;
+    };
+    
+    vector<SplitItem> split_items;
+    
+    for (int i = 0; i < n; i++) {
+        long long q = items[i].q;
+        long long v = items[i].v;
+        long long m = items[i].m;
+        long long l = items[i].l;
+        
+        long long pow = 1;
+        while (q > 0) {
+            long long take = min(pow, q);
+            split_items.push_back({i, take, take * v, take * m, take * l};
+            q -= take;
+            pow <<= 1;
+        }
+    }
+    
+    int total_items = split_items.size();
+    
+    // Meet-in-the-middle
+    int mid = total_items / 2;
+    
+    struct State {
+        long long mass;
+        long long volume;
+        long long value;
+        int mask_first;
+        int mask_second;
+    };
+    
+    vector<State> first_states;
+    vector<State> second_states;
+    
+    // Generate first half subsets
+    int first_count = mid;
+    for (int mask = 0; mask < (1 << first_count); mask++) {
+        long long mass = 0, vol = 0, val = 0;
+        for (int i = 0; i < first_count; i++) {
+            if (mask & (1 << i)) {
+                const auto& si = split_items[i];
+                mass += si.mass;
+                vol += si.volume;
+                val += si.value;
+            }
+        }
+        if (mass <= MAX_MASS && vol <= MAX_VOL) {
+            first_states.push_back({mass, vol, val, mask, 0});
+        }
+    }
+    
+    // Generate second half subsets
+    int second_count = total_items - mid;
+    for (int mask = 0; mask < (1 << second_count); mask++) {
+        long long mass = 0, vol = 0, val = 0;
+        for (int i = 0; i < second_count; i++) {
+            if (mask & (1 << i)) {
+                const auto& si = split_items[mid + i];
+                mass += si.mass;
+                vol += si.volume;
+                val += si.value;
+            }
+        }
+        if (mass <= MAX_MASS && vol <= MAX_VOL) {
+            second_states.push_back({mass, vol, val, 0, mask});
+        }
+    }
+    
+    // Sort second_states by volume for efficient searching
+    sort(second_states.begin(), second_states.end(), [](const State& a, const State& b) {
+        return a.volume < b.volume;
+    });
+    
+    // For each first state, find best matching second state
+    long long best_value = 0;
+    int best_first_mask = 0;
+    int best_second_mask = 0;
+    
+    for (const auto& fs : first_states) {
+        long long remaining_mass = MAX_MASS - fs.mass;
+        long long remaining_vol = MAX_VOL - fs.volume;
+        
+        // Binary search for best second state that fits
+        int lo = 0, hi = second_states.size() - 1, best_idx = -1;
+        while (lo <= hi) {
+            int mid_idx = (lo + hi) / 2;
+            const auto& ss = second_states[mid_idx];
+            if (ss.mass <= remaining_mass && ss.volume <= remaining_vol) {
+                best_idx = mid_idx;
+                lo = mid_idx + 1;
+            } else {
+                hi = mid_idx - 1;
+            }
+        }
+        
+        if (best_idx >= 0) {
+            const auto& best_ss = second_states[best_idx];
+            long long total_val = fs.value + best_ss.value;
+            if (total_val > best_value) {
+                best_value = total_val;
+                best_first_mask = fs.mask_first;
+                best_second_mask = best_ss.mask_second;
+            }
+        }
+    }
+    
+    // Reconstruct solution
+    vector<long long> take(n, 0);
+    
+    // Process first half
+    for (int i = 0; i < first_count; i++) {
+        if (best_first_mask & (1 << i)) {
+            const auto& si = split_items[i];
+            take[si.orig_idx] += si.count;
+        }
+    }
+    
+    // Process second half
+    for (int i = 0; i < second_count; i++) {
+        if (best_second_mask & (1 << i)) {
+            const auto& si = split_items[mid + i];
+            take[si.orig_idx] += si.count;
+        }
+    }
+    
+    // Output JSON
+    cout << "{";
+    for (int i = 0; i < n; i++) {
+        if (i > 0) cout << ",";
+        cout << "\"" << items[i].name << "\":" << take[i];
+    }
+    cout << "}";
+    
+    return 0;
+}
+Iteration 1: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 2: Selected program 0 score: 0.0
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    if (!(cin >> n)) return 0;
+
+    vector<int> perm(n, -1);
+    vector<int> remaining; // values we haven't placed yet
+
+    // First, find all positions with value 1 by querying with all 1s
+    cout << 0 << " ";
+    for (int i = 0; i < n; i++) {
+        cout << 1 << (i + 1 == n ? "\n" : " ");
+    }
+    cout.flush();
+
+    int count1;
+    cin >> count1;
+
+    // Mark positions with value 1
+    // We need to find which positions have 1 by checking each one
+    // For each position i, query with value 1 at position i and some dummy elsewhere
+    // Actually, let's use a different approach: query with 1 at position i and 2 elsewhere
+    // Wait, that might have issues too.
+
+    // Better approach: After finding count1, we know how many positions have 1.
+    // For each remaining value v (from 2 to n), we find its position by testing each position.
+    // Query with v at position i, and 1 at all other positions.
+    // If response > count1, then position i has value v.
+
+    // First, mark all positions that could have 1 - we need to identify them
+    // Let's query each position with value 1 at that position and 2 elsewhere
+    vector<int> pos1; // positions where value is 1
+    for (int i = 0; i < n; i++) {
+        cout << 0 << " ";
+        for (int j = 0; j < n; j++) {
+            cout << (j == i ? 1 : 2) << (j + 1 == n ? "\n" : " ");
+        }
+        cout.flush();
+        int resp;
+        cin >> resp;
+        if (resp > 0) {
+            pos1.push_back(i);
+        }
+    }
+
+    // Mark these positions as having value 1
+    for (int idx : pos1) {
+        perm[idx] = 1;
+    }
+
+    // Now find remaining values (2 to n)
+    for (int v = 2; v <= n; v++) {
+        // Skip if we already found this value (shouldn't happen since each value appears once)
+        bool alreadyFound = false;
+        for (int i = 0; i < n; i++) {
+            if (perm[i] == v) {
+                alreadyFound = true;
+                break;
+            }
+        }
+        if (alreadyFound) continue;
+
+        // Find position of value v
+        for (int i = 0; i < n; i++) {
+            if (perm[i] != -1) continue; // already determined
+
+            cout << 0 << " ";
+            for (int j = 0; j < n; j++) {
+                cout << (j == i ? v : 1) << (j + 1 == n ? "\n" : " ");
+            }
+            cout.flush();
+            int resp;
+            cin >> resp;
+
+            // If resp > count1, then position i has value v
+            // (because we get count1 matches from positions with value 1, plus 1 more if position i has v)
+            if (resp > count1) {
+                perm[i] = v;
+                break;
+            }
+        }
+    }
+
+    // If any positions are still unfilled (could happen if count1 = n, i.e., all positions are 1, but that's impossible for n > 1)
+    // Fill remaining with unused values
+    vector<int> unused;
+    vector<bool> used(n + 1, false);
+    for (int i = 0; i < n; i++) {
+        if (perm[i] != -1) used[perm[i]] = true;
+    }
+    for (int v = 1; v <= n; v++) {
+        if (!used[v]) unused.push_back(v);
+    }
+    int idx = 0;
+    for (int i = 0; i < n; i++) {
+        if (perm[i] == -1 && idx < (int)unused.size()) {
+            perm[i] = unused[idx++];
+        }
+    }
+
+    // Output final guess
+    cout << 1 << " ";
+    for (int i = 0; i < n; i++) {
+        cout << perm[i] << (i + 1 == n ? "\n" : " ");
+    }
+    cout.flush();
+
+    return 0;
+}
+Iteration 2: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 3: Selected program 0 score: 0.0
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;
+    long long v;
+    long long m;
+    long long l;
+    double density; // value per unit mass+volume
+};
+
+long long MASS_LIMIT = 20000000LL; // 20 kg in mg
+long long VOLUME_LIMIT = 25000000LL; // 25 liters in microliters
+
+vector<Item> items;
+unordered_map<string, int> name_to_idx;
+vector<int> best_choice;
+long long best_value = 0;
+
+void dfs(int idx, long long cur_mass, long long cur_volume, long long cur_value, vector<int>& choice) {
+    if (idx == (int)items.size()) {
+        if (cur_value > best_value) {
+            best_value = cur_value;
+            best_choice = choice;
+        }
+        return;
+    }
+    
+    // Pruning: if we cannot beat best even taking all remaining
+    long long max_possible = cur_value;
+    for (int i = idx; i < (int)items.size(); i++) {
+        max_possible += items[i].v * items[i].q;
+    }
+    if (max_possible <= best_value) return;
+    
+    const Item& it = items[idx];
+    
+    // Try different quantities from 0 to q
+    // Early termination: if adding more would exceed limits
+    for (int cnt = 0; cnt <= it.q; cnt++) {
+        long long new_mass = cur_mass + cnt * it.m;
+        long long new_volume = cur_volume + cnt * it.l;
+        
+        if (new_mass > MASS_LIMIT || new_volume > VOLUME_LIMIT) break;
+        
+        choice[idx] = cnt;
+        dfs(idx + 1, new_mass, new_volume, cur_value + cnt * it.v, choice);
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Read entire input
+    string input((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());
+    
+    // Simple JSON parsing
+    // Format: {"key": [q, v, m, l], ...}
+    vector<string> keys;
+    vector<array<long long, 4>> values;
+    
+    size_t pos = 0;
+    while (pos < input.size()) {
+        // Find key
+        size_t key_start = input.find('"', pos);
+        if (key_start == string::npos) break;
+        size_t key_end = input.find('"', key_start + 1);
+        string key = input.substr(key_start + 1, key_end - key_start - 1);
+        
+        // Find array
+        size_t arr_start = input.find('[', key_end);
+        size_t arr_end = input.find(']', arr_start);
+        string nums = input.substr(arr_start + 1, arr_end - arr_start - 1);
+        
+        // Parse 4 numbers
+        stringstream ss(nums);
+        array<long long, 4> arr;
+        char comma;
+        ss >> arr[0];
+        ss >> comma >> arr[1] >> comma >> arr[2] >> comma >> arr[3];
+        
+        keys.push_back(key);
+        values.push_back(arr);
+        
+        pos = arr_end + 1;
+    }
+    
+    // Build items
+    int n = keys.size();
+    items.resize(n);
+    for (int i = 0; i < n; i++) {
+        items[i].name = keys[i];
+        items[i].q = values[i][0];
+        items[i].v = values[i][1];
+        items[i].m = values[i][2];
+        items[i].l = values[i][3];
+        // Use value/(mass+volume) as density heuristic for sorting
+        items[i].density = (double)items[i].v / (items[i].m + items[i].l);
+        name_to_idx[keys[i]] = i;
+    }
+    
+    // Sort by density descending for better pruning
+    vector<int> order(n);
+    iota(order.begin(), order.end(), 0);
+    sort(order.begin(), order.end(), [&](int a, int b) {
+        return items[a].density > items[b].density;
+    });
+    
+    // Reorder items
+    vector<Item> sorted_items(n);
+    for (int i = 0; i < n; i++) {
+        sorted_items[i] = items[order[i]];
+    }
+    items = sorted_items;
+    
+    // Update name_to_idx for reordered items
+    for (int i = 0; i < n; i++) {
+        name_to_idx[items[i].name] = i;
+    }
+    
+    // Initialize
+    vector<int> choice(n, 0);
+    best_value = 0;
+    best_choice.resize(n, 0);
+    
+    // Run DFS
+    dfs(0, 0, 0, 0, choice);
+    
+    // Output JSON
+    cout << "{";
+    for (int i = 0; i < n; i++) {
+        if (i > 0) cout << ",";
+        cout << "\"" << items[i].name << "\": " << best_choice[i];
+    }
+    cout << "}";
+    
+    return 0;
+}
+Iteration 2: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 3: Selected program 0 score: 0.0
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int subtask, n;
+    if (!(cin >> subtask >> n)) {
+        return 0;
+    }
+    
+    vector<int> neighbor(n + 1, -1);
+    vector<int> ans;
+    vector<int> visited(n + 1, 0);
+    
+    for (int i = 1; i <= n; i++) {
+        if (neighbor[i] != -1) continue;
+        
+        for (int j = 1; j <= n; j++) {
+            if (i == j) continue;
+            if (neighbor[j] != -1) continue;
+            
+            // Query (i, j)
+            cout << 2 << " " << i << " " << j << endl;
+            cout.flush();
+            
+            int result;
+            cin >> result;
+            
+            if (result == 1) {
+                neighbor[i] = j;
+                neighbor[j] = i;
+                
+                // Add both to answer
+                ans.push_back(i);
+                ans.push_back(j);
+                
+                // Toggle them off to clear S
+                cout << 2 << " " << i << " " << j << endl;
+                cout.flush();
+                
+                int dummy;
+                cin >> dummy;
+                
+                break;
+            }
+        }
+    }
+    
+    // Output the permutation
+    cout << -1;
+    for (int i = 0; i < n; i++) {
+        cout << " " << ans[i];
+    }
+    cout << endl;
+    
+    return 0;
+}
+Iteration 1: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 2: Selected program 0 score: 0.0
+Iteration 3: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;  // quantity
+    long long v;  // value
+    long long m;  // mass in mg
+    long long l;  // volume in microliters
+};
+
+long long MASS_LIMIT = 20000000;  // 20 kg = 20 million mg
+long long VOL_LIMIT = 25000000;   // 25 liters = 25 million microliters
+
+// Parse JSON input
+vector<Item> parseInput() {
+    string all, line;
+    while (getline(cin, line)) {
+        all += line + "\n";
+    }
+    
+    vector<Item> items;
+    size_t pos = 0;
+    
+    while (pos < all.size()) {
+        // Find key (string followed by colon)
+        while (pos < all.size() && all[pos] != '"') pos++;
+        if (pos >= all.size()) break;
+        pos++; // skip opening quote
+        
+        size_t end = all.find('"', pos);
+        string key = all.substr(pos, end - pos);
+        pos = end + 1;
+        
+        // Skip colon
+        while (pos < all.size() && (all[pos] == ':' || all[pos] == ' ')) pos++;
+        
+        // Find array start
+        while (pos < all.size() && all[pos] != '[') pos++;
+        if (pos >= all.size()) break;
+        pos++; // skip '['
+        
+        // Parse 4 integers
+        vector<long long> nums;
+        while (pos < all.size() && all[pos] != ']') {
+            // Skip whitespace and commas
+            while (pos < all.size() && (all[pos] == ' ' || all[pos] == ',' || all[pos] == '\n' || all[pos] == '\r' || all[pos] == '\t')) pos++;
+            if (pos >= all.size() || all[pos] == ']') break;
+            
+            // Parse number
+            long long num = 0;
+            while (pos < all.size() && isdigit(all[pos])) {
+                num = num * 10 + (all[pos] - '0');
+                pos++;
+            }
+            nums.push_back(num);
+        }
+        
+        if (nums.size() >= 4) {
+            Item it;
+            it.name = key;
+            it.q = nums[0];
+            it.v = nums[1];
+            it.m = nums[2];
+            it.l = nums[3];
+            items.push_back(it);
+        }
+        
+        pos = all.find(']', pos) + 1;
+    }
+    
+    return items;
+}
+
+// DFS with branch and bound
+void dfs(int idx, const vector<Item>& items, long long currMass, long long currVol, long long currVal,
+         vector<long long>& chosen, vector<long long>& best, long long& bestVal,
+         long long remainingMass, long long remainingVol) {
+    
+    if (idx == (int)items.size()) {
+        if (currVal > bestVal) {
+            bestVal = currVal;
+            best = chosen;
+        }
+        return;
+    }
+    
+    // Upper bound: assume we can take all remaining items
+    long long upperBound = currVal;
+    for (size_t i = idx; i < items.size(); i++) {
+        const Item& it = items[i];
+        long long maxTake = min(it.q, min(remainingMass / max(1LL, it.m), remainingVol / max(1LL, it.l)));
+        upperBound += maxTake * it.v;
+    }
+    
+    if (upperBound <= bestVal) {
+        return; // Prune
+    }
+    
+    const Item& it = items[idx];
+    
+    // Try taking 0 of this item
+    chosen[idx] = 0;
+    dfs(idx + 1, items, currMass, currVol, currVal, chosen, best, bestVal, remainingMass, remainingVol);
+    
+    // Try taking items of this type (binary decomposition for efficiency)
+    long long maxTake = min(it.q, min(remainingMass / max(1LL, it.m), remainingVol / max(1LL, it.l)));
+    
+    // Use binary decomposition: break into powers of 2
+    long long powers[20];
+    int powCount = 0;
+    long long remaining = maxTake;
+    long long p = 1;
+    while (remaining > 0) {
+        long long take = min(p, remaining);
+        powers[powCount++] = take;
+        remaining -= take;
+        p *= 2;
+    }
+    
+    // Try different amounts using binary decomposition
+    for (int j = 0; j < (1 << powCount); j++) {
+        long long totalTake = 0;
+        long long massAdd = 0, volAdd = 0, valAdd = 0;
+        
+        for (int k = 0; k < powCount; k++) {
+            if (j & (1 << k)) {
+                totalTake += powers[k];
+                massAdd += powers[k] * it.m;
+                valAdd += powers[k] * it.v;
+                volAdd += powers[k] * it.l;
+            }
+        }
+        
+        if (totalTake == 0) continue;
+        if (massAdd > remainingMass || volAdd > remainingVol) continue;
+        
+        chosen[idx] = totalTake;
+        dfs(idx + 1, items, currMass + massAdd, currVol + volAdd, currVal + valAdd,
+            chosen, best, bestVal, remainingMass - massAdd, remainingVol - volAdd);
+    }
+}
+
+// Greedy by value/(mass+volume) ratio
+vector<long long> greedySolve(const vector<Item>& items) {
+    vector<pair<pair<double, long long>, int>> sorted;
+    for (int i = 0; i < (int)items.size(); i++) {
+        double ratio = (double)items[i].v / (items[i].m + items[i].l);
+        sorted.push_back({{ratio, -items[i].v}, i});
+    }
+    sort(sorted.rbegin(), sorted.rend()); // descending by ratio
+    
+    vector<long long> result(items.size(), 0);
+    long long mass = 0, vol = 0;
+    
+    for (auto& p : sorted) {
+        int idx = p.second;
+        const Item& it = items[idx];
+        long long canTake = min(it.q, min((MASS_LIMIT - mass) / max(1LL, it.m), (VOL_LIMIT - vol) / max(1LL, it.l)));
+        result[idx] = canTake;
+        mass += canTake * it.m;
+        vol += canTake * it.l;
+    }
+    
+    return result;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    vector<Item> items = parseInput();
+    
+    if (items.empty()) {
+        cout << "{}" << endl;
+        return 0;
+    }
+    
+    // Sort items by value density (value / (mass + volume)) for better branch and bound
+    vector<pair<double, int>> sorted;
+    for (int i = 0; i < (int)items.size(); i++) {
+        double ratio = (double)items[i].v / (items[i].m + items[i].l);
+        sorted.push_back({ratio, i};
+    }
+    sort(sorted.rbegin(), sorted.rend());
+    
+    // Reorder items
+    vector<Item> orderedItems;
+    vector<string> nameOrder;
+    for (auto& p : sorted) {
+        orderedItems.push_back(items[p.second]);
+        nameOrder.push_back(items[p.second].name);
+    }
+    
+    // Try greedy first to get initial bound
+    vector<long long> greedyResult(items.size(), 0);
+    long long greedyMass = 0, greedyVol = 0, greedyVal = 0;
+    
+    // Map back to original indices
+    vector<long long> greedyOrdered(orderedItems.size(), 0);
+    long long gMass = 0, gVol = 0;
+    for (size_t i = 0; i < orderedItems.size(); i++) {
+        const Item& it = orderedItems[i];
+        long long canTake = min(it.q, min((MASS_LIMIT - gMass) / max(1LL, it.m), (VOL_LIMIT - gVol) / max(1LL, it.l)));
+        greedyOrdered[i] = canTake;
+        gMass += canTake * it.m;
+        gVol += canTake * it.l;
+        greedyVal += canTake * it.v;
+    }
+    
+    // Convert greedyOrdered back to original indices
+    for (size_t i = 0; i < orderedItems.size(); i++) {
+        // Find original index
+        for (size_t j = 0; j < items.size(); j++) {
+            if (items[j].name == orderedItems[i].name) {
+                greedyResult[j] = greedyOrdered[i];
+                break;
+            }
+        }
+    }
+    
+    // Now run DFS with branch and bound
+    vector<long long> chosen(orderedItems.size(), 0);
+    vector<long long> best(orderedItems.size(), 0);
+    long long bestVal = greedyVal;
+    best = greedyOrdered;
+    
+    dfs(0, orderedItems, 0, 0, 0, chosen, best, bestVal, MASS_LIMIT, VOL_LIMIT);
+    
+    // Convert best to original order
+    vector<long long> finalResult(items.size(), 0);
+    for (size_t i = 0; i < orderedItems.size(); i++) {
+        for (size_t j = 0; j < items.size(); j++) {
+            if (items[j].name == orderedItems[i].name) {
+                finalResult[j] = best[i];
+                break;
+            }
+        }
+    }
+    
+    // Output JSON
+    cout << "{";
+    for (size_t i = 0; i < items.size(); i++) {
+        if (i > 0) cout << ",";
+        cout << "\"" << items[i].name << "\":";
+        cout << finalResult[i];
+    }
+    cout << "}" << endl;
+    
+    return 0;
+}
+Iteration 3: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 4: Selected program 0 score: 0.0
+Iteration 4: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;      // quantity available
+    long long v;      // value per item
+    long long m;      // mass per item (mg)
+    long long l;      // volume per item (µL)
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Read entire input
+    string input;
+    string line;
+    while (getline(cin, line)) {
+        input += line + "\n";
+    }
+    
+    // Parse JSON - extract keys and values
+    vector<Item> items;
+    map<string, int> nameToIdx;
+    
+    // Simple parser: find "key": [q, v, m, l]
+    size_t pos = 0;
+    while (pos < input.size()) {
+        // Find a string key (in quotes)
+        size_t keyStart = input.find('"', pos);
+        if (keyStart == string::npos) break;
+        size_t keyEnd = input.find('"', keyStart + 1);
+        if (keyEnd == string::npos) break;
+        
+        string key = input.substr(keyStart + 1, keyEnd - keyStart - 1);
+        
+        // Find the array after this key
+        size_t arrStart = input.find('[', keyEnd);
+        if (arrStart == string::npos) break;
+        
+        // Extract 4 numbers from the array
+        vector<long long> nums;
+        size_t curr = arrStart + 1;
+        while (nums.size() < 4 && curr < input.size()) {
+            // Skip whitespace and commas
+            while (curr < input.size() && (input[curr] == ' ' || input[curr] == '\t' || input[curr] == '\n' || input[curr] == ',' || input[curr] == ']')) {
+                if (input[curr] == ']') break;
+                curr++;
+            }
+            if (curr >= input.size() || input[curr] == ']') break;
+            
+            // Parse number
+            size_t numStart = curr;
+            while (curr < input.size() && (isdigit(input[curr]) || input[curr] == '-')) {
+                curr++;
+            }
+            if (curr > numStart) {
+                string numStr = input.substr(numStart, curr - numStart);
+                nums.push_back(stoll(numStr));
+            }
+        }
+        
+        if (nums.size() >= 4) {
+            Item it;
+            it.name = key;
+            it.q = nums[0];
+            it.v = nums[1];
+            it.m = nums[2];
+            it.l = nums[3];
+            items.push_back(it);
+            nameToIdx[key] = items.size() - 1;
+        }
+        
+        pos = curr;
+    }
+    
+    const long long MAX_MASS = 20LL * 1000000;   // 20 kg in mg
+    const long long MAX_VOL = 25LL * 1000000;    // 25 L in µL
+    
+    // Solve using greedy by value density
+    // For each item, compute value/mass and value/volume ratios
+    // Try to maximize value
+    
+    vector<long long> result(items.size(), 0);
+    
+    // Sort items by value/mass ratio (descending)
+    vector<int> idx(items.size());
+    iota(idx.begin(), idx.end(), 0);
+    sort(idx.begin(), idx.end(), [&](int a, int b) {
+        double ra = (double)items[a].v / items[a].m;
+        double rb = (double)items[b].v / items[b].m;
+        return ra > rb;
+    });
+    
+    long long curMass = 0, curVol = 0, curValue = 0;
+    
+    // Greedy: take as many as possible of each item type in order
+    for (int i : idx) {
+        const Item& it = items[i];
+        if (it.m == 0 || it.l == 0) continue;  // avoid division by zero
+        
+        // Calculate how many we can take
+        long long maxByMass = (MAX_MASS - curMass) / it.m;
+        long long maxByVol = (MAX_VOL - curVol) / it.l;
+        long long canTake = min({maxByMass, maxByVol, it.q});
+        
+        if (canTake > 0) {
+            result[i] = canTake;
+            curMass += canTake * it.m;
+            curVol += canTake * it.l;
+            curValue += canTake * it.v;
+        }
+    }
+    
+    // Output as JSON
+    cout << "{\n";
+    bool first = true;
+    for (size_t i = 0; i < items.size(); i++) {
+        if (!first) cout << ",\n";
+        cout << "    \"" << items[i].name << "\": " << result[i];
+        first = false;
+    }
+    cout << "\n}\n";
+    
+    return 0;
+}
+Iteration 4: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 5: Selected program 0 score: 0.0
+Iteration 5: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;
+    long long v;
+    long long m;
+    long long l;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Read entire input
+    string input((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());
+    
+    // Parse JSON manually - extract keys and values
+    vector<Item> items;
+    vector<string> order;
+    
+    size_t pos = 0;
+    while (pos < input.size()) {
+        // Find a key (string before colon)
+        if (input[pos] == '"') {
+            size_t key_start = pos + 1;
+            size_t key_end = input.find('"', key_start);
+            string key = input.substr(key_start, key_end - key_start);
+            
+            // Find the array after the key
+            size_t arr_start = input.find('[', key_end);
+            size_t arr_end = input.find(']', arr_start);
+            string arr_str = input.substr(arr_start + 1, arr_end - arr_start - 1);
+            
+            // Parse 4 integers from array
+            stringstream ss(arr_str);
+            vector<long long> nums;
+            string num_str;
+            while (getline(ss, num_str, ',')) {
+                // Trim whitespace
+                size_t start = num_str.find_first_not_of(" \n\t");
+                if (start != string::npos) {
+                    size_t end = num_str.find_last_not_of(" \n\t");
+                    nums.push_back(stoll(num_str.substr(start, end - start + 1)));
+                }
+            }
+            
+            if (nums.size() >= 4) {
+                Item it;
+                it.name = key;
+                it.q = nums[0];
+                it.v = nums[1];
+                it.m = nums[2];
+                it.l = nums[3];
+                items.push_back(it);
+                order.push_back(key);
+            }
+            
+            pos = arr_end + 1;
+        } else {
+            pos++;
+        }
+    }
+    
+    const long long MAX_MASS = 20000000;  // 20 kg in mg
+    const long long MAX_VOL = 25000000;   // 25 L in µL
+    
+    // Solve using greedy based on value density
+    // Calculate value per unit mass and value per unit volume
+    struct ScoredItem {
+        int idx;
+        double ratio_m;  // value per mass
+        double ratio_v;  // value per volume
+        long long q, v, m, l;
+    };
+    
+    vector<ScoredItem> scored;
+    for (int i = 0; i < (int)items.size(); i++) {
+        ScoredItem si;
+        si.idx = i;
+        si.q = items[i].q;
+        si.v = items[i].v;
+        si.m = items[i].m;
+        si.l = items[i].l;
+        // Avoid division by zero
+        if (si.m > 0 && si.l > 0) {
+            si.ratio_m = (double)si.v / si.m;
+            si.ratio_v = (double)si.v / si.l;
+        } else {
+            si.ratio_m = si.ratio_v = 0;
+        }
+        scored.push_back(si);
+    }
+    
+    // Sort by value/mass ratio (primary) and value/volume (secondary)
+    sort(scored.begin(), scored.end(), [](const ScoredItem& a, const ScoredItem& b) {
+        if (abs(a.ratio_m - b.ratio_m) > 1e-12) {
+            return a.ratio_m > b.ratio_m;
+        }
+        return a.ratio_v > b.ratio_v;
+    });
+    
+    // Greedy selection
+    vector<long long> result(items.size(), 0);
+    long long total_mass = 0, total_vol = 0, total_value = 0;
+    
+    for (const auto& si : scored) {
+        long long max_by_mass = (total_mass < MAX_MASS) ? min(si.q, (MAX_MASS - total_mass) / si.m) : 0;
+        long long max_by_vol = (total_vol < MAX_VOL) ? min(si.q, (MAX_VOL - total_vol) / si.l) : 0;
+        long long take = min(max_by_mass, max_by_vol);
+        
+        if (take > 0) {
+            result[si.idx] = take;
+            total_mass += take * si.m;
+            total_vol += take * si.l;
+            total_value += take * si.v;
+        }
+    }
+    
+    // Try improvement: for each item, see if we can replace with better combination
+    // Simple local search: try swapping items
+    bool improved = true;
+    while (improved) {
+        improved = false;
+        for (int i = 0; i < (int)items.size() && !improved; i++) {
+            if (result[i] == 0) continue;
+            for (int j = 0; j < (int)items.size() && !improved; j++) {
+                if (i == j || result[i] == 0) continue;
+                
+                // Try taking one less from i and one more from j
+                if (result[i] > 0 && result[j] < items[j].q) {
+                    long long new_mass = total_mass - items[i].m + items[j].m;
+                    long long new_vol = total_vol - items[i].l + items[j].l;
+                    
+                    if (new_mass <= MAX_MASS && new_vol <= MAX_VOL) {
+                        long long new_value = total_value - items[i].v + items[j].v;
+                        if (new_value > total_value) {
+                            result[i]--;
+                            result[j]++;
+                            total_mass = new_mass;
+                            total_vol = new_vol;
+                            total_value = new_value;
+                            improved = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Output JSON
+    cout << "{\n";
+    for (size_t i = 0; i < order.size(); i++) {
+        cout << "    \"" << order[i] << "\": " << result[i];
+        if (i + 1 < order.size()) cout << ",";
+        cout << "\n";
+    }
+    cout << "}\n";
+    
+    return 0;
+}
+Iteration 5: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 6: Selected program 0 score: 0.0
+Iteration 1: Exception during reflection/proposal: 'NoneType' object has no attribute 'strip'
+Traceback (most recent call last):
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 297, in propose
+    new_texts = self.propose_new_texts(curr_prog, reflective_dataset, predictor_names_to_update)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 128, in propose_new_texts
+    new_texts[name] = InstructionProposalSignature.run(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/base.py", line 49, in run
+    lm_out = lm_res.strip()
+             ^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+Iteration 1: Reflective mutation did not propose a new candidate
+Iteration 6: Exception during reflection/proposal: 'NoneType' object has no attribute 'strip'
+Iteration 2: Exception during reflection/proposal: 'NoneType' object has no attribute 'strip'
+Traceback (most recent call last):
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 297, in propose
+    new_texts = self.propose_new_texts(curr_prog, reflective_dataset, predictor_names_to_update)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 128, in propose_new_texts
+    new_texts[name] = InstructionProposalSignature.run(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/base.py", line 49, in run
+    lm_out = lm_res.strip()
+             ^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+Iteration 6: Reflective mutation did not propose a new candidate
+Traceback (most recent call last):
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 297, in propose
+    new_texts = self.propose_new_texts(curr_prog, reflective_dataset, predictor_names_to_update)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 128, in propose_new_texts
+    new_texts[name] = InstructionProposalSignature.run(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/base.py", line 49, in run
+    lm_out = lm_res.strip()
+             ^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+Iteration 2: Reflective mutation did not propose a new candidate
+Iteration 3: Exception during reflection/proposal: 'NoneType' object has no attribute 'strip'
+Traceback (most recent call last):
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 297, in propose
+    new_texts = self.propose_new_texts(curr_prog, reflective_dataset, predictor_names_to_update)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 128, in propose_new_texts
+    new_texts[name] = InstructionProposalSignature.run(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/base.py", line 49, in run
+    lm_out = lm_res.strip()
+             ^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+Iteration 3: Reflective mutation did not propose a new candidate
+Iteration 2: Selected program 0 score: 0.0
+Iteration 7: Selected program 0 score: 0.0
+Iteration 3: Selected program 0 score: 0.0
+Iteration 4: Selected program 0 score: 0.0
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 3: Proposed new text for current_candidate: #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+/**
+ * Problem Analysis:
+ * We need to find a circular permutation p1, p2, ..., pn.
+ * We can flip the state of lamp holders. If the resulting set S contains 
+ * adjacent holders on the ring, the system returns 1, otherwise 0.
+ * 
+ * Strategy:
+ * 1. Identify which pairs are adjacent.
+ * 2. For a fixed element (say 1), find its two neighbors.
+ * 3. Once we have one neighbor, we can traverse the ring.
+ * 
+ * To find if {u, v} are adjacent:
+ * - Ensure S is empty.
+ * - Flip u (S={u}), system returns 0.
+ * - Flip v (S={u, v}), system returns 1 if adjacent, 0 otherwise.
+ * - Flip v (S={u}), returns 0.
+ * - Flip u (S={}), returns 0.
+ * 
+ * However, n can be up to several hundreds (implied by competitive programming limits).
+ * O(n^2) queries might be too many. But we have 10 seconds.
+ * Let's optimize:
+ * To find neighbors of u:
+ * Iterate v from 1 to n (v != u).
+ * Query: L=2, {u, v}. 
+ * But the state S persists.
+ * 
+ * Correct Sequence to test if {u, v} is adjacent:
+ * Current S is empty.
+ * Query: 2 u v
+ * Result: [res1, res2]
+ * res1: is {u} adjacent? (Always 0)
+ * res2: is {u, v} adjacent? (1 if adj, 0 otherwise)
+ * To reset S to empty for next pair:
+ * Query: 2 v u
+ * Result: [res3, res4]
+ * res3: is {u} adjacent? (0)
+ * res4: is {} adjacent? (0)
+ * 
+ * This takes 2 queries per pair. Still O(n^2).
+ * Given the time limit of 10s and the nature of the problem, we can find the 
+ * adjacency list by checking all pairs or using a more efficient search.
+ */
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int subtask, n;
+    if (!(cin >> subtask >> n)) return 0;
+
+    if (n == 2) {
+        cout << "-1 1 2" << endl;
+        return 0;
+    }
+
+    vector<vector<int>> adj(n + 1);
+    vector<int> neighbors_of_1;
+
+    // Find neighbors of 1
+    for (int v = 2; v <= n; ++v) {
+        cout << "2 1 " << v << endl;
+        int r1, r2;
+        cin >> r1 >> r2;
+        if (r2 == 1) {
+            neighbors_of_1.push_back(v);
+        }
+        // Reset S to empty
+        cout << "2 " << v << " 1" << endl;
+        int r3, r4;
+        cin >> r3 >> r4;
+        
+        if (neighbors_of_1.size() == 2) break;
+    }
+
+    // Now we have two neighbors of 1. Let's call them L and R.
+    // We can reconstruct the ring by finding the neighbor of R that isn't 1, and so on.
+    vector<int> p;
+    p.push_back(1);
+    p.push_back(neighbors_of_1[0]);
+
+    vector<bool> visited(n + 1, false);
+    visited[1] = true;
+    visited[neighbors_of_1[0]] = true;
+
+    while (p.size() < (size_t)n) {
+        int current = p.back();
+        bool found = false;
+        for (int v = 1; v <= n; ++v) {
+            if (visited[v]) continue;
+            
+            // Check if current and v are adjacent
+            cout << "2 " << current << " " << v << endl;
+            int r1, r2;
+            cin >> r1 >> r2;
+            
+            // Reset S
+            cout << "2 " << v << " " << current << endl;
+            int r3, r4;
+            cin >> r3 >> r4;
+
+            if (r2 == 1) {
+                p.push_back(v);
+                visited[v] = true;
+                found = true;
+                break;
+            }
+        }
+        if (!found) break; // Should not happen
+    }
+
+    cout << "-1";
+    for (int i = 0; i < n; ++i) {
+        cout << " " << p[i];
+    }
+    cout << endl;
+
+    return 0;
+}
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+Iteration 3: New subsample score 6.666666666666667 is better than old score 0.0. Continue to full eval and add to candidate pool.
+Iteration 3: Found a better program on the valset with score 6.666666666666667.
+Iteration 3: Valset score for new program: 6.666666666666667 (coverage 1 / 1)
+Iteration 3: Val aggregate for new program: 6.666666666666667
+Iteration 3: Individual valset scores for new program: {0: 6.666666666666667}
+Iteration 3: New valset pareto front scores: {0: 6.666666666666667}
+Iteration 3: Valset pareto front aggregate score: 6.666666666666667
+Iteration 3: Updated valset pareto front programs: {0: {1}}
+Iteration 3: Best valset aggregate score so far: 6.666666666666667
+Iteration 3: Best program as per aggregate score on valset: 1
+Iteration 3: Best score on valset: 6.666666666666667
+Iteration 3: Linear pareto front program index: 1
+Iteration 3: New program candidate index: 1
+Iteration 4: Selected program 1 score: 6.666666666666667
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 7: Proposed new text for current_candidate: #include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <cctype>
+#include <algorithm>
+#include <sstream>
+#include <tuple>
+
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    string input;
+    string line;
+    while (getline(cin, line)) {
+        input += line;
+    }
+
+    map<string, vector<long long>> data;
+    vector<string> keys_order;
+
+    size_t start = input.find('{');
+    if (start == string::npos) {
+        return 1;
+    }
+    size_t end = input.find('}');
+    if (end == string::npos) {
+        return 1;
+    }
+    string content = input.substr(start+1, end - start - 1);
+
+    size_t pos = 0;
+    vector<string> entries;
+    while (pos < content.size()) {
+        size_t next = content.find(',', pos);
+        if (next == string::npos) {
+            string entry = content.substr(pos);
+            if (!entry.empty()) {
+                entries.push_back(entry);
+            }
+            break;
+        }
+        string entry = content.substr(pos, next - pos);
+        if (!entry.empty()) {
+            entries.push_back(entry);
+        }
+        pos = next + 1;
+    }
+
+    for (string entry : entries) {
+        size_t colon = entry.find(':');
+        if (colon == string::npos) continue;
+        string key_part = entry.substr(0, colon);
+        string value_part = entry.substr(colon+1);
+
+        if (key_part[0] == '"' && key_part.back() == '"') {
+            key_part = key_part.substr(1, key_part.size()-2);
+        }
+
+        size_t start_bracket = value_part.find('[');
+        size_t end_bracket = value_part.find(']');
+        if (start_bracket == string::npos || end_bracket == string::npos) continue;
+        string inner = value_part.substr(start_bracket+1, end_bracket - start_bracket - 1);
+
+        vector<long long> numbers;
+        istringstream iss(inner);
+        long long num;
+        while (iss >> num) {
+            numbers.push_back(num);
+            if (iss.peek() == ',') {
+                iss.ignore();
+            }
+        }
+
+        if (numbers.size() == 4) {
+            keys_order.push_back(key_part);
+            data[key_part] = numbers;
+        }
+    }
+
+    vector<tuple<string, long long, long long, long long, long long>> categories;
+    for (string key : keys_order) {
+        vector<long long> vals = data[key];
+        categories.push_back(make_tuple(key, vals[0], vals[1], vals[2], vals[3]));
+    }
+
+    map<string, long long> counts;
+    for (auto& cat : categories) {
+        counts[get<0>(cat)] = 0;
+    }
+    long long current_mass = 0;
+    long long current_volume = 0;
+
+    bool taken = true;
+    while (taken) {
+        taken = false;
+        long long best_val = 0;
+        long long best_denom = 1;
+        tuple<string, long long, long long, long long, long long> best_cat;
+
+        for (auto& cat : categories) {
+            string name = get<0>(cat);
+            long long q = get<1>(cat);
+            long long v = get<2>(cat);
+            long long m = get<3>(cat);
+            long long l = get<4>(cat);
+
+            if (counts[name] < q) {
+                if (current_mass + m <= 20000000 && current_volume + l <= 25000000) {
+                    if (best_val == 0) {
+                        best_val = v;
+                        best_denom = m + l;
+                        best_cat = cat;
+                        taken = true;
+                    } else {
+                        if (v * best_denom > best_val * (m + l)) {
+                            best_val = v;
+                            best_denom = m + l;
+                            best_cat = cat;
+                            taken = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (taken) {
+            string name = get<0>(best_cat);
+            long long v = get<2>(best_cat);
+            long long m = get<3>(best_cat);
+            long long l = get<4>(best_cat);
+
+            counts[name]++;
+            current_mass += m;
+            current_volume += l;
+        }
+    }
+
+    cout << "{";
+    for (int i = 0; i < keys_order.size(); i++) {
+        if (i > 0) {
+            cout << ",";
+        }
+        cout << "\"" << keys_order[i] << "\":" << counts[keys_order[i]];
+    }
+    cout << "}" << endl;
+
+    return 0;
+}
+Iteration 7: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 8: Selected program 0 score: 0.0
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 4: Proposed new text for current_candidate: #include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n, 1);
+    cout << "0";
+    for (int i = 0; i < n; i++) {
+        cout << " " << a[i];
+    }
+    cout << endl;
+    cout.flush();
+    int fixed;
+    cin >> fixed;
+
+    vector<int> ans(n);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            a[j] = 1;
+        }
+        a[i] = i + 1;
+        cout << "0";
+        for (int j = 0; j < n; j++) {
+            cout << " " << a[j];
+        }
+        cout << endl;
+        cout.flush();
+        int x;
+        cin >> x;
+        if (x == fixed + 1) {
+            ans[i] = 1;
+        } else {
+            ans[i] = i + 1;
+        }
+        a[i] = 1;
+    }
+
+    cout << "1";
+    for (int i = 0; i < n; i++) {
+        cout << " " << ans[i];
+    }
+    cout << endl;
+    cout.flush();
+    return 0;
+}
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+Iteration 4: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 5: Selected program 0 score: 0.0
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+Iteration 4: Proposed new text for current_candidate: #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int subtask, n;
+    if (!(cin >> subtask >> n)) return 0;
+
+    vector<vector<int>> adj(n + 1);
+
+    // Precompute the adjacency list
+    for (int u = 1; u <= n; ++u) {
+        for (int v = u + 1; v <= n; ++v) {
+            cout << "2 " << u << " " << v << endl;
+            int r1, r2;
+            cin >> r1 >> r2;
+            if (r2 == 1) {
+                adj[u].push_back(v);
+                adj[v].push_back(u);
+            }
+            // Reset S
+            cout << "2 " << v << " " << u << endl;
+            int r3, r4;
+            cin >> r3 >> r4;
+        }
+    }
+
+    // Reconstruct the ring
+    vector<int> p;
+    p.push_back(1);
+    if (n >= 2) {
+        int a = adj[1][0];
+        p.push_back(a);
+    }
+
+    vector<bool> visited(n + 1, false);
+    visited[1] = true;
+    if (n >= 2) {
+        visited[adj[1][0]] = true;
+    }
+
+    while (p.size() < n) {
+        int current = p.back();
+        int prev = p[p.size() - 2];
+        int next_node = -1;
+        for (int neighbor : adj[current]) {
+            if (neighbor != prev) {
+                next_node = neighbor;
+                break;
+            }
+        }
+        p.push_back(next_node);
+        visited[next_node] = true;
+    }
+
+    cout << "-1";
+    for (int i = 0; i < n; ++i) {
+        cout << " " << p[i];
+    }
+    cout << endl;
+
+    return 0;
+}
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+Iteration 4: New subsample score 0.0 is not better than old score 6.666666666666667, skipping
+Iteration 5: Selected program 1 score: 6.666666666666667
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Cell {
+    int x, y;
+    Cell(int x, int y) : x(x), y(y) {}
+    bool operator<(const Cell& other) const {
+        if (y != other.y) return y < other.y;
+        return x < other.x;
+    }
+};
+
+struct Piece {
+    int id;
+    vector<Cell> cells;
+    vector<int> rotations;
+    vector<int> reflections;
+    vector<vector<Cell>> transformations;
+};
+
+vector<Piece> pieces;
+set<Cell> occupied_set;
+set<Cell> free_set;
+priority_queue<Cell, vector<Cell>, greater<Cell>> free_heap;
+vector<tuple<int, int, int, int>> placed_info;
+int min_x = 0, max_x = 0, min_y = 0, max_y = 0;
+int n;
+
+vector<Cell> rotate_cells(const vector<Cell>& cells, int r) {
+    vector<Cell> res;
+    for (const Cell& c : cells) {
+        int x = c.x, y = c.y;
+        for (int i = 0; i < r; i++) {
+            int new_x = -y;
+            int new_y = x;
+            x = new_x;
+            y = new_y;
+        }
+        res.push_back(Cell(x, y));
+    }
+    return res;
+}
+
+vector<Cell> reflect_cells(const vector<Cell>& cells) {
+    vector<Cell> res;
+    for (const Cell& c : cells) {
+        res.push_back(Cell(-c.x, c.y));
+    }
+    return res;
+}
+
+void normalize(vector<Cell>& cells) {
+    if (cells.empty()) return;
+    int min_x_val = cells[0].x;
+    int min_y_val = cells[0].y;
+    for (const Cell& c : cells) {
+        min_x_val = min(min_x_val, c.x);
+        min_y_val = min(min_y_val, c.y);
+    }
+    for (Cell& c : cells) {
+        c.x -= min_x_val;
+        c.y -= min_y_val;
+    }
+}
+
+void generate_transformations(Piece& piece) {
+    piece.transformations.clear();
+    vector<vector<Cell>> base_transforms;
+    base_transforms.push_back(piece.cells);
+    for (int r = 1; r < 4; r++) {
+        base_transforms.push_back(rotate_cells(piece.cells, r));
+    }
+    for (auto& base : base_transforms) {
+        vector<Cell> norm = base;
+        normalize(norm);
+        piece.transformations.push_back(norm);
+        vector<Cell> reflected = reflect_cells(base);
+        normalize(reflected);
+        piece.transformations.push_back(reflected);
+    }
+    sort(piece.transformations.begin(), piece.transformations.end());
+    piece.transformations.erase(unique(piece.transformations.begin(), piece.transformations.end()), piece.transformations.end());
+}
+
+void expand_grid() {
+    vector<Cell> candidates = {
+        Cell(min_x - 1, min_y),
+        Cell(min_x, min_y - 1),
+        Cell(max_x + 1, min_y),
+        Cell(min_x, max_y + 1),
+        Cell(min_x - 1, min_y - 1),
+        Cell(min_x - 1, max_y + 1),
+        Cell(max_x + 1, min_y - 1),
+        Cell(max_x + 1, max_y + 1)
+    };
+    for (const Cell& cand : candidates) {
+        if (occupied_set.find(cand) == occupied_set.end() && free_set.find(cand) == free_set.end()) {
+            free_set.insert(cand);
+            free_heap.push(cand);
+        }
+    }
+}
+
+bool place_piece(int idx) {
+    Piece& piece = pieces[idx];
+    bool placed = false;
+    while (!placed) {
+        if (free_heap.empty()) {
+            expand_grid();
+            if (free_heap.empty()) {
+                return false;
+            }
+        }
+        Cell candidate = free_heap.top();
+        free_heap.pop();
+        if (free_set.find(candidate) == free_set.end()) {
+            continue;
+        }
+        free_set.erase(candidate);
+        int x0 = candidate.x;
+        int y0 = candidate.y;
+        bool fits = false;
+        vector<Cell> chosen_transform;
+        int chosen_rot = 0, chosen_ref = 0;
+        for (size_t t = 0; t < piece.transformations.size(); t++) {
+            const vector<Cell>& trans = piece.transformations[t];
+            bool ok = true;
+            for (const Cell& c : trans) {
+                Cell placed_cell(x0 + c.x, y0 + c.y);
+                if (occupied_set.find(placed_cell) != occupied_set.end()) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                fits = true;
+                chosen_transform = trans;
+                chosen_rot = t % 4;
+                chosen_ref = (t >= 4) ? 1 : 0;
+                break;
+            }
+        }
+        if (fits) {
+            for (const Cell& c : chosen_transform) {
+                Cell placed_cell(x0 + c.x, y0 + c.y);
+                occupied_set.insert(placed_cell);
+                min_x = min(min_x, placed_cell.x);
+                max_x = max(max_x, placed_cell.x);
+                min_y = min(min_y, placed_cell.y);
+                max_y = max(max_y, placed_cell.y);
+            }
+            placed_info.push_back(make_tuple(x0, y0, chosen_rot, chosen_ref));
+            placed = true;
+            for (const Cell& c : chosen_transform) {
+                Cell placed_cell(x0 + c.x, y0 + c.y);
+                vector<Cell> neighbors = {
+                    Cell(placed_cell.x - 1, placed_cell.y),
+                    Cell(placed_cell.x + 1, placed_cell.y),
+                    Cell(placed_cell.x, placed_cell.y - 1),
+                    Cell(placed_cell.x, placed_cell.y + 1)
+                };
+                for (const Cell& nb : neighbors) {
+                    if (occupied_set.find(nb) == occupied_set.end() && free_set.find(nb) == free_set.end()) {
+                        free_set.insert(nb);
+                        free_heap.push(nb);
+                    }
+                }
+            }
+        } else {
+            free_set.insert(candidate);
+            free_heap.push(candidate);
+        }
+    }
+    return true;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    cin >> n;
+    pieces.resize(n);
+    for (int i = 0; i < n; i++) {
+        int k;
+        cin >> k;
+        pieces[i].id = i;
+        pieces[i].cells.resize(k);
+        for (int j = 0; j < k; j++) {
+            cin >> pieces[i].cells[j].x >> pieces[i].cells[j].y;
+        }
+        generate_transformations(pieces[i]);
+    }
+
+    sort(pieces.begin(), pieces.end(), [](const Piece& a, const Piece& b) {
+        return a.cells.size() > b.cells.size();
+    });
+
+    free_set.insert(Cell(0, 0));
+    free_heap.push(Cell(0, 0));
+
+    for (int i = 0; i < n; i++) {
+        if (!place_piece(i)) {
+            cerr << "Failed to place piece " << i << endl;
+            return 1;
+        }
+    }
+
+    int W = max_x - min_x + 1;
+    int H = max_y - min_y + 1;
+    cout << W << " " << H << endl;
+
+    for (size_t i = 0; i < placed_info.size(); i++) {
+        int x, y, r, f;
+        tie(x, y, r, f) = placed_info[i];
+        int shift_x = x - min_x;
+        int shift_y = y - min_y;
+        cout << shift_x << " " << shift_y << " " << r << " " << f << endl;
+    }
+
+    return 0;
+}
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 2: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 3: Selected program 0 score: 0.0
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 8: Proposed new text for current_candidate: #include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <sstream>
+#include <string>
+#include <cctype>
+#include <climits>
+
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;
+    long long v;
+    long long m;
+    long long l;
+    int index;
+};
+
+vector<int> greedy(const vector<Item>& items) {
+    vector<int> counts(items.size(), 0);
+    long long current_mass = 0;
+    long long current_volume = 0;
+    for (int i = 0; i < items.size(); i++) {
+        long long m_i = items[i].m;
+        long long l_i = items[i].l;
+        long long q_i = items[i].q;
+        long long max_by_mass = (20000000 - current_mass) / m_i;
+        long long max_by_vol = (25000000 - current_volume) / l_i;
+        long long k = min(q_i, max_by_mass);
+        k = min(k, max_by_vol);
+        counts[i] = k;
+        current_mass += k * m_i;
+        current_volume += k * l_i;
+    }
+    return counts;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    string input_json;
+    string line;
+    while (getline(cin, line)) {
+        input_json += line;
+    }
+
+    vector<Item> items;
+    vector<string> key_order;
+    int pos = 1;
+    int n = input_json.size();
+    while (pos < n-1) {
+        int start_key = input_json.find('"', pos);
+        if (start_key == string::npos) break;
+        int end_key = input_json.find('"', start_key+1);
+        string key = input_json.substr(start_key+1, end_key - start_key - 1);
+        key_order.push_back(key);
+
+        int colon = input_json.find(':', end_key);
+        if (colon == string::npos) break;
+        int start_arr = input_json.find('[', colon);
+        int end_arr = input_json.find(']', start_arr);
+        string value_str = input_json.substr(start_arr+1, end_arr - start_arr - 1);
+        vector<long long> values;
+        stringstream ss(value_str);
+        string token;
+        while (getline(ss, token, ',')) {
+            while (!token.empty() && isspace(token.back())) token.pop_back();
+            while (!token.empty() && isspace(token.front())) token.erase(0, 1);
+            if (!token.empty()) {
+                values.push_back(stoll(token));
+            }
+        }
+        Item item;
+        item.name = key;
+        item.q = values[0];
+        item.v = values[1];
+        item.m = values[2];
+        item.l = values[3];
+        item.index = items.size();
+        items.push_back(item);
+        pos = end_arr + 1;
+    }
+
+    vector<vector<Item>> sorted_items(3);
+    sorted_items[0] = items;
+    sorted_items[1] = items;
+    sorted_items[2] = items;
+
+    auto by_mass_density = [](const Item& a, const Item& b) {
+        double a_density = (double)a.v / a.m;
+        double b_density = (double)b.v / b.m;
+        return a_density > b_density;
+    };
+
+    auto by_volume_density = [](const Item& a, const Item& b) {
+        double a_density = (double)a.v / a.l;
+        double b_density = (double)b.v / b.l;
+        return a_density > b_density;
+    };
+
+    auto by_combined_density = [](const Item& a, const Item& b) {
+        double a_density = (double)a.v / a.m + (double)a.v / a.l;
+        double b_density = (double)b.v / b.m + (double)b.v / b.l;
+        return a_density > b_density;
+    };
+
+    sort(sorted_items[0].begin(), sorted_items[0].end(), by_mass_density);
+    sort(sorted_items[1].begin(), sorted_items[1].end(), by_volume_density);
+    sort(sorted_items[2].begin(), sorted_items[2].end(), by_combined_density);
+
+    vector<vector<int>> all_counts(3);
+    vector<long long> values(3, 0);
+
+    for (int i = 0; i < 3; i++) {
+        all_counts[i] = greedy(sorted_items[i]);
+        long long total_value = 0;
+        for (int j = 0; j < sorted_items[i].size(); j++) {
+            total_value += all_counts[i][j] * sorted_items[i][j].v;
+        }
+        values[i] = total_value;
+    }
+
+    int best_method = 0;
+    for (int i = 1; i < 3; i++) {
+        if (values[i] > values[best_method]) {
+            best_method = i;
+        }
+    }
+
+    vector<int> best_counts = all_counts[best_method];
+    vector<int> counts_by_original_index(items.size(), 0);
+    for (int i = 0; i < sorted_items[best_method].size(); i++) {
+        int orig_idx = sorted_items[best_method][i].index;
+        counts_by_original_index[orig_idx] = best_counts[i];
+    }
+
+    cout << "{";
+    for (int i = 0; i < key_order.size(); i++) {
+        if (i > 0) {
+            cout << ",";
+        }
+        cout << "\"" << key_order[i] << "\":" << counts_by_original_index[i];
+    }
+    cout << "}" << endl;
+
+    return 0;
+}
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 8: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 9: Selected program 0 score: 0.0
+Iteration 9: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    int q;
+    long long v;
+    long long m;
+    long long l;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Read entire input
+    string input((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());
+    
+    // Parse JSON manually - extract keys and values
+    vector<Item> items;
+    map<string, Item> itemMap;
+    
+    // Find all key-value pairs in the JSON
+    size_t pos = 0;
+    while (pos < input.size()) {
+        // Find a key (string before colon)
+        if (input[pos] == '"') {
+            size_t keyStart = pos + 1;
+            size_t keyEnd = input.find('"', keyStart);
+            if (keyEnd == string::npos) break;
+            string key = input.substr(keyStart, keyEnd - keyStart);
+            
+            // Find the array after the key
+            size_t arrStart = input.find('[', keyEnd);
+            if (arrStart == string::npos) break;
+            size_t arrEnd = input.find(']', arrStart);
+            if (arrEnd == string::npos) break;
+            
+            string arrContent = input.substr(arrStart + 1, arrEnd - arrStart - 1);
+            
+            // Parse the 4 integers
+            vector<long long> nums;
+            string num;
+            for (char c : arrContent) {
+                if (isdigit(c)) {
+                    num += c;
+                } else if (!num.empty()) {
+                    nums.push_back(stoll(num));
+                    num.clear();
+                }
+            }
+            if (!num.empty()) {
+                nums.push_back(stoll(num));
+            }
+            
+            if (nums.size() >= 4) {
+                Item it;
+                it.name = key;
+                it.q = (int)nums[0];
+                it.v = nums[1];
+                it.m = nums[2];
+                it.l = nums[3];
+                items.push_back(it);
+                itemMap[key] = it;
+            }
+            
+            pos = arrEnd + 1;
+        } else {
+            pos++;
+        }
+    }
+    
+    const long long MAX_MASS = 20000000;  // 20 kg in mg
+    const long long MAX_VOL = 25000000;   // 25 L in microliters
+    
+    // Greedy approach: sort by value/mass ratio and value/volume ratio
+    // Take items greedily, but also try a few combinations
+    
+    // First, try simple greedy by value/(mass+volume) ratio
+    struct GreedyItem {
+        int idx;
+        long long ratio;
+    };
+    
+    vector<GreedyItem> greedyItems;
+    for (int i = 0; i < (int)items.size(); i++) {
+        long long ratio = items[i].v * 1000000 / (items[i].m + items[i].l);
+        greedyItems.push_back({i, ratio};
+    }
+    sort(greedyItems.begin(), greedyItems.end(), [](const GreedyItem& a, const GreedyItem& b) {
+        return a.ratio > b.ratio;
+    });
+    
+    vector<int> bestSolution(items.size(), 0);
+    long long bestValue = 0;
+    
+    // Try greedy approach
+    long long currMass = 0, currVol = 0;
+    vector<int> currSolution(items.size(), 0);
+    for (auto& gi : greedyItems) {
+        int i = gi.idx;
+        // Take as many as possible
+        long long maxByMass = (MAX_MASS - currMass) / items[i].m;
+        long long maxByVol = (MAX_VOL - currVol) / items[i].l;
+        long long take = min<long long>(items[i].q, min(maxByMass, maxByVol));
+        if (take > 0) {
+            currSolution[i] = (int)take;
+            currMass += take * items[i].m;
+            currVol += take * items[i].l;
+        }
+    }
+    long long currValue = 0;
+    for (int i = 0; i < (int)items.size(); i++) {
+        currValue += (long long)currSolution[i] * items[i].v;
+    }
+    if (currValue > bestValue) {
+        bestValue = currValue;
+        bestSolution = currSolution;
+    }
+    
+    // Try a few variations - for each item type, try taking different amounts
+    // Use a simple local search: try to improve by swapping
+    
+    // Try each item type with different quantities
+    for (int iter = 0; iter < 3; iter++) {
+        for (int i = 0; i < (int)items.size(); i++) {
+            // Try adding one more of this item if possible
+            long long currMass = 0, currVol = 0;
+            for (int j = 0; j < (int)items.size(); j++) {
+                currMass += (long long)bestSolution[j] * items[j].m;
+                currVol += (long long)bestSolution[j] * items[j].l;
+            }
+            
+            if (bestSolution[i] < items[i].q) {
+                long long needMass = items[i].m;
+                long long needVol = items[i].l;
+                if (currMass + needMass <= MAX_MASS && currVol + needVol <= MAX_VOL) {
+                    // Try to remove some other items to make room
+                    vector<int> testSol = bestSolution;
+                    testSol[i]++;
+                    
+                    // Try removing items with worst ratio
+                    vector<pair<long long, int>> ratios;
+                    for (int j = 0; j < (int)items.size(); j++) {
+                        if (testSol[j] > 0) {
+                            long long r = items[j].v * 1000000 / (items[j].m + items[j].l);
+                            ratios.push_back({r, j});
+                        }
+                    }
+                    sort(ratios.begin(), ratios.end());
+                    
+                    // Calculate current usage
+                    longlong tMass = 0, tVol = 0;
+                    for (int j = 0; j < (int)items.size(); j++) {
+                        tMass += (long long)testSol[j] * items[j].m;
+                        tVol += (long long)testSol[j] * items[j].l;
+                    }
+                    
+                    // Remove items with lowest ratio if over capacity
+                    for (auto& pr : ratios) {
+                        int j = pr.second;
+                        while (testSol[j] > 0 && (tMass > MAX_MASS || tVol > MAX_VOL)) {
+                            tMass -= items[j].m;
+                            tVol -= items[j].l;
+                            testSol[j]--;
+                        }
+                    }
+                    
+                    if (tMass <= MAX_MASS && tVol <= MAX_VOL) {
+                        long long newValue = 0;
+                        for (int j = 0; j < (int)items.size(); j++) {
+                            newValue += (long long)testSol[j] * items[j].v;
+                        }
+                        if (newValue > bestValue) {
+                            bestValue = newValue;
+                            bestSolution = testSol;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Output JSON
+    cout << "{";
+    for (int i = 0; i < (int)items.size(); i++) {
+        if (i > 0) cout << ",";
+        cout << "\"" << items[i].name << "\":" << bestSolution[i];
+    }
+    cout << "}";
+    
+    return 0;
+}
+Iteration 9: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 10: Selected program 0 score: 0.0
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+Iteration 10: Exception during reflection/proposal: litellm.APIError: APIError: OpenrouterException - Network connection lost.
+Traceback (most recent call last):
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/main.py", line 3317, in completion
+    response = base_llm_http_handler.completion(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/llms/custom_httpx/llm_http_handler.py", line 575, in completion
+    return provider_config.transform_response(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/llms/openrouter/chat/transformation.py", line 201, in transform_response
+    model_response = super().transform_response(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/llms/openai/chat/gpt_transformation.py", line 647, in transform_response
+    final_response_obj = convert_to_model_response_object(
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/litellm_core_utils/llm_response_utils/convert_dict_to_response.py", line 525, in convert_to_model_response_object
+    raise raised_exception
+Exception
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 297, in propose
+    new_texts = self.propose_new_texts(curr_prog, reflective_dataset, predictor_names_to_update)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 128, in propose_new_texts
+    new_texts[name] = InstructionProposalSignature.run(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/base.py", line 48, in run
+    lm_res = lm(full_prompt)
+             ^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/optimize_anything.py", line 859, in _lm
+    completion = litellm.completion(model=model_name, messages=messages)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/core/batch_runner.py", line 40, in _resilient
+    return _original(model=try_model, messages=messages, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/utils.py", line 1772, in wrapper
+    raise e
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/utils.py", line 1593, in wrapper
+    result = original_function(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/main.py", line 4412, in completion
+    raise exception_type(
+          ^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 2456, in exception_type
+    raise e
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 2389, in exception_type
+    raise APIError(
+litellm.exceptions.APIError: litellm.APIError: APIError: OpenrouterException - Network connection lost.
+
+Iteration 10: Reflective mutation did not propose a new candidate
+Iteration 11: Selected program 0 score: 0.0
+Iteration 5: Proposed new text for current_candidate: #include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n + 1);
+    
+    for (int i = 0; i <= n; i++) {
+        cout << "0 ";
+        for (int j = 0; j < n; j++) {
+            cout << (j - i + n) % n + 1 << " ";
+        }
+        cout << endl;
+        cin >> a[i];
+    }
+    
+    vector<int> b(n + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        b[i] = a[i] - a[i - 1];
+    }
+    
+    vector<int> guess(n);
+    int s = 0;
+    for (int i = 1; i <= n; i++) {
+        s += b[i];
+        guess[i - 1] = (s % n + n) % n + 1;
+    }
+    
+    cout << "1 ";
+    for (int i = 0; i < n; i++) {
+        cout << guess[i] << " ";
+    }
+    cout << endl;
+    
+    return 0;
+}
+
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+Iteration 5: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 6: Selected program 0 score: 0.0
+Iteration 11: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;      // quantity available
+    long long v;     // value per item
+    long long m;     // mass per item
+    long long l;     // volume per item
+};
+
+const long long MAX_MASS = 20000000LL;  // 20 kg in mg
+const long long MAX_VOL = 25000000LL;   // 25 liters in ul
+
+vector<Item> items;
+vector<long long> bestQty;
+long long bestValue = 0;
+
+// Parse JSON input manually
+void parseInput() {
+    string all, line;
+    while (getline(cin, line)) {
+        all += line;
+        all += '\n';
+    }
+    
+    size_t pos = 0;
+    // Skip opening brace
+    while (pos < all.size() && all[pos] != '{') pos++;
+    if (pos < all.size()) pos++;
+    
+    while (pos < all.size()) {
+        // Skip whitespace
+        while (pos < all.size() && (all[pos] == ' ' || all[pos] == '\n' || all[pos] == '\r' || all[pos] == '\t')) pos++;
+        if (pos >= all.size() || all[pos] == '}') break;
+        
+        // Parse key (category name)
+        if (all[pos] != '"') break;
+        pos++;
+        string key;
+        while (pos < all.size() && all[pos] != '"') {
+            key += all[pos];
+            pos++;
+        }
+        if (pos < all.size()) pos++;
+        
+        // Skip colon
+        while (pos < all.size() && (all[pos] == ' ' || all[pos] == '\t')) pos++;
+        if (pos < all.size() && all[pos] == ':') pos++;
+        
+        // Skip whitespace
+        while (pos < all.size() && (all[pos] == ' ' || all[pos] == '\t')) pos++;
+        
+        // Parse array [q, v, m, l]
+        if (all[pos] != '[') break;
+        pos++;
+        
+        long long vals[4];
+        for (int i = 0; i < 4; i++) {
+            while (pos < all.size() && (all[pos] == ' ' || all[pos] == '\t' || all[pos] == '\n')) pos++;
+            string num;
+            while (pos < all.size() && (isdigit(all[pos]) || all[pos] == '-')) {
+                num += all[pos];
+                pos++;
+            }
+            vals[i] = stoll(num);
+            while (pos < all.size() && (all[pos] == ' ' || all[pos] == '\t')) pos++;
+            if (pos < all.size() && all[pos] == ',') pos++;
+        }
+        
+        // Skip closing bracket
+        while (pos < all.size() && all[pos] != ']') pos++;
+        if (pos < all.size()) pos++;
+        
+        // Skip comma
+        while (pos < all.size() && (all[pos] == ' ' || all[pos] == ',')) pos++;
+        
+        Item it;
+        it.name = key;
+        it.q = vals[0];
+        it.v = vals[1];
+        it.m = vals[2];
+        it.l = vals[3];
+        items.push_back(it);
+    }
+}
+
+// Sort by value density (value/mass) descending
+bool cmpByDensity(const Item& a, const Item& b) {
+    double da = (double)a.v / a.m;
+    double db = (double)b.v / b.m;
+    return da > db;
+}
+
+// Branch and bound DFS
+void dfs(int idx, long long curMass, long long curVol, long long curValue) {
+    if (idx == (int)items.size()) {
+        if (curValue > bestValue) {
+            bestValue = curValue;
+            // Store current quantities - need to track this
+        }
+        return;
+    }
+    
+    // Pruning: if even taking all remaining can't beat best, skip
+    long long maxPossibleValue = curValue;
+    for (size_t i = idx; i < items.size(); i++) {
+        maxPossibleValue += items[i].v * items[i].q;
+    }
+    if (maxPossibleValue <= bestValue) return;
+    
+    const Item& it = items[idx];
+    
+    // Try different quantities
+    // Use binary splitting-like approach: try 0, and some key quantities
+    // Start with taking as many as possible within constraints
+    long long maxTakeByMass = (MAX_MASS - curMass) / it.m;
+    long long maxTakeByVol = (MAX_VOL - curVol) / it.l;
+    long long maxTake = min({it.q, maxTakeByMass, maxTakeByVol});
+    
+    // Try a few strategic quantities: 0, max possible, and some intermediate
+    // Use geometric progression for efficiency
+    vector<long long> toTry;
+    toTry.push_back(0);
+    if (maxTake > 0) {
+        toTry.push_back(maxTake);
+        // Add some intermediate points
+        for (long long k = 1; k < maxTake; k *= 2) {
+            if (k < maxTake) toTry.push_back(k);
+            if (k * 2 < maxTake && k * 2 > k) toTry.push_back(k * 2);
+        }
+    }
+    
+    // Sort and remove duplicates
+    sort(toTry.begin(), toTry.end());
+    toTry.erase(unique(toTry.begin(), toTry.end()), toTry.end());
+    
+    // Limit iterations for performance
+    if (toTry.size() > 20) {
+        vector<long long> reduced;
+        reduced.push_back(0);
+        reduced.push_back(maxTake);
+        for (int i = 1; i < 19; i++) {
+            reduced.push_back((maxTake * i) / 20);
+        }
+        toTry = reduced;
+        sort(toTry.begin(), toTry.end());
+        toTry.erase(unique(toTry.begin(), toTry.end()), toTry.end());
+    }
+    
+    for (long long take : toTry) {
+        if (take > maxTake) continue;
+        long long newMass = curMass + take * it.m;
+        long long newVol = curVol + take * it.l;
+        long long newValue = curValue + take * it.v;
+        
+        // Quick pruning
+        if (newMass > MAX_MASS || newVol > MAX_VOL) continue;
+        
+        // Estimate if this path can be promising
+        long long optimisticValue = newValue;
+        for (size_t i = idx + 1; i < items.size(); i++) {
+            optimisticValue += items[i].v * items[i].q;
+        }
+        if (optimisticValue <= bestValue) continue;
+        
+        dfs(idx + 1, newMass, newVol, newValue);
+    }
+}
+
+// Alternative: greedy with optimization
+void greedySolve() {
+    // Sort by value density
+    sort(items.begin(), items.end(), cmpByDensity);
+    
+    vector<long long> qty(items.size(), 0);
+    long_t curMass = 0, curVol = 0, curValue = 0;
+    
+    // Take items greedily
+    for (size_t i = 0; i < items.size(); i++) {
+        const Item& it = items[i];
+        long long maxTake = min(it.q, (MAX_MASS - curMass) / it.m);
+        maxTake = min(maxTake, (MAX_VOL - curVol) / it.l);
+        qty[i] = maxTake;
+        curMass += maxTake * it.m;
+        curVol += maxTake * it.l;
+        curValue += maxTake * it.v;
+    }
+    
+    // Try to improve by swapping
+    bool improved = true;
+    while (improved) {
+        improved = false;
+        for (size_t i = 0; i < items.size(); i++) {
+            for (size_t j = 0; j < items.size(); j++) {
+                if (i == j) continue;
+                // Try to reduce item i and increase item j
+                for (long long delta = 1; delta <= qty[i] && !improved; delta++) {
+                    long long newMass = curMass - delta * items[i].m + delta * items[j].m;
+                    long long newVol = curVol - delta * items[i].l + delta * items[j].l;
+                    if (newMass > MAX_MASS || newVol > MAX_VOL) continue;
+                    long long newValue = curValue - delta * items[i].v + delta * items[j].v;
+                    if (newValue > curValue) {
+                        qty[i] -= delta;
+                        qty[j] += delta;
+                        curMass = newMass;
+                        curVol = newVol;
+                        curValue = newValue;
+                        improved = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    if (curValue > bestValue) {
+        bestValue = curValue;
+        bestQty = qty;
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    parseInput();
+    
+    if (items.empty()) {
+        cout << "{}" << endl;
+        return 0;
+    }
+    
+    // Try greedy first
+    greedySolve();
+    
+    // Try DFS with sorted items
+    sort(items.begin(), items.end(), cmpByDensity);
+    dfs(0, 0, 0, 0);
+    
+    // Build output JSON
+    cout << "{" << endl;
+    for (size_t i = 0; i < items.size(); i++) {
+        cout << "    \"" << items[i].name << "\": " << bestQty[i];
+        if (i + 1 < items.size()) cout << ",";
+        cout << endl;
+    }
+    cout << "}" << endl;
+    
+    return 0;
+}
+Iteration 11: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 12: Selected program 0 score: 0.0
+Iteration 5: Proposed new text for current_candidate: #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int subtask, n;
+    if (!(cin >> subtask >> n)) return 0;
+
+    if (n == 2) {
+        cout << "-1 1 2" << endl;
+        return 0;
+    }
+
+    vector<int> p;
+    vector<bool> visited(n+1, false);
+
+    int num_ops = 2 * n - 1;
+    cout << num_ops << " 1";
+    for (int v = 2; v <= n; ++v) {
+        cout << " " << v << " " << v;
+    }
+    cout << endl;
+
+    vector<int> responses(num_ops);
+    for (int i = 0; i < num_ops; ++i) {
+        cin >> responses[i];
+    }
+
+    vector<int> neighbors_of_1;
+    for (int v = 2; v <= n; ++v) {
+        int idx = 1 + 2 * (v - 2);
+        if (responses[idx] == 1) {
+            neighbors_of_1.push_back(v);
+        }
+    }
+
+    if (neighbors_of_1.size() < 1) {
+        neighbors_of_1.push_back(2);
+    }
+
+    p.push_back(1);
+    if (!neighbors_of_1.empty()) {
+        p.push_back(neighbors_of_1[0]);
+        visited[1] = true;
+        visited[neighbors_of_1[0]] = true;
+    }
+
+    while (p.size() < (size_t)n) {
+        int current = p.back();
+        int prev = (p.size() >= 2) ? p[p.size()-2] : -1;
+
+        bool found = false;
+        for (int v = 1; v <= n; ++v) {
+            if (visited[v] || v == prev) {
+                continue;
+            }
+            cout << "4 " << prev << " " << v << " " << v << " " << prev << endl;
+            int r0, r1, r2, r3;
+            cin >> r0 >> r1 >> r2 >> r3;
+            if (r1 == 1) {
+                p.push_back(v);
+                visited[v] = true;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            break;
+        }
+    }
+
+    cout << "-1";
+    for (int i = 0; i < n; ++i) {
+        cout << " " << p[i];
+    }
+    cout << endl;
+
+    return 0;
+}
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+Iteration 5: New subsample score 0.0 is not better than old score 6.666666666666667, skipping
+Iteration 6: Selected program 1 score: 6.666666666666667
+Iteration 12: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;  // quantity available
+    long long v;  // value per item
+    long long m;  // mass in mg
+    long long l;  // volume in µL
+};
+
+const long long MAX_MASS = 20LL * 1000000;  // 20 kg = 20,000,000 mg
+const long long MAX_VOL = 25LL * 1000000;   // 25 L = 25,000,000 µL
+
+// Parse a simple JSON object with string keys and int array values
+vector<Item> parseInput(const string& s) {
+    vector<Item> items;
+    int n = s.size();
+    int i = 0;
+    
+    // Expect opening brace
+    while (i < n && isspace(s[i])) i++;
+    if (i >= n || s[i] != '{') return items;
+    i++;
+    
+    while (i < n) {
+        // Skip whitespace
+        while (i < n && isspace(s[i])) i++;
+        if (i >= n) break;
+        
+        // Expect comma or closing brace
+        if (s[i] == '}') break;
+        if (s[i] == ',') i++;
+        
+        // Skip whitespace
+        while (i < n && isspace(s[i])) i++;
+        
+        // Parse key (string)
+        if (s[i] != '"') break;
+        i++;
+        string key;
+        while (i < n && s[i] != '"') {
+            if (s[i] == '\\' && i + 1 < n) {
+                i++;
+                key += s[i++];
+            } else {
+                key += s[i++];
+            }
+        }
+        if (i >= n || s[i] != '"') break;
+        i++; // skip closing quote
+        
+        // Skip whitespace
+        while (i < n && isspace(s[i])) i++;
+        
+        // Expect colon
+        if (i >= n || s[i] != ':') break;
+        i++;
+        
+        // Skip whitespace
+        while (i < n && isspace(s[i])) i++;
+        
+        // Parse array
+        if (s[i] != '[') break;
+        i++;
+        
+        vector<long long> nums;
+        while (i < n) {
+            while (i < n && isspace(s[i])) i++;
+            if (s[i] == ']') break;
+            if (s[i] == ',') {
+                i++;
+                continue;
+            }
+            // Parse number
+            string numstr;
+            while (i < n && (isdigit(s[i]) || s[i] == '-')) {
+                numstr += s[i++];
+            }
+            if (!numstr.empty()) {
+                nums.push_back(stoll(numstr));
+            }
+            while (i < n && isspace(s[i])) i++;
+            if (s[i] == ',') i++;
+        }
+        if (i >= n || s[i] != ']') break;
+        i++; // skip closing bracket
+        
+        if (nums.size() >= 4) {
+            Item it;
+            it.name = key;
+            it.q = nums[0];
+            it.v = nums[1];
+            it.m = nums[2];
+            it.l = nums[3];
+            items.push_back(it);
+        }
+    }
+    
+    return items;
+}
+
+// Solve using greedy with value/weight ratios, then refine
+vector<long long> solveKnapsack(const vector<Item>& items) {
+    int n = items.size();
+    vector<long long> result(n, 0);
+    
+    if (n == 0) return result;
+    
+    // Create a list of all available items with their densities
+    struct Candidate {
+        int idx;
+        long long value;
+        long long mass;
+        long long volume;
+        long long count;
+    };
+    
+    vector<Candidate> candidates;
+    
+    for (int i = 0; i < n; i++) {
+        const auto& it = items[i];
+        if (it.m <= 0 || it.l <= 0) continue;
+        
+        // Calculate value density (value per mass and per volume)
+        // We'll use a combined metric
+        long long mass_density = it.v * 1000000 / it.m;  // value per kg
+        long long vol_density = it.v * 1000000 / it.l;  // value per liter
+        
+        // Use minimum of the two as a conservative estimate
+        long long density = min(mass_density, vol_density);
+        
+        candidates.push_back({i, it.v, it.m, it.l, it.q};
+    }
+    
+    // Sort by value density descending
+    sort(candidates.begin(), candidates.end(), [](const Candidate& a, const Candidate& b) {
+        long long density_a = a.value * 1000000 / max(a.mass, 1LL);
+        long long density_b = b.value * 1000000 / max(b.mass, 1LL);
+        // Also consider volume
+        long long vol_density_a = a.value * 1000000 / max(a.volume, 1LL);
+        long long vol_density_b = b.value * 1000000 / max(b.volume, 1LL);
+        return max(density_a, vol_density_a) > max(density_b, vol_density_b);
+    });
+    
+    long long totalMass = 0;
+    long long totalVol = 0;
+    long long totalValue = 0;
+    
+    // Greedy selection
+    for (const auto& cand : candidates) {
+        const auto& it = items[cand.idx];
+        
+        // Calculate how many we can fit
+        long long maxByMass = (MAX_MASS - totalMass) / it.m;
+        long long maxByVol = (MAX_VOL - totalVol) / it.l;
+        long long maxCount = min({cand.count, maxByMass, maxByVol});
+        
+        if (maxCount > 0) {
+            result[cand.idx] = maxCount;
+            totalMass += maxCount * it.m;
+            totalVol += maxCount * it.l;
+            totalValue += maxCount * it.v;
+        }
+    }
+    
+    // Try to improve with simple local search
+    bool improved = true;
+    while (improved) {
+        improved = false;
+        
+        // Try adding items that weren't fully taken
+        for (const auto& cand : candidates) {
+            int i = cand.idx;
+            const auto& it = items[i];
+            long long used = result[i];
+            long long remaining = it.q - used;
+            
+            if (remaining <= 0) continue;
+            
+            // Can we add more?
+            long long maxByMass = (MAX_MASS - totalMass) / it.m;
+            long long maxByVol = (MAX_VOL - totalVol) / it.l;
+            long long canAdd = min(remaining, min(maxByMass, maxByVol));
+            
+            if (canAdd > 0) {
+                result[i] += canAdd;
+                totalMass += canAdd * it.m;
+                totalVol += canAdd * it.l;
+                totalValue += canAdd * it.v;
+                improved = true;
+            }
+        }
+        
+        // Try swapping: remove lower value density items and add higher ones
+        for (int i = 0; i < n && !improved; i++) {
+            if (result[i] == 0) continue;
+            
+            const auto& it_i = items[i];
+            long long density_i = it_i.v * 1000000 / max(it_i.m, 1LL);
+            long long vol_density_i = it_i.v * 1000000 / max(it_i.l, 1LL);
+            density_i = max(density_i, vol_density_i);
+            
+            // Try removing one of item i and adding something else
+            for (const auto& cand : candidates) {
+                int j = cand.idx;
+                if (i == j || result[j] >= cand.count) continue;
+                
+                const auto& it_j = items[j];
+                
+                // Check if we can swap
+                if (totalMass - it_i.m + it_j.m <= MAX_MASS && 
+                    totalVol - it_i.l + it_j.l <= MAX_VOL) {
+                    
+                    // Is it beneficial?
+                    if (it_j.v > it_i.v) {
+                        result[i]--;
+                        result[j]++;
+                        totalMass = totalMass - it_i.m + it_j.m;
+                        totalVol = totalVol - it_i.l + it_j.l;
+                        totalValue = totalValue - it_i.v + it_j.v;
+                        improved = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    return result;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Read entire input
+    string input, line;
+    while (getline(cin, line)) {
+        input += line;
+        input += '\n';
+    }
+    
+    // Parse input
+    vector<Item> items = parseInput(input);
+    
+    // Solve
+    vector<long long> result = solveKnapsack(items);
+    
+    // Output JSON
+    cout << "{";
+    for (size_t i = 0; i < items.size(); i++) {
+        if (i > 0) cout << ",";
+        cout << "\"" << items[i].name << "\":" << result[i];
+    }
+    cout << "}" << endl;
+    
+    return 0;
+}
+Iteration 12: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 13: Selected program 0 score: 0.0
+Iteration 3: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+    vector<vector<pair<int, int>>> polys(n);
+    for (int i = 0; i < n; i++) {
+        int k;
+        cin >> k;
+        vector<pair<int, int>> pts(k);
+        for (int j = 0; j < k; j++) {
+            cin >> pts[j].first >> pts[j].second;
+        }
+        polys[i] = pts;
+    }
+
+    vector<tuple<int, int, int, int>> polys_processed;
+    for (int i = 0; i < n; i++) {
+        const auto &pts = polys[i];
+        int best_area = INT_MAX;
+        int best_w = INT_MAX;
+        int best_h = INT_MAX;
+        int best_r = 0;
+        int best_f = 0;
+        
+        for (int f = 0; f < 2; f++) {
+            for (int r = 0; r < 4; r++) {
+                vector<pair<int, int>> transformed;
+                for (const auto &p : pts) {
+                    int x = p.first;
+                    int y = p.second;
+                    if (f) {
+                        x = -x;
+                    }
+                    for (int j = 0; j < r; j++) {
+                        int nx = y;
+                        int ny = -x;
+                        x = nx;
+                        y = ny;
+                    }
+                    transformed.push_back({x, y});
+                }
+                
+                int min_x = INT_MAX, min_y = INT_MAX;
+                for (const auto &p : transformed) {
+                    min_x = min(min_x, p.first);
+                    min_y = min(min_y, p.second);
+                }
+                int max_x = INT_MIN, max_y = INT_MIN;
+                for (const auto &p : transformed) {
+                    int x = p.first - min_x;
+                    int y = p.second - min_y;
+                    max_x = max(max_x, x);
+                    max_y = max(max_y, y);
+                }
+                int w = max_x + 1;
+                int h = max_y + 1;
+                int area = w * h;
+                
+                if (area < best_area || (area == best_area && (h < best_h || (h == best_h && w < best_w)))) {
+                    best_area = area;
+                    best_w = w;
+                    best_h = h;
+                    best_r = r;
+                    best_f = f;
+                }
+            }
+        }
+        polys_processed.push_back({best_w, best_h, best_r, best_f});
+    }
+
+    vector<tuple<int, int, int, int, int>> rects;
+    for (int i = 0; i < n; i++) {
+        rects.push_back({get<0>(polys_processed[i]), get<1>(polys_processed[i]), i, get<2>(polys_processed[i]), get<3>(polys_processed[i])});
+    }
+
+    sort(rects.begin(), rects.end(), [](const auto &a, const auto &b) {
+        if (get<1>(a) != get<1>(b)) {
+            return get<1>(a) > get<1>(b);
+        }
+        return get<0>(a) > get<0>(b);
+    });
+
+    vector<tuple<int, int, int>> shelves;
+    int total_height = 0;
+    int current_max_width = 0;
+    vector<tuple<int, int, int, int>> ans(n);
+
+    for (const auto &rect : rects) {
+        int w = get<0>(rect);
+        int h = get<1>(rect);
+        int idx = get<2>(rect);
+        int r = get<3>(rect);
+        int f = get<4>(rect);
+        
+        bool placed = false;
+        for (auto &shelf : shelves) {
+            int &shelf_current_x = get<0>(shelf);
+            int shelf_y = get<1>(shelf);
+            int shelf_height = get<2>(shelf);
+            if (h <= shelf_height) {
+                ans[idx] = {shelf_current_x, shelf_y, r, f};
+                shelf_current_x += w;
+                if (shelf_current_x > current_max_width) {
+                    current_max_width = shelf_current_x;
+                }
+                placed = true;
+                break;
+            }
+        }
+        
+        if (!placed) {
+            int x_placement = 0;
+            int y_placement = total_height;
+            ans[idx] = {x_placement, y_placement, r, f};
+            shelves.push_back({w, y_placement, h});
+            total_height += h;
+            if (w > current_max_width) {
+                current_max_width = w;
+            }
+        }
+    }
+
+    cout << current_max_width << " " << total_height << endl;
+    for (int i = 0; i < n; i++) {
+        auto [x, y, r, f] = ans[i];
+        cout << x << " " << y << " " << r << " " << f << endl;
+    }
+
+    return 0;
+}
+[1;31mProvider List: https://docs.litellm.ai/docs/providers[0m
+
+
+Iteration 3: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 4: Selected program 0 score: 0.0
+Iteration 4: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Piece {
+    vector<pair<int,int>> cells;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    if(!(cin >> n)) return 0;
+    
+    vector<Piece> pieces(n);
+    long long total_cells = 0;
+    
+    for(int i = 0; i < n; i++) {
+        int k;
+        cin >> k;
+        pieces[i].cells.resize(k);
+        for(int j = 0; j < k; j++) {
+            cin >> pieces[i].cells[j].first >> pieces[i].cells[j].second;
+        }
+        total_cells += k;
+    }
+    
+    // Simple strategy: place all pieces in a single row
+    // W = total_cells, H = 1 (minimum area = total_cells)
+    long long W = total_cells;
+    long long H = 1;
+    
+    cout << W << " " << H << "\n";
+    
+    // Place each piece consecutively along the x-axis
+    long long current_x = 0;
+    for(int i = 0; i < n; i++) {
+        int piece_w = 0;
+        for(auto [x, y] : pieces[i].cells) {
+            piece_w = max(piece_w, x + 1);
+        }
+        
+        cout << current_x << " 0 0 0\n";
+        current_x += piece_w;
+    }
+    
+    return 0;
+}
+Iteration 4: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 5: Selected program 0 score: 0.0
+Iteration 6: Proposed new text for current_candidate: #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+/**
+ * Problem Analysis:
+ * We need to find a circular permutation p1, p2, ..., pn.
+ * We can flip the state of lamp holders. If the resulting set S contains 
+ * adjacent lit holders on the ring, the system returns 1, otherwise 0.
+ * 
+ * Strategy:
+ * 1. Use O(n) queries to find neighbors of 1.
+ * 2. Traverse the ring from those neighbors.
+ * 
+ * Key optimization: Use exactly 2 queries per adjacency test:
+ * - Query "2 u v": toggles u (making S empty if u was current), then toggles v.
+ *   The second report tells us if {u, v} are adjacent.
+ * - Query "1 v": toggles v to remove it from S, restoring S={u} for next test.
+ * 
+ * This halves the query count compared to the original approach.
+ */
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int subtask, n;
+    if (!(cin >> subtask >> n)) return 0;
+
+    if (n == 2) {
+        cout << "-1 1 2" << endl;
+        return 0;
+    }
+
+    // Initialize S to contain 1
+    cout << "1 1" << endl;
+    int init_res;
+    cin >> init_res;
+
+    vector<int> neighbors_of_1;
+    int first_neighbor = -1;
+
+    // Find neighbors of 1
+    for (int v = 2; v <= n; ++v) {
+        // Test if 1 and v are adjacent
+        cout << "2 1 " << v << endl;
+        int r1, r2;
+        cin >> r1 >> r2;
+        
+        if (r2 == 1) {
+            neighbors_of_1.push_back(v);
+            if (first_neighbor == -1) first_neighbor = v;
+        }
+        
+        // Reset S to {1}
+        cout << "1 " << v << endl;
+        int r3;
+        cin >> r3;
+        
+        if (neighbors_of_1.size() == 2) break;
+    }
+
+    // Reconstruct the ring
+    vector<int> p;
+    p.push_back(1);
+    p.push_back(first_neighbor);
+    
+    vector<bool> visited(n + 1, false);
+    visited[1] = true;
+    visited[first_neighbor] = true;
+
+    // Set current to first_neighbor, ensure S = {current}
+    int current = first_neighbor;
+    cout << "1 " << current << endl;
+    int tmp;
+    cin >> tmp;
+
+    // Find the second neighbor of 1 to continue traversal
+    int second_neighbor = -1;
+    for (int v = 2; v <= n; ++v) {
+        if (visited[v]) continue;
+        
+        cout << "2 1 " << v << endl;
+        int r1, r2;
+        cin >> r1 >> r2;
+        
+        if (r2 == 1) {
+            second_neighbor = v;
+        }
+        
+        cout << "1 " << v << endl;
+        int r3;
+        cin >> r3;
+        
+        if (second_neighbor != -1) break;
+    }
+
+    // Traverse from first_neighbor
+    while (p.size() < (size_t)n) {
+        bool found = false;
+        for (int v = 1; v <= n; ++v) {
+            if (visited[v]) continue;
+            
+            // Test if current and v are adjacent
+            cout << "2 " << current << " " << v << endl;
+            int r1, r2;
+            cin >> r1 >> r2;
+            
+            if (r2 == 1) {
+                // current and v are adjacent
+                p.push_back(v);
+                visited[v] = true;
+                
+                // Update current and ensure S = {new_current}
+                current = v;
+                cout << "1 " << current << endl;
+                int r3;
+                cin >> r3;
+                
+                found = true;
+                break;
+            }
+            
+            // Reset S to {current} for next test
+            cout << "1 " << v << endl;
+            int r3;
+            cin >> r3;
+        }
+        if (!found) break;
+    }
+
+    cout << "-1";
+    for (int i = 0; i < n; ++i) {
+        cout << " " << p[i];
+    }
+    cout << endl;
+
+    return 0;
+}
+Iteration 13: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;
+    long long v;
+    long long m;
+    long long l;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Read entire input
+    string input((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());
+    
+    // Parse JSON - extract keys and values
+    vector<Item> items;
+    vector<string> order;
+    
+    size_t pos = 0;
+    while (pos < input.size()) {
+        // Find a key (string before colon)
+        if (input[pos] == '"') {
+            size_t key_start = pos + 1;
+            size_t key_end = input.find('"', key_start);
+            string key = input.substr(key_start, key_end - key_start);
+            
+            // Find the array after the key
+            size_t arr_start = input.find('[', key_end);
+            size_t arr_end = input.find(']', arr_start);
+            string arr_content = input.substr(arr_start + 1, arr_end - arr_start - 1);
+            
+            // Parse 4 integers from array
+            stringstream ss(arr_content);
+            vector<long long> nums;
+            string num_str;
+            while (getline(ss, num_str, ',')) {
+                // Trim whitespace
+                size_t start = num_str.find_first_not_of(" \n\t");
+                if (start != string::npos) {
+                    size_t end = num_str.find_last_not_of(" \n\t");
+                    nums.push_back(stoll(num_str.substr(start, end - start + 1)));
+                }
+            }
+            
+            if (nums.size() >= 4) {
+                Item it;
+                it.name = key;
+                it.q = nums[0];
+                it.v = nums[1];
+                it.m = nums[2];
+                it.l = nums[3];
+                items.push_back(it);
+                order.push_back(key);
+            }
+            
+            pos = arr_end + 1;
+        } else {
+            pos++;
+        }
+    }
+    
+    const long long MAX_MASS = 20000000;  // 20 kg in mg
+    const long long MAX_VOL = 25000000;   // 25 L in µL
+    
+    // Greedy by value density (value / mass) first, then adjust for volume
+    // Calculate value per unit mass and volume
+    struct ScoredItem {
+        int idx;
+        double density; // value per mass
+        double volDensity; // value per volume
+    };
+    
+    vector<ScoredItem> scored;
+    for (int i = 0; i < items.size(); i++) {
+        if (items[i].m > 0 && items[i].l > 0) {
+            ScoredItem si;
+            si.idx = i;
+            si.density = (double)items[i].v / items[i].m;
+            si.volDensity = (double)items[i].v / items[i].l;
+            scored.push_back(si);
+        }
+    }
+    
+    // Sort by value density (descending)
+    sort(scored.begin(), scored.end(), [&](const ScoredItem& a, const ScoredItem& b) {
+        return a.density > b.density;
+    });
+    
+    vector<long long> result(items.size(), 0);
+    long long totalMass = 0, totalVol = 0, totalValue = 0;
+    
+    // Greedy selection
+    for (const auto& si : scored) {
+        const Item& it = items[si.idx];
+        
+        // Calculate how many we can take
+        long long maxByMass = (MAX_MASS - totalMass) / it.m;
+        long long maxByVol = (MAX_VOL - totalVol) / it.l;
+        long long canTake = min({it.q, maxByMass, maxByVol});
+        
+        if (canTake > 0) {
+            result[si.idx] = canTake;
+            totalMass += canTake * it.m;
+            totalVol += canTake * it.l;
+            totalValue += canTake * it.v;
+        }
+    }
+    
+    // Try to improve with volume-constrained items
+    // Sort by volume density for remaining capacity
+    sort(scored.begin(), scored.end(), [&](const ScoredItem& a, const ScoredItem& b) {
+        return a.volDensity > b.volDensity;
+    });
+    
+    for (const auto& si : scored) {
+        if (result[si.idx] >= items[si.idx].q) continue;
+        
+        const Item& it = items[si.idx];
+        long long maxByMass = (MAX_MASS - totalMass) / it.m;
+        long long maxByVol = (MAX_VOL - totalVol) / it.l;
+        long long canTake = min({it.q - result[si.idx], maxByMass, maxByVol});
+        
+        if (canTake > 0) {
+            result[si.idx] += canTake;
+            totalMass += canTake * it.m;
+            totalVol += canTake * it.l;
+            totalValue += canTake * it.v;
+        }
+    }
+    
+    // Output JSON
+    cout << "{\n";
+    for (size_t i = 0; i < order.size(); i++) {
+        // Find the item index for this order
+        int idx = -1;
+        for (int j = 0; j < items.size(); j++) {
+            if (items[j].name == order[i]) {
+                idx = j;
+                break;
+            }
+        }
+        cout << "    \"" << order[i] << "\": " << (idx >= 0 ? result[idx] : 0);
+        if (i < order.size() - 1) cout << ",";
+        cout << "\n";
+    }
+    cout << "}\n";
+    
+    return 0;
+}
+Iteration 13: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 14: Selected program 0 score: 0.0
+Iteration 6: New subsample score 0.0 is not better than old score 6.666666666666667, skipping
+Iteration 7: Selected program 1 score: 6.666666666666667
+Iteration 5: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Piece {
+    vector<pair<int,int>> cells;
+    int minx, maxx, miny, maxy;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    if(!(cin >> n)) return 0;
+    
+    vector<Piece> pieces(n);
+    long long total_cells = 0;
+    
+    for (int i = 0; i < n; i++) {
+        int k;
+        cin >> k;
+        pieces[i].cells.resize(k);
+        int minx = INT_MAX, maxx = INT_MIN, miny = INT_MAX, maxy = INT_MIN;
+        for (int j = 0; j < k; j++) {
+            int x, y;
+            cin >> x >> y;
+            pieces[i].cells[j] = {x, y};
+            minx = min(minx, x);
+            maxx = max(maxx, x);
+            miny = min(miny, y);
+            maxy = max(maxy, y);
+        }
+        pieces[i].minx = minx;
+        pieces[i].maxx = maxx;
+        pieces[i].miny = miny;
+        pieces[i].maxy = maxy;
+        total_cells += k;
+    }
+    
+    // Determine rectangle size - use a square large enough
+    long long side = 1;
+    while (side * side < total_cells) side++;
+    
+    // Add margin for shape dimensions
+    int max_dim = 10; // max piece dimension
+    long long W = side + max_dim;
+    long long H = side + max_dim;
+    
+    // Grid to track occupied cells
+    vector<vector<char>> grid(H, vector<char>(W, 0));
+    
+    // Results: X, Y, R, F for each piece
+    vector<array<int,4>> results(n);
+    vector<char> placed(n, 0);
+    
+    // Try to place each piece
+    for (int pi = 0; pi < n; pi++) {
+        bool found = false;
+        
+        // Try each position in the grid
+        for (long long startY = 0; startY < H && !found; startY++) {
+            for (long long startX = 0; startX < W && !found; startX++) {
+                
+                // Try all 8 transformations (4 rotations x 2 reflections)
+                for (int F = 0; F < 2 && !found; F++) {
+                    for (int R = 0; R < 4 && !found; R++) {
+                        
+                        // Check if piece fits at this position with this transformation
+                        bool ok = true;
+                        vector<pair<int,int>> transformed;
+                        
+                        for (auto [ox, oy] : pieces[pi].cells) {
+                            int x = ox, y = oy;
+                            
+                            // Apply reflection (across y-axis)
+                            if (F) x = -x;
+                            
+                            // Apply rotation
+                            int nx, ny;
+                            if (R == 0) { nx = x; ny = y; }
+                            else if (R == 1) { nx = -y; ny = x; }
+                            else if (R == 2) { nx = -x; ny = -y; }
+                            else { nx = y; ny = -x; }
+                            
+                            // Apply translation
+                            int finalX = startX + nx;
+                            int finalY = startY + ny;
+                            
+                            // Check bounds
+                            if (finalX < 0 || finalX >= W || finalY < 0 || finalY >= H) {
+                                ok = false;
+                                break;
+                            }
+                            
+                            // Check overlap
+                            if (grid[finalY][finalX]) {
+                                ok = false;
+                                break;
+                            }
+                            
+                            transformed.push_back({finalX, finalY};
+                        }
+                        
+                        if (ok) {
+                            // Place the piece
+                            for (auto [fx, fy] : transformed) {
+                                grid[fy][fx] = 1;
+                            }
+                            results[pi] = {static_cast<int>(startX), static_cast<int>(startY), R, F};
+                            placed[pi] = 1;
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (!found) {
+            // Expand grid and retry this piece
+            W *= 2;
+            H *= 2;
+            grid.assign(H, vector<char>(W, 0));
+            
+            // Clear all placements and restart
+            for (int j = 0; j < pi; j++) {
+                if (placed[j]) {
+                    // Re-place previous pieces
+                    for (auto [ox, oy] : pieces[j].cells) {
+                        int x = ox, y = oy;
+                        if (results[j][3]) x = -x;
+                        int R = results[j][2];
+                        int nx, ny;
+                        if (R == 0) { nx = x; ny = y; }
+                        else if (R == 1) { nx = -y; ny = x; }
+                        else if (R == 2) { nx = -x; ny = -y; }
+                        else { nx = y; ny = -x; }
+                        int finalX = results[j][0] + nx;
+                        int finalY = results[j][1] + ny;
+                        grid[finalY][finalX] = 1;
+                    }
+                }
+            }
+            
+            // Try again with larger grid
+            for (long long startY = 0; startY < H && !found; startY++) {
+                for (long long startX = 0; startX < W && !found; startX++) {
+                    for (int F = 0; F < 2 && !found; F++) {
+                        for (int R = 0; R < 4 && !found; R++) {
+                            bool ok = true;
+                            vector<pair<int,int>> transformed;
+                            
+                            for (auto [ox, oy] : pieces[pi].cells) {
+                                int x = ox, y = oy;
+                                if (F) x = -x;
+                                int nx, ny;
+                                if (R == 0) { nx = x; ny = y; }
+                                else if (R == 1) { nx = -y; ny = x; }
+                                else if (R == 2) { nx = -x; ny = -y; }
+                                else { nx = y; ny = -x; }
+                                int finalX = startX + nx;
+                                int finalY = startY + ny;
+                                
+                                if (finalX < 0 || finalX >= W || finalY < 0 || finalY >= H) {
+                                    ok = false;
+                                    break;
+                                }
+                                if (grid[finalY][finalX]) {
+                                    ok = false;
+                                    break;
+                                }
+                                transformed.push_back({finalX, finalY};
+                            }
+                            
+                            if (ok) {
+                                for (auto [fx, fy] : transformed) {
+                                    grid[fy][fx] = 1;
+                                }
+                                results[pi] = {static_cast<int>(startX), static_cast<int>(startY), R, F};
+                                placed[pi] = 1;
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Trim the grid to minimal size
+    int realW = W, realH = H;
+    while (true) {
+        bool allEmpty = true;
+        for (int x = 0; x < realW && allEmpty; x++) {
+            for (int y = 0; y < realH; y++) {
+                if (grid[y][x]) { allEmpty = false; break; }
+            }
+        }
+        if (allEmpty && realW > 1) realW--;
+        else break;
+    }
+    while (true) {
+        bool allEmpty = true;
+        for (int x = 0; x < realW; x++) {
+            for (int y = 0; y < realH && allEmpty; y++) {
+                if (grid[y][x]) { allEmpty = false; break; }
+            }
+        }
+        if (allEmpty && realH > 1) realH--;
+        else break;
+    }
+    
+    cout << realW << " " << realH << "\n";
+    for (int i = 0; i < n; i++) {
+        cout << results[i][0] << " " << results[i][1] << " " 
+             << results[i][2] << " " << results[i][3] << "\n";
+    }
+    
+    return 0;
+}
+Iteration 5: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 6: Selected program 0 score: 0.0
+Iteration 6: Exception during reflection/proposal: 'NoneType' object has no attribute 'strip'
+Traceback (most recent call last):
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 297, in propose
+    new_texts = self.propose_new_texts(curr_prog, reflective_dataset, predictor_names_to_update)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 128, in propose_new_texts
+    new_texts[name] = InstructionProposalSignature.run(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/base.py", line 49, in run
+    lm_out = lm_res.strip()
+             ^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+Iteration 6: Reflective mutation did not propose a new candidate
+Iteration 7: Selected program 0 score: 0.0
+Iteration 6: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Piece {
+    vector<pair<int,int>> cells;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    if(!(cin >> n)) return 0;
+    
+    vector<Piece> pieces(n);
+    long long total_cells = 0;
+    
+    for(int i = 0; i < n; i++) {
+        int k;
+        cin >> k;
+        pieces[i].cells.resize(k);
+        total_cells += k;
+        
+        for(int j = 0; j < k; j++) {
+            int x, y;
+            cin >> x >> y;
+            pieces[i].cells[j] = {x, y};
+        }
+    }
+    
+    // Transform piece: reflection (across y-axis), then rotation (0,90,180,270), then normalize
+    auto transform = [&](const Piece& piece, int rot, int refl) {
+        vector<pair<int,int>> transformed;
+        int min_x = INT_MAX, min_y = INT_MAX;
+        
+        for(auto [x, y] : piece.cells) {
+            // Apply reflection across y-axis
+            if(refl) x = -x;
+            
+            // Apply rotation (0=0°, 1=90°, 2=180°, 3=270° clockwise)
+            int nx = x, ny = y;
+            for(int r = 0; r < rot; r++) {
+                int tmp = nx;
+                nx = ny;
+                ny = -tmp;
+            }
+            
+            min_x = min(min_x, nx);
+            min_y = min(min_y, ny);
+            transformed.push_back({nx, ny};
+        }
+        
+        // Normalize to start at (0,0)
+        for(auto& p : transformed) {
+            p.first -= min_x;
+            p.second -= min_y;
+        }
+        
+        return transformed;
+    };
+    
+    // Try increasing rectangle sizes
+    long long W = 1, H = total_cells;
+    
+    // Find minimal area rectangle
+    while(true) {
+        // Grid: grid[y][x] = piece index or -1
+        vector<vector<int>> grid(H, vector<int>(W, -1));
+        
+        vector<pair<int,int>> pos(n);
+        vector<int> rot(n), refl(n);
+        
+        // Sort pieces by size (largest first)
+        vector<int> order(n);
+        iota(order.begin(), order.end(), 0);
+        sort(order.begin(), order.end(), [&](int a, int b) {
+            return pieces[a].cells.size() > pieces[b].cells.size();
+        });
+        
+        bool all_placed = true;
+        
+        for(int idx : order) {
+            bool placed = false;
+            
+            for(int py = 0; py < H && !placed; py++) {
+                for(int px = 0; px < W && !placed; px++) {
+                    for(int r = 0; r < 4 && !placed; r++) {
+                        for(int f = 0; f < 2 && !placed; f++) {
+                            auto cells = transform(pieces[idx], r, f);
+                            
+                            // Check bounds and overlap
+                            bool ok = true;
+                            for(auto [cx, cy] : cells) {
+                                int gx = px + cx;
+                                int gy = py + cy;
+                                if(gx < 0 || gx >= W || gy < 0 || gy >= H) {
+                                    ok = false;
+                                    break;
+                                }
+                                if(grid[gy][gx] != -1) {
+                                    ok = false;
+                                    break;
+                                }
+                            }
+                            
+                            if(ok) {
+                                // Place the piece
+                                for(auto [cx, cy] : cells) {
+                                    grid[py + cy][px + cx] = idx;
+                                }
+                                pos[idx] = {px, py};
+                                rot[idx] = r;
+                                refl[idx] = f;
+                                placed = true;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if(!placed) {
+                all_placed = false;
+                break;
+            }
+        }
+        
+        if(all_placed) {
+            // Output result
+            cout << W << " " << H << "\n";
+            for(int i = 0; i < n; i++) {
+                cout << pos[i].first << " " << pos[i].second << " " << rot[i] << " " << refl[i] << "\n";
+            }
+            return 0;
+        }
+        
+        // Increase rectangle size
+        if(W * (H + 1) <= (W + 1) * H) {
+            H++;
+        } else {
+            W++;
+            H = (total_cells + W - 1) / W;
+            if(H < 1) H = 1;
+        }
+        
+        // Safety limit
+        if(W > 10000) break;
+    }
+    
+    // Fallback: just output a simple valid solution
+    W = total_cells;
+    H = 1;
+    cout << W << " " << H << "\n";
+    int cx = 0;
+    for(int i = 0; i < n; i++) {
+        cout << cx << " 0 0 0\n";
+        cx += pieces[i].cells.size();
+    }
+    
+    return 0;
+}
+Iteration 6: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 7: Selected program 0 score: 0.0
+Iteration 14: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    int q;
+    long long v;
+    long long m;
+    long long l;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Read the entire input
+    string input;
+    {
+        std::stringstream buffer;
+        buffer << cin.rdbuf();
+        input = buffer.str();
+    }
+    
+    // Parse JSON input
+    vector<Item> items;
+    unordered_map<string, int> nameToIdx;
+    
+    size_t pos = 0;
+    while (pos < input.size()) {
+        // Find a key (string in quotes)
+        if (pos < input.size() && input[pos] == '"') {
+            size_t keyStart = pos + 1;
+            size_t keyEnd = input.find('"', keyStart);
+            if (keyEnd == string::npos) break;
+            string key = input.substr(keyStart, keyEnd - keyStart);
+            
+            // Find the array after the key
+            size_t arrStart = input.find('[', keyEnd);
+            if (arrStart == string::npos) break;
+            size_t arrEnd = input.find(']', arrStart);
+            if (arrEnd == string::npos) break;
+            
+            string arrStr = input.substr(arrStart + 1, arrEnd - arrStart - 1);
+            
+            // Parse the four integer values
+            vector<long long> vals;
+            size_t start = 0;
+            while (start < arrStr.size()) {
+                // Skip whitespace
+                while (start < arrStr.size() && isspace(arrStr[start])) start++;
+                if (start >= arrStr.size()) break;
+                
+                size_t end = start;
+                while (end < arrStr.size() && (isdigit(arrStr[end]) || arrStr[end] == '-')) end++;
+                if (end > start) {
+                    vals.push_back(stoll(arrStr.substr(start, end - start)));
+                }
+                start = end;
+                // Skip comma and whitespace
+                while (start < arrStr.size() && (arrStr[start] == ',' || isspace(arrStr[start]))) start++;
+            }
+            
+            if (vals.size() >= 4) {
+                Item it;
+                it.name = key;
+                it.q = (int)vals[0];
+                it.v = vals[1];
+                it.m = vals[2];
+                it.l = vals[3];
+                items.push_back(it);
+                nameToIdx[key] = items.size() - 1;
+            }
+            
+            pos = arrEnd + 1;
+        } else {
+            pos++;
+        }
+    }
+    
+    // Solve knapsack problem
+    const long long MASS_LIMIT = 20000000LL;  // 20 kg = 20,000,000 mg
+    const long long VOL_LIMIT = 25000000LL;   // 25 liters = 25,000,000 µL
+    
+    // Calculate value density (value per unit mass)
+    vector<pair<long double, int>> density;
+    for (int i = 0; i < (int)items.size(); i++) {
+        long double d = (long double)items[i].v / max(1LL, items[i].m);
+        density.push_back({d, i});
+    }
+    sort(density.rbegin(), density.rend());  // Sort descending
+    
+    vector<int> result(items.size(), 0);
+    long long totalMass = 0, totalVol = 0, totalValue = 0;
+    
+    // Greedy approach: take items by density
+    for (auto [d, idx] : density) {
+        Item &it = items[idx];
+        
+        // Try to take as many as possible
+        for (int cnt = it.q; cnt >= 0; cnt--) {
+            long long newMass = totalMass + (long long)cnt * it.m;
+            long long newVol = totalVol + (long long)cnt * it.l;
+            
+            if (newMass <= MASS_LIMIT && newVol <= VOL_LIMIT) {
+                result[idx] = cnt;
+                totalMass = newMass;
+                totalVol = newVol;
+                totalValue += (long long)cnt * it.v;
+                break;
+            }
+        }
+    }
+    
+    // Output JSON with same keys as input
+    cout << "{";
+    for (size_t i = 0; i < items.size(); i++) {
+        if (i > 0) cout << ",";
+        cout << "\"" << items[i].name << "\":" << result[i];
+    }
+    cout << "}";
+    
+    return 0;
+}
+Iteration 14: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 15: Selected program 0 score: 0.0
+Iteration 7: Proposed new text for current_candidate: #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+// Query if u and v are adjacent. Assumes S may be non-empty.
+// We reset S to empty first, then add u and v, then reset again.
+bool isAdjacent(int u, int v) {
+    // Reset S to empty by toggling u then v (if present)
+    cout << "2 " << u << " " << v << endl;
+    int r1, r2;
+    cin >> r1 >> r2;
+    
+    // S now has {u, v}. r2 tells us if u and v are adjacent.
+    // Reset S to empty: toggle v then u
+    cout << "2 " << v << " " << u << endl;
+    int r3, r4;
+    cin >> r3 >> r4;
+    
+    return r2 == 1;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int subtask, n;
+    if (!(cin >> subtask >> n)) return 0;
+
+    if (n == 2) {
+        cout << "-1 1 2" << endl;
+        return 0;
+    }
+
+    // Find neighbors of 1
+    vector<int> neighbors;
+    for (int v = 2; v <= n && neighbors.size() < 2; ++v) {
+        if (isAdjacent(1, v)) {
+            neighbors.push_back(v);
+        }
+    }
+
+    if (neighbors.size() != 2) {
+        // Fallback: try more thoroughly
+        for (int v = 2; v <= n && neighbors.size() < 2; ++v) {
+            bool found = false;
+            for (int nv : neighbors) {
+                if (v == nv) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found && isAdjacent(1, v)) {
+                neighbors.push_back(v);
+            }
+        }
+    }
+
+    // Reconstruct the ring
+    vector<int> perm;
+    perm.push_back(1);
+    perm.push_back(neighbors[0]);
+
+    vector<bool> visited(n + 1, false);
+    visited[1] = true;
+    visited[neighbors[0]] = true;
+
+    while ((int)perm.size() < n) {
+        int current = perm.back();
+        
+        // Find next neighbor not yet in permutation
+        for (int v = 1; v <= n; ++v) {
+            if (!visited[v] && isAdjacent(current, v)) {
+                perm.push_back(v);
+                visited[v] = true;
+                break;
+            }
+        }
+    }
+
+    // Output result
+    cout << "-1";
+    for (int x : perm) {
+        cout << " " << x;
+    }
+    cout << endl;
+
+    return 0;
+}
+Iteration 7: New subsample score 6.666666666666667 is not better than old score 6.666666666666667, skipping
+Iteration 8: Selected program 1 score: 6.666666666666667
+Iteration 7: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    if(!(cin >> n)) return 0;
+    
+    vector<vector<pair<int,int>>> pieces(n);
+    vector<int> ks(n);
+    
+    for (int i = 0; i < n; i++) {
+        cin >> ks[i];
+        pieces[i].reserve(ks[i]);
+        for (int j = 0; j < ks[i]; j++) {
+            int x, y;
+            cin >> x >> y;
+            pieces[i].push_back({x, y});
+        }
+    }
+    
+    // Compute bounding boxes for each piece (no rotation/reflection)
+    vector<int> width(n), height(n);
+    for (int i = 0; i < n; i++) {
+        int minx = INT_MAX, maxx = INT_MIN, miny = INT_MAX, maxy = INT_MIN;
+        for (auto [x, y] : pieces[i]) {
+            minx = min(minx, x);
+            maxx = max(maxx, x);
+            miny = min(miny, y);
+            maxy = max(maxy, y);
+        }
+        width[i] = maxx - minx + 1;
+        height[i] = maxy - miny + 1;
+    }
+    
+    // Place pieces in a column, each at x=0
+    long long totalWidth = 0;
+    long long totalHeight = 0;
+    
+    for (int i = 0; i < n; i++) {
+        totalWidth = max(totalWidth, (long long)width[i]);
+        totalHeight += height[i];
+    }
+    
+    // Add some padding between pieces to avoid edge cases
+    long long W = totalWidth + 2;
+    long long H = totalHeight + 2;
+    
+    cout << W << " " << H << "\n";
+    
+    long long curY = 1;
+    for (int i = 0; i < n; i++) {
+        // Shift piece to have min coordinates at origin, then translate
+        int minx = INT_MAX, miny = INT_MAX;
+        for (auto [x, y] : pieces[i]) {
+            minx = min(minx, x);
+            miny = min(miny, y);
+        }
+        
+        int X = 1 - minx;  // shift so leftmost cell is at x=1
+        int Y = curY - miny;  // place at current Y position
+        
+        cout << X << " " << Y << " 0 0\n";
+        
+        curY += height[i];
+    }
+    
+    return 0;
+}
+Iteration 7: New subsample score 20.283576732857142 is better than old score 0.0. Continue to full eval and add to candidate pool.
+Iteration 7: Found a better program on the valset with score 20.283576732857142.
+Iteration 7: Valset score for new program: 20.283576732857142 (coverage 1 / 1)
+Iteration 7: Val aggregate for new program: 20.283576732857142
+Iteration 7: Individual valset scores for new program: {0: 20.283576732857142}
+Iteration 7: New valset pareto front scores: {0: 20.283576732857142}
+Iteration 7: Valset pareto front aggregate score: 20.283576732857142
+Iteration 7: Updated valset pareto front programs: {0: {1}}
+Iteration 7: Best valset aggregate score so far: 20.283576732857142
+Iteration 7: Best program as per aggregate score on valset: 1
+Iteration 7: Best score on valset: 20.283576732857142
+Iteration 7: Linear pareto front program index: 1
+Iteration 7: New program candidate index: 1
+Iteration 8: Selected program 1 score: 20.283576732857142
+Iteration 8: Proposed new text for current_candidate: #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <unordered_set>
+
+using namespace std;
+
+/**
+ * Problem Analysis:
+ * We need to find a circular permutation p1, p2, ..., pn.
+ * We can flip the state of lamp holders. If the resulting set S contains 
+ * adjacent holders on the ring, the system returns 1, otherwise 0.
+ * 
+ * Strategy:
+ * 1. Use binary search to find neighbors of 1 more efficiently - O(n log n)
+ * 2. Build the ring by finding one neighbor at a time from each known vertex
+ * 
+ * Key insight: When we query {u, v}, we get:
+ * - r1: is {u} adjacent? (always 0)
+ * - r2: is {u, v} adjacent? (1 if adjacent)
+ * To reset, we can query {v, u} to get back to empty.
+ */
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int subtask, n;
+    if (!(cin >> subtask >> n)) return 0;
+
+    if (n == 1) {
+        cout << "-1 1" << endl;
+        return 0;
+    }
+    
+    if (n == 2) {
+        cout << "-1 1 2" << endl;
+        return 0;
+    }
+
+    // Find neighbors of 1 using linear scan
+    // For each v, test if 1 and v are adjacent
+    vector<int> neighbors_of_1;
+    vector<bool> tested(n + 1, false);
+    tested[1] = true;
+
+    for (int v = 2; v <= n; ++v) {
+        // Query: 1 then v
+        cout << "2 1 " << v << endl;
+        int r1, r2;
+        cin >> r1 >> r2;
+        
+        // r1 should be 0 (single element has no adjacent pair)
+        // r2 is 1 if 1 and v are neighbors
+        if (r2 == 1) {
+            neighbors_of_1.push_back(v);
+            if (neighbors_of_1.size() == 2) break;
+        }
+        
+        // Reset to empty: query v then 1
+        cout << "2 " << v << " 1" << endl;
+        int r3, r4;
+        cin >> r3 >> r4;
+    }
+
+    // Ensure we found both neighbors
+    if (neighbors_of_1.size() < 2) {
+        // This should not happen for n > 2
+        // Let's do a more thorough search
+        for (int v = 2; v <= n && neighbors_of_1.size() < 2; ++v) {
+            if (tested[v]) continue;
+            
+            cout << "2 1 " << v << endl;
+            int r1, r2;
+            cin >> r1 >> r2;
+            
+            if (r2 == 1) {
+                neighbors_of_1.push_back(v);
+            }
+            
+            cout << "2 " << v << " 1" << endl;
+            int r3, r4;
+            cin >> r3 >> r4;
+        }
+    }
+
+    // Build the ring using the two neighbors
+    // We'll find the next neighbor for each known vertex
+    vector<int> p;
+    p.push_back(1);
+    
+    // Add first neighbor
+    p.push_back(neighbors_of_1[0]);
+    
+    vector<bool> in_ring(n + 1, false);
+    in_ring[1] = true;
+    in_ring[neighbors_of_1[0]] = true;
+    
+    // Now we need to extend from neighbors_of_1[0] to find the rest
+    // For each vertex in the ring that has an unvisited neighbor, find it
+    
+    bool progress = true;
+    while ((int)p.size() < n && progress) {
+        progress = false;
+        
+        // Try to extend from the last element
+        int current = p.back();
+        
+        // Find an unvisited vertex that is adjacent to current
+        for (int v = 1; v <= n; ++v) {
+            if (!in_ring[v]) {
+                // Test if current and v are adjacent
+                cout << "2 " << current << " " << v << endl;
+                int r1, r2;
+                cin >> r1 >> r2;
+                
+                // Reset
+                cout << "2 " << v << " " << current << endl;
+                int r3, r4;
+                cin >> r3 >> r4;
+                
+                if (r2 == 1) {
+                    p.push_back(v);
+                    in_ring[v] = true;
+                    progress = true;
+                    break;
+                }
+            }
+        }
+        
+        // If we couldn't extend from the back, try from the front
+        if (!progress && p.size() > 1) {
+            current = p.front();
+            
+            for (int v = 1; v <= n; ++v) {
+                if (!in_ring[v]) {
+                    cout << "2 " << current << " " << v << endl;
+                    int r1, r2;
+                    cin >> r1 >> r2;
+                    
+                    cout << "2 " << v << " " << current << endl;
+                    int r3, r4;
+                    cin >> r3 >> r4;
+                    
+                    if (r2 == 1) {
+                        // Insert at the beginning
+                        p.insert(p.begin(), v);
+                        in_ring[v] = true;
+                        progress = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    // If we still haven't found all vertices, we need to handle the case
+    // where the ring is not fully connected through our traversal
+    // This can happen if we started with wrong neighbors
+    
+    // For remaining unvisited vertices, try to find where they belong
+    for (int v = 1; v <= n && (int)p.size() < n; ++v) {
+        if (!in_ring[v]) {
+            // Find any vertex in p that is adjacent to v
+            for (size_t i = 0; i < p.size(); ++i) {
+                int current = p[i];
+                
+                cout << "2 " << current << " " << v << endl;
+                int r1, r2;
+                cin >> r1 >> r2;
+                
+                cout << "2 " << v << " " << current << endl;
+                int r3, r4;
+                cin >> r3 >> r4;
+                
+                if (r2 == 1) {
+                    // v is adjacent to p[i]
+                    // Insert after p[i]
+                    p.insert(p.begin() + i + 1, v);
+                    in_ring[v] = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Output the answer
+    cout << "-1";
+    for (int i = 0; i < n; ++i) {
+        cout << " " << p[i];
+    }
+    cout << endl;
+
+    return 0;
+}
+Iteration 8: New subsample score 0.0 is not better than old score 6.666666666666667, skipping
+Iteration 9: Selected program 1 score: 6.666666666666667
+Iteration 8: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Piece {
+    vector<pair<int,int>> cells;
+    int w, h;
+};
+
+Piece normalize(const vector<pair<int,int>>& cells) {
+    int minx = INT_MAX, miny = INT_MAX;
+    for (auto [x,y] : cells) {
+        minx = min(minx, x);
+        miny = min(miny, y);
+    }
+    Piece p;
+    for (auto [x,y] : cells) {
+        p.cells.emplace_back(x - minx, y - miny);
+    }
+    int maxx = 0, maxy = 0;
+    for (auto [x,y] : p.cells) {
+        maxx = max(maxx, x);
+        maxy = max(maxy, y);
+    }
+    p.w = maxx + 1;
+    p.h = maxy + 1;
+    return p;
+}
+
+Piece transform(const Piece& p, int r, int f) {
+    Piece t = p;
+    for (auto& cell : t.cells) {
+        int x = cell.first, y = cell.second;
+        // Apply reflection across y-axis if needed
+        if (f) x = p.w - 1 - x;
+        // Apply rotation (0, 90, 180, 270 degrees clockwise)
+        for (int i = 0; i < r; i++) {
+            int nx = y;
+            int ny = (f ? x : p.w - 1 - x);
+            x = nx;
+            y = ny;
+        }
+        cell.first = x;
+        cell.second = y;
+    }
+    // Re-normalize after transformation
+    return normalize(t.cells);
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    if(!(cin >> n)) return 0;
+    
+    vector<vector<pair<int,int>>> input_pieces(n);
+    vector<int> ks(n);
+    
+    for (int i = 0; i < n; i++) {
+        cin >> ks[i];
+        input_pieces[i].reserve(ks[i]);
+        for (int j = 0; j < ks[i]; j++) {
+            int x, y;
+            cin >> x >> y;
+            input_pieces[i].push_back({x, y};
+        }
+    }
+    
+    // Pre-compute all 8 orientations for each piece
+    vector<array<Piece, 8>> orientations(n);
+    for (int i = 0; i < n; i++) {
+        Piece base = normalize(input_pieces[i]);
+        for (int f = 0; f < 2; f++) {
+            for (int r = 0; r < 4; r++) {
+                orientations[i][f*4 + r] = transform(base, r, f);
+            }
+        }
+    }
+    
+    // Greedy packing with rows
+    const int MAX_WIDTH = 1000;  // Reasonable bound for width
+    
+    struct PlacedPiece {
+        int idx;
+        int orient;
+        int x, y;
+    };
+    vector<PlacedPiece> placed;
+    
+    // Track occupied cells using a map from (x,y) to piece index
+    unordered_set<long long> occupied;
+    auto key = [](int x, int y) -> long long {
+        return ((long long)x << 32) | (unsigned int)y;
+    };
+    
+    int currentY = 0;
+    int rowHeight = 0;
+    int currentX = 0;
+    
+    for (int i = 0; i < n; i++) {
+        // Find best orientation that fits
+        Piece bestPiece;
+        int bestOrient = 0;
+        int bestX = 0, bestY = 0;
+        bool found = false;
+        
+        // Try all orientations
+        for (int orient = 0; orient < 8; orient++) {
+            const Piece& p = orientations[i][orient];
+            
+            // Try to fit in current row first
+            if (currentX + p.w <= MAX_WIDTH) {
+                // Check if placement at (currentX, currentY) causes overlap
+                bool overlap = false;
+                for (auto [cx, cy] : p.cells) {
+                    int gx = currentX + cx;
+                    int gy = currentY + cy;
+                    if (occupied.find(key(gx, gy)) != occupied.end()) {
+                        overlap = true;
+                        break;
+                    }
+                }
+                if (!overlap) {
+                    bestPiece = p;
+                    bestOrient = orient;
+                    bestX = currentX;
+                    bestY = currentY;
+                    found = true;
+                    break;
+                }
+            }
+            
+            // Try starting a new row
+            if (p.w <= MAX_WIDTH) {
+                bool overlap = false;
+                for (auto [cx, cy] : p.cells) {
+                    int gx = cx;
+                    int gy = currentY + rowHeight + cy;
+                    if (occupied.find(key(gx, gy)) != occupied.end()) {
+                        overlap = true;
+                        break;
+                    }
+                }
+                if (!overlap) {
+                    bestPiece = p;
+                    bestOrient = orient;
+                    bestX = 0;
+                    bestY = currentY + rowHeight;
+                    found = true;
+                }
+            }
+        }
+        
+        if (!found) {
+            // Fallback: place far to the right (shouldn't happen often)
+            bestPiece = orientations[i][0];
+            bestOrient = 0;
+            bestX = 0;
+            bestY = currentY + rowHeight;
+        }
+        
+        // Place the piece
+        placed.push_back({i, bestOrient, bestX, bestY};
+        
+        // Mark cells as occupied
+        for (auto [cx, cy] : bestPiece.cells) {
+            occupied.insert(key(bestX + cx, bestY + cy));
+        }
+        
+        // Update position for next piece
+        currentX += bestPiece.w;
+        rowHeight = max(rowHeight, bestPiece.h);
+        
+        // Start new row if needed
+        if (currentX > MAX_WIDTH) {
+            currentX = 0;
+            currentY += rowHeight;
+            rowHeight = 0;
+        }
+    }
+    
+    // Calculate final bounding box
+    int minX = INT_MAX, maxX = INT_MIN, minY = INT_MAX, maxY = INT_MIN;
+    for (auto& pp : placed) {
+        const Piece& p = orientations[pp.idx][pp.orient];
+        for (auto [cx, cy] : p.cells) {
+            int gx = pp.x + cx;
+            int gy = pp.y + cy;
+            minX = min(minX, gx);
+            maxX = max(maxX, gx);
+            minY = min(minY, gy);
+            maxY = max(maxY, gy);
+        }
+    }
+    
+    int W = maxX - minX + 1;
+    int H = maxY - minY + 1;
+    
+    // Adjust placements to be relative to bounding box origin
+    cout << W << " " << H << "\n";
+    
+    for (auto& pp : placed) {
+        int r = pp.orient % 4;
+        int f = pp.orient / 4;
+        int X = pp.x - minX;
+        int Y = pp.y - minY;
+        cout << X << " " << Y << " " << r << " " << f << "\n";
+    }
+    
+    return 0;
+}
+Iteration 8: New subsample score 0.0 is not better than old score 20.283576732857142, skipping
+Iteration 9: Selected program 1 score: 20.283576732857142
+Iteration 15: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;   // quantity available
+    long long v;   // value per item
+    long long m;   // mass per item (mg)
+    long long l;   // volume per item (µL)
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    string input;
+    string line;
+    while (getline(cin, line)) {
+        input += line;
+    }
+    
+    // Parse JSON manually - find keys and values
+    vector<Item> items;
+    map<string, int> nameToIdx;
+    
+    // Simple JSON parsing: find patterns like "key": [q, v, m, l]
+    size_t pos = 0;
+    while (pos < input.size()) {
+        // Find a string key (in quotes)
+        size_t quote1 = input.find('"', pos);
+        if (quote1 == string::npos) break;
+        size_t quote2 = input.find('"', quote1 + 1);
+        if (quote2 == string::npos) break;
+        
+        string key = input.substr(quote1 + 1, quote2 - quote1 - 1);
+        
+        // Find the array after this key
+        size_t arrStart = input.find('[', quote2);
+        if (arrStart == string::npos) break;
+        
+        // Parse 4 integers in the array
+        vector<long long> nums;
+        size_t p = arrStart + 1;
+        while (nums.size() < 4 && p < input.size()) {
+            // Skip whitespace and commas
+            while (p < input.size() && (input[p] == ' ' || input[p] == '\n' || input[p] == '\r' || input[p] == ',' || input[p] == '\t')) p++;
+            if (p >= input.size() || input[p] == ']') break;
+            
+            // Parse number
+            long long val = 0;
+            bool negative = false;
+            if (input[p] == '-') {
+                negative = true;
+                p++;
+            }
+            while (p < input.size() && isdigit(input[p])) {
+                val = val * 10 + (input[p] - '0');
+                p++;
+            }
+            if (negative) val = -val;
+            nums.push_back(val);
+        }
+        
+        if (nums.size() >= 4) {
+            Item it;
+            it.name = key;
+            it.q = nums[0];
+            it.v = nums[1];
+            it.m = nums[2];
+            it.l = nums[3];
+            nameToIdx[key] = items.size();
+            items.push_back(it);
+        }
+        
+        pos = p;
+    }
+    
+    const long long MASS_LIMIT = 20LL * 1000000;  // 20 kg in mg
+    const long long VOLUME_LIMIT = 25LL * 1000000; // 25 L in µL
+    
+    // Use DP with map for state compression
+    // dp[mass] = pair<volume, value> - for each mass, track best volume and value
+    // Actually, let's use a different approach: store (mass, volume) -> max value
+    
+    // For efficiency, use vector of maps approach
+    // dp[mass] = best (volume, value) we can achieve
+    
+    // Since mass and volume are large, use a greedy + local search approach
+    // First, compute value density for each item
+    
+    struct ScoredItem {
+        int idx;
+        double ratio; // value per mass
+        double ratioV; // value per volume
+        long long v, m, l, q;
+    };
+    
+    vector<ScoredItem> scored;
+    for (int i = 0; i < (int)items.size(); i++) {
+        ScoredItem si;
+        si.idx = i;
+        si.v = items[i].v;
+        si.m = items[i].m;
+        si.l = items[i].l;
+        si.q = items[i].q;
+        si.ratio = (double)items[i].v / items[i].m;
+        si.ratioV = (double)items[i].v / items[i].l;
+        scored.push_back(si);
+    }
+    
+    // Try multiple greedy orderings and keep best
+    vector<long long> bestQty(items.size(), 0);
+    long long bestValue = 0;
+    long long bestMass = 0;
+    long long bestVolume = 0;
+    
+    // Sort by value/mass ratio descending
+    sort(scored.begin(), scored.end(), [](const ScoredItem& a, const ScoredItem& b) {
+        return a.ratio > b.ratio;
+    });
+    
+    // Greedy by value/mass
+    {
+        vector<long long> qty(items.size(), 0);
+        long long totalMass = 0, totalVolume = 0, totalValue = 0;
+        
+        for (const auto& si : scored) {
+            long long maxByMass = (MASS_LIMIT - totalMass) / si.m;
+            long long maxByVolume = (VOLUME_LIMIT - totalVolume) / si.l;
+            long long take = min(si.q, min(maxByMass, maxByVolume));
+            if (take > 0) {
+                qty[si.idx] = take;
+                totalMass += take * si.m;
+                totalVolume += take * si.l;
+                totalValue += take * si.v;
+            }
+        }
+        
+        if (totalValue > bestValue) {
+            bestValue = totalValue;
+            bestQty = qty;
+            bestMass = totalMass;
+            bestVolume = totalVolume;
+        }
+    }
+    
+    // Sort by value/volume ratio
+    sort(scored.begin(), scored.end(), [](const ScoredItem& a, const ScoredItem& b) {
+        return a.ratioV > b.ratioV;
+    });
+    
+    // Greedy by value/volume
+    {
+        vector<long long> qty(items.size(), 0);
+        long long totalMass = 0, totalVolume = 0, totalValue = 0;
+        
+        for (const auto& si : scored) {
+            long long maxByMass = (MASS_LIMIT - totalMass) / si.m;
+            long long maxByVolume = (VOLUME_LIMIT - totalVolume) / si.l;
+            long long take = min(si.q, min(maxByMass, maxByVolume));
+            if (take > 0) {
+                qty[si.idx] = take;
+                totalMass += take * si.m;
+                totalVolume += take * si.l;
+                totalValue += take * si.v;
+            }
+        }
+        
+        if (totalValue > bestValue) {
+            bestValue = totalValue;
+            bestQty = qty;
+            bestMass = totalMass;
+            bestVolume = totalVolume;
+        }
+    }
+    
+    // Try sorting by pure value (high value items first)
+    sort(scored.begin(), scored.end(), [](const ScoredItem& a, const ScoredItem& b) {
+        return a.v > b.v;
+    });
+    
+    // Greedy by value
+    {
+        vector<long long> qty(items.size(), 0);
+        long long totalMass = 0, totalVolume = 0, totalValue = 0;
+        
+        for (const auto& si : scored) {
+            long long maxByMass = (MASS_LIMIT - totalMass) / si.m;
+            long long maxByVolume = (VOLUME_LIMIT - totalVolume) / si.l;
+            long long take = min(si.q, min(maxByMass, maxByVolume));
+            if (take > 0) {
+                qty[si.idx] = take;
+                totalMass += take * si.m;
+                totalVolume += take * si.l;
+                totalValue += take * si.v;
+            }
+        }
+        
+        if (totalValue > bestValue) {
+            bestValue = totalValue;
+            bestQty = qty;
+            bestMass = totalMass;
+            bestVolume = totalVolume;
+        }
+    }
+    
+    // Try dynamic programming with state compression
+    // Use unordered_map for dp: key = mass, value = pair(volume, value)
+    // Since mass range is large, we'll use a limited approach
+    
+    // Actually, let's try a branch-and-bound like approach: try partial enumeration
+    // For each item, try taking 0, 25%, 50%, 75%, 100% of max possible
+    
+    // First, compute max possible for each item
+    vector<long long> maxPossible(items.size());
+    for (int i = 0; i < (int)items.size(); i++) {
+        maxPossible[i] = min(items[i].q, min(MASS_LIMIT / items[i].m, VOLUME_LIMIT / items[i].l));
+    }
+    
+    // Try a few random combinations
+    srand(42);
+    for (int iter = 0; iter < 1000; iter++) {
+        vector<long long> qty(items.size(), 0);
+        long long totalMass = 0, totalVolume = 0, totalValue = 0;
+        
+        // Random order
+        vector<int> order(items.size());
+        iota(order.begin(), order.end(), 0);
+        random_shuffle(order.begin(), order.end());
+        
+        for (int idx : order) {
+            long long maxByMass = (MASS_LIMIT - totalMass) / items[idx].m;
+            long long maxByVolume = (VOLUME_LIMIT - totalVolume) / items[idx].l;
+            long long maxTake = min(items[idx].q, min(maxByMass, maxByVolume));
+            
+            // Take random amount (including 0 and max)
+            long long take;
+            if (maxTake == 0) {
+                take = 0;
+            } else {
+                int r = rand() % 5;
+                if (r == 0) take = 0;
+                else if (r == 1) take = maxTake;
+                else if (r == 2) take = maxTake / 2;
+                else if (r == 3) take = maxTake / 4;
+                else take = rand() % (maxTake + 1);
+            }
+            
+            if (take > 0) {
+                qty[idx] = take;
+                totalMass += take * items[idx].m;
+                totalVolume += take * items[idx].l;
+                totalValue += take * items[idx].v;
+            }
+        }
+        
+        if (totalValue > bestValue) {
+            bestValue = totalValue;
+            bestQty = qty;
+            bestMass = totalMass;
+            bestVolume = totalVolume;
+        }
+    }
+    
+    // Try a more systematic approach: for each item, try different quantities
+    // Use limited DP: for each item type, consider a few options
+    
+    // For each item, precompute a few quantity options (0, some fractions, max)
+    struct Option {
+        long long qty;
+        long long mass;
+        long long volume;
+        long long value;
+    };
+    
+    vector<vector<Option>> itemOptions(items.size());
+    for (int i = 0; i < (int)items.size(); i++) {
+        long long maxQty = maxPossible[i];
+        // Add 0
+        itemOptions[i].push_back({0, 0, 0, 0});
+        if (maxQty > 0) {
+            // Add some intermediate values
+            vector<long long> qs;
+            qs.push_back(maxQty);
+            if (maxQty > 1) qs.push_back(maxQty / 2);
+            if (maxQty > 2) qs.push_back(maxQty * 2 / 3);
+            if (maxQty > 3) qs.push_back(maxQty / 4);
+            if (maxQty > 10) qs.push_back(maxQty / 10);
+            if (maxQty > 100) qs.push_back(maxQty / 100);
+            
+            sort(qs.begin(), qs.end());
+            qs.erase(unique(qs.begin(), qs.end()), qs.end());
+            
+            for (long long q : qs) {
+                if (q > 0) {
+                    itemOptions[i].push_back({q, q * items[i].m, q * items[i].l, q * items[i].v});
+                }
+            }
+        }
+    }
+    
+    // Now do DP over items with these options
+    // dp[mass] = pair(volume, value), but we need to track volume too
+    // Let's use map< pair<mass, volume>, value > but that's too slow
+    // Use map<mass> = best (volume, value)
+    
+    // Actually, let's use a vector of states
+    struct State {
+        long long mass;
+        long long volume;
+        long long value;
+    };
+    
+    vector<State> dp;
+    dp.push_back({0, 0, 0});
+    
+    for (int i = 0; i < (int)items.size(); i++) {
+        vector<State> newdp;
+        for (const auto& state : dp) {
+            for (const auto& opt : itemOptions[i]) {
+                long long newMass = state.mass + opt.mass;
+                long long newVolume = state.volume + opt.volume;
+                long long newValue = state.value + opt.value;
+                
+                if (newMass <= MASS_LIMIT && newVolume <= VOLUME_LIMIT) {
+                    newdp.push_back({newMass, newVolume, newValue};
+                }
+            }
+        }
+        
+        // Keep only Pareto-optimal states (no dominated states)
+        sort(newdp.begin(), newdp.end(), [](const State& a, const State& b) {
+            if (a.mass != b.mass) return a.mass < b.mass;
+            if (a.volume != b.volume) return a.volume < b.volume;
+            return a.value > b.value;
+        });
+        
+        vector<State> filtered;
+        long long bestVolume = -1;
+        long long bestValue = -1;
+        for (const auto& s : newdp) {
+            if (s.value > bestValue || (s.value == bestValue && s.volume < bestVolume)) {
+                // Check if this state is dominated by an existing one
+                bool dominated = false;
+                for (const auto& f : filtered) {
+                    if (f.mass <= s.mass && f.volume <= s.volume && f.value >= s.value) {
+                        if (f.mass < s.mass || f.volume < s.volume || f.value > s.value) {
+                            dominated = true;
+                            break;
+                        }
+                    }
+                }
+                if (!dominated) {
+                    filtered.push_back(s);
+                    bestValue = s.value;
+                    bestVolume = s.volume;
+                }
+            }
+        }
+        
+        dp = filtered;
+        
+        // Limit DP size for performance
+        if (dp.size() > 50000) {
+            sort(dp.begin(), dp.end(), [](const State& a, const State& b) {
+                return a.value > b.value;
+            });
+            dp.resize(50000);
+        }
+    }
+    
+    // Find best state
+    for (const auto& state : dp) {
+        if (state.value > bestValue) {
+            bestValue = state.value;
+            bestMass = state.mass;
+            bestVolume = state.volume;
+        }
+    }
+    
+    // Now we need to reconstruct the solution
+    // Re-run DP with backtracking info
+    // Actually, let's just run the DP again and track choices
+    
+    // Simpler: just use the greedy result for output
+    // But we need to output JSON with the right format
+    
+    // Output JSON
+    cout << "{\n";
+    for (int i = 0; i < (int)items.size(); i++) {
+        if (i > 0) cout << ",\n";
+        cout << "    \"" << items[i].name << "\": " << bestQty[i];
+    }
+    cout << "\n}";
+    
+    return 0;
+}
+Iteration 15: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 16: Selected program 0 score: 0.0
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+Iteration 9: Exception during reflection/proposal: litellm.APIError: APIError: OpenrouterException - Network connection lost.
+Traceback (most recent call last):
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/main.py", line 3317, in completion
+    response = base_llm_http_handler.completion(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/llms/custom_httpx/llm_http_handler.py", line 575, in completion
+    return provider_config.transform_response(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/llms/openrouter/chat/transformation.py", line 201, in transform_response
+    model_response = super().transform_response(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/llms/openai/chat/gpt_transformation.py", line 647, in transform_response
+    final_response_obj = convert_to_model_response_object(
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/litellm_core_utils/llm_response_utils/convert_dict_to_response.py", line 525, in convert_to_model_response_object
+    raise raised_exception
+Exception
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 297, in propose
+    new_texts = self.propose_new_texts(curr_prog, reflective_dataset, predictor_names_to_update)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/reflective_mutation.py", line 128, in propose_new_texts
+    new_texts[name] = InstructionProposalSignature.run(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/proposer/reflective_mutation/base.py", line 48, in run
+    lm_res = lm(full_prompt)
+             ^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/gepa/optimize_anything.py", line 859, in _lm
+    completion = litellm.completion(model=model_name, messages=messages)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/core/batch_runner.py", line 40, in _resilient
+    return _original(model=try_model, messages=messages, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/utils.py", line 1772, in wrapper
+    raise e
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/utils.py", line 1593, in wrapper
+    result = original_function(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/main.py", line 4412, in completion
+    raise exception_type(
+          ^^^^^^^^^^^^^^^
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 2456, in exception_type
+    raise e
+  File "/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.11/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 2389, in exception_type
+    raise APIError(
+litellm.exceptions.APIError: litellm.APIError: APIError: OpenrouterException - Network connection lost.
+
+Iteration 9: Reflective mutation did not propose a new candidate
+Iteration 10: Selected program 1 score: 6.666666666666667
+Iteration 9: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct TransformedPiece {
+    vector<pair<int,int>> cells;
+    int w, h;
+    int rot;
+    int flip;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int n;
+    if(!(cin >> n)) return 0;
+    
+    vector<vector<pair<int,int>>> pieces(n);
+    vector<int> ks(n);
+    
+    for (int i = 0; i < n; i++) {
+        cin >> ks[i];
+        pieces[i].reserve(ks[i]);
+        for (int j = 0; j < ks[i]; j++) {
+            int x, y;
+            cin >> x >> y;
+            pieces[i].push_back({x, y});
+        }
+    }
+    
+    // Precompute best transformation (smallest bounding box) for each piece
+    vector<TransformedPiece> bestTrans(n);
+    
+    for (int i = 0; i < n; i++) {
+        const auto& orig = pieces[i];
+        int bestArea = INT_MAX;
+        
+        for (int flip = 0; flip < 2; flip++) {
+            for (int rot = 0; rot < 4; rot++) {
+                vector<pair<int,int>> transformed;
+                int minx = INT_MAX, miny = INT_MAX, maxx = INT_MIN, maxy = INT_MIN;
+                
+                for (auto [x, y] : orig) {
+                    int nx = x, ny = y;
+                    if (flip) nx = -nx;  // reflect across y-axis
+                    for (int r = 0; r < rot; r++) {  // rotate 90° clockwise
+                        int tmp = nx;
+                        nx = -ny;
+                        ny = tmp;
+                    }
+                    transformed.push_back({nx, ny});
+                    minx = min(minx, nx);
+                    maxx = max(maxx, nx);
+                    miny = min(miny, ny);
+                    maxy = max(maxy, ny);
+                }
+                
+                // Normalize to origin
+                for (auto& p : transformed) {
+                    p.first -= minx;
+                    p.second -= miny;
+                }
+                
+                int w = maxx - minx + 1;
+                int h = maxy - miny + 1;
+                int area = w * h;
+                
+                if (area < bestArea) {
+                    bestArea = area;
+                    bestTrans[i] = {transformed, w, h, rot, flip};
+                }
+            }
+        }
+    }
+    
+    // First-fit decreasing bin packing with rows
+    struct Row {
+        int y;
+        int height;
+        int usedWidth;
+    };
+    
+    vector<Row> rows;
+    vector<pair<int,int>> placements(n);
+    vector<TransformedPiece> usedTrans(n);
+    
+    // Sort by height descending (first-fit decreasing)
+    vector<int> order(n);
+    iota(order.begin(), order.end(), 0);
+    sort(order.begin(), order.end(), [&](int a, int b) {
+        return bestTrans[a].h > bestTrans[b].h;
+    });
+    
+    for (int idx : order) {
+        const auto& piece = bestTrans[idx];
+        bool placed = false;
+        
+        // Try to fit in existing row
+        for (auto& row : rows) {
+            if (row.height >= piece.h) {
+                placements[idx] = {row.usedWidth, row.y};
+                usedTrans[idx] = piece;
+                row.usedWidth += piece.w + 1;  // 1 cell gap
+                placed = true;
+                break;
+            }
+        }
+        
+        // Start new row if needed
+        if (!placed) {
+            int newY = rows.empty() ? 0 : rows.back().y + rows.back().height + 1;
+            rows.push_back({newY, piece.h, piece.w + 1});
+            placements[idx] = {0, newY};
+            usedTrans[idx] = piece;
+        }
+    }
+    
+    // Calculate final bounding box
+    int maxX = 0, maxY = 0;
+    for (int i = 0; i < n; i++) {
+        const auto& t = usedTrans[i];
+        maxX = max(maxX, placements[i].first + t.w);
+        maxY = max(maxY, placements[i].second + t.h);
+    }
+    
+    int W = maxX + 1;
+    int H = maxY + 1;
+    
+    cout << W << " " << H << "\n";
+    
+    // Output in original piece order
+    for (int i = 0; i < n; i++) {
+        const auto& t = usedTrans[i];
+        cout << placements[i].first << " " << placements[i].second 
+             << " " << t.rot << " " << t.flip << "\n";
+    }
+    
+    return 0;
+}
+Iteration 9: New subsample score 19.99635797571429 is not better than old score 20.283576732857142, skipping
+Iteration 10: Selected program 1 score: 20.283576732857142
+Iteration 16: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    string name;
+    long long q;
+    long long v;
+    long long m;
+    long long l;
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // Read entire input
+    string input((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());
+    
+    // Parse JSON manually - find keys and values
+    vector<Item> items;
+    map<string, int> nameToIdx;
+    
+    // Simple JSON parsing: find patterns like "name": [q, v, m, l]
+    size_t pos = 0;
+    while (pos < input.size()) {
+        // Find a string key (in quotes)
+        size_t quote1 = input.find('"', pos);
+        if (quote1 == string::npos) break;
+        size_t quote2 = input.find('"', quote1 + 1);
+        if (quote2 == string::npos) break;
+        
+        string key = input.substr(quote1 + 1, quote2 - quote1 - 1);
+        
+        // Find the array after this key
+        size_t bracket1 = input.find('[', quote2);
+        if (bracket1 == string::npos) break;
+        
+        // Find 4 numbers in the array
+        vector<long long> nums;
+        size_t p = bracket1 + 1;
+        while (nums.size() < 4 && p < input.size()) {
+            // Skip non-digits and minus
+            while (p < input.size() && !isdigit(input[p]) && input[p] != '-') p++;
+            if (p >= input.size()) break;
+            
+            size_t start = p;
+            if (input[p] == '-') p++;
+            while (p < input.size() && isdigit(input[p])) p++;
+            string numStr = input.substr(start, p - start);
+            if (!numStr.empty() && (isdigit(numStr[0]) || numStr[0] == '-')) {
+                nums.push_back(stoll(numStr));
+            }
+        }
+        
+        if (nums.size() >= 4) {
+            Item it;
+            it.name = key;
+            it.q = nums[0];
+            it.v = nums[1];
+            it.m = nums[2];
+            it.l = nums[3];
+            int idx = items.size();
+            items.push_back(it);
+            nameToIdx[key] = idx;
+        }
+        
+        pos = p;
+    }
+    
+    int n = items.size();
+    if (n == 0) {
+        cout << "{}" << endl;
+        return 0;
+    }
+    
+    // Constraints
+    const long long MAX_MASS = 20000000;  // 20 kg in mg
+    const long long MAX_VOL = 25000000;  // 25 liters in ul
+    
+    // Solve using greedy with value density (value / mass and value / volume)
+    // Since we have 2 constraints, use a combined ratio
+    // Also try value / (mass * some_weight + volume * some_weight)
+    
+    // For each item, compute value per mass and value per volume
+    // Use binary representation for bounded knapsack (convert to 0-1)
+    // But with large q, this could be too many items
+    
+    // Greedy approach: sort by value/(mass+volume) ratio and take as many as possible
+    // Then try to improve with local search
+    
+    vector<long long> bestX(n, 0);
+    long long bestVal = 0;
+    
+    // Try multiple greedy strategies and pick best
+    
+    // Strategy 1: Sort by v/(m+l) ratio
+    {
+        vector<int> idx(n);
+        iota(idx.begin(), idx.end(), 0);
+        sort(idx.begin(), idx.end(), [&](int a, int b) {
+            double ra = (double)items[a].v / (items[a].m + items[a].l);
+            double rb = (double)items[b].v / (items[b].m + items[b].l);
+            return ra > rb;
+        });
+        
+        long long curMass = 0, curVol = 0, curVal = 0;
+        vector<long long> x(n, 0);
+        
+        for (int i : idx) {
+            Item& it = items[i];
+            // Take as many as possible
+            long long maxByMass = (MAX_MASS - curMass) / it.m;
+            long long maxByVol = (MAX_VOL - curVol) / it.l;
+            long long take = min({it.q, maxByMass, maxByVol});
+            if (take > 0) {
+                x[i] = take;
+                curMass += take * it.m;
+                curVol += take * it.l;
+                curVal += take * it.v;
+            }
+        }
+        
+        if (curVal > bestVal) {
+            bestVal = curVal;
+            bestX = x;
+        }
+    }
+    
+    // Strategy 2: Sort by v/m ratio
+    {
+        vector<int> idx(n);
+        iota(idx.begin(), idx.end(), 0);
+        sort(idx.begin(), idx.end(), [&](int a, int b) {
+            double ra = (double)items[a].v / items[a].m;
+            double rb = (double)items[b].v / items[b].m;
+            return ra > rb;
+        });
+        
+        long long curMass = 0, curVol = 0, curVal = 0;
+        vector<long long> x(n, 0);
+        
+        for (int i : idx) {
+            Item& it = items[i];
+            long long maxByMass = (MAX_MASS - curMass) / it.m;
+            long long maxByVol = (MAX_VOL - curVol) / it.l;
+            long long take = min({it.q, maxByMass, maxByVol});
+            if (take > 0) {
+                x[i] = take;
+                curMass += take * it.m;
+                curVol += take * it.l;
+                curVal += take * it.v;
+            }
+        }
+        
+        if (curVal > bestVal) {
+            bestVal = curVal;
+            bestX = x;
+        }
+    }
+    
+    // Strategy 3: Sort by v/l ratio
+    {
+        vector<int> idx(n);
+        iota(idx.begin(), idx.end(), 0);
+        sort(idx.begin(), idx.end(), [&](int a, int b) {
+            double ra = (double)items[a].v / items[a].l;
+            double rb = (double)items[b].v / items[b].l;
+            return ra > rb;
+        });
+        
+        long long curMass = 0, curVol = 0, curVal = 0;
+        vector<long long> x(n, 0);
+        
+        for (int i : idx) {
+            Item& it = items[i];
+            long long maxByMass = (MAX_MASS - curMass) / it.m;
+            long long maxByVol = (MAX_VOL - curVol) / it.l;
+            long long take = min({it.q, maxByMass, maxByVol});
+            if (take > 0) {
+                x[i] = take;
+                curMass += take * it.m;
+                curVol += take * it.l;
+                curVal += take * it.v;
+            }
+        }
+        
+        if (curVal > bestVal) {
+            bestVal = curVal;
+            bestX = x;
+        }
+    }
+    
+    // Strategy 4: Try taking all of each single item type (for small q)
+    for (int i = 0; i < n; i++) {
+        Item& it = items[i];
+        if (it.q * it.m <= MAX_MASS && it.q * it.l <= MAX_VOL) {
+            long long curMass = it.q * it.m;
+            long long curVol = it.q * it.l;
+            long long curVal = it.q * it.v;
+            vector<long long> x(n, 0);
+            x[i] = it.q;
+            
+            // Then fill with best ratio items
+            vector<int> idx(n);
+            iota(idx.begin(), idx.end(), 0);
+            sort(idx.begin(), idx.end(), [&](int a, int b) {
+                double ra = (double)items[a].v / (items[a].m + items[a].l);
+                double rb = (double)items[b].v / (items[b].m + items[b].l);
+                return ra > rb;
+            });
+            
+            for (int j : idx) {
+                if (j == i) continue;
+                Item& it2 = items[j];
+                long long maxByMass = (MAX_MASS - curMass) / it2.m;
+                long long maxByVol = (MAX_VOL - curVol) / it2.l;
+                long long take = min({it2.q, maxByMass, maxByVol});
+                if (take > 0) {
+                    x[j] = take;
+                    curMass += take * it2.m;
+                    curVol += take * it2.l;
+                    curVal += take * it2.v;
+                }
+            }
+            
+            if (curVal > bestVal) {
+                bestVal = curVal;
+                bestX = x;
+            }
+        }
+    }
+    
+    // Output JSON
+    cout << "{";
+    for (int i = 0; i < n; i++) {
+        if (i > 0) cout << ",";
+        cout << "\"" << items[i].name << "\":" << bestX[i];
+    }
+    cout << "}" << endl;
+    
+    return 0;
+}
+Iteration 16: New subsample score 0.0 is not better than old score 0.0, skipping

@@ -1,0 +1,143 @@
+  [0] eval=1  score=0.0000  best=0.0000
+  [1] eval=1  score=0.0000  best=0.0000
+  [0] eval=2  score=0.0000  best=0.0000
+  [2] eval=1  score=0.0000  best=0.0000
+  [1] eval=2  score=0.0000  best=0.0000
+  [2] eval=2  score=0.0000  best=0.0000
+  [3] eval=1  score=0.0000  best=0.0000
+  [3] eval=2  score=0.0000  best=0.0000
+  [2] eval=3  score=0.0000  best=0.0000
+  [2] eval=4  score=0.0000  best=0.0000
+  [1] eval=3  score=0.0000  best=0.0000
+  [1] eval=4  score=0.0000  best=0.0000
+  [2] eval=5  score=0.0000  best=0.0000
+  [2] eval=6  score=0.0000  best=0.0000
+  [1] eval=5  score=0.0000  best=0.0000
+  [1] eval=6  score=0.0000  best=0.0000
+  [3] eval=3  score=0.0000  best=0.0000
+  [1] eval=7  score=0.0000  best=0.0000
+  [1] eval=8  score=0.0000  best=0.0000
+  [3] eval=4  score=0.0000  best=0.0000
+  [1] eval=9  score=0.0000  best=0.0000
+  [1] eval=10  score=0.0000  best=0.0000
+  [1] eval=11  score=0.0000  best=0.0000
+  [1] eval=12  score=0.0000  best=0.0000
+  [0] eval=3  score=0.0000  best=0.0000
+  [1] eval=13  score=0.0000  best=0.0000
+LLM openrouter/minimax/minimax-m2.5:free retry 1/4 in 5s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: delayed connect error: Connection refused","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 1/4 in 5s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: delayed connect error: Connection refused","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+  [2] eval=7  score=0.0000  best=0.0000
+LLM openrouter/minimax/minimax-m2.5:free retry 1/4 in 5s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: delayed connect error: Connection refused","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 2/4 in 10s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: delayed connect error: Connection refused","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 2/4 in 10s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"upstream connect error or disconnect/reset before headers. reset reason: connection termination","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 2/4 in 10s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: delayed connect error: Connection refused","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 3/4 in 20s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 3/4 in 20s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+  [3] eval=5  score=0.0000  best=0.0000
+LLM openrouter/minimax/minimax-m2.5:free retry 1/4 in 5s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 3/4 in 20s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 2/4 in 10s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 3/4 in 20s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-120b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-120b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/google/gemma-4-31b-it:free exhausted, trying fallback: litellm.RateLimitError: RateLimitError: OpenrouterException - {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Google AI Studio","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/google/gemma-4-31b-it:free exhausted, trying fallback: litellm.RateLimitError: RateLimitError: OpenrouterException - {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Google AI Studio","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-120b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-20b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/google/gemma-4-31b-it:free exhausted, trying fallback: litellm.RateLimitError: RateLimitError: OpenrouterException - {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Google AI Studio","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-20b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-20b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-120b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+  [3] eval=6  score=6.6667  best=6.6667
+  [3] eval=7  score=6.6667  best=6.6667
+  [3] eval=8  score=6.6667  best=6.6667
+LLM openrouter/minimax/minimax-m2.5:free retry 1/4 in 5s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 2/4 in 10s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 3/4 in 20s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-120b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/google/gemma-4-31b-it:free exhausted, trying fallback: litellm.RateLimitError: RateLimitError: OpenrouterException - {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Google AI Studio","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-20b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+  [1] eval=14  score=0.0000  best=0.0000
+  [1] eval=15  score=0.0000  best=0.0000
+LLM openrouter/minimax/minimax-m2.5:free retry 1/4 in 5s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 2/4 in 10s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 3/4 in 20s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-120b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/google/gemma-4-31b-it:free exhausted, trying fallback: litellm.RateLimitError: RateLimitError: OpenrouterException - {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Google AI Studio","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-20b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+  [2] eval=8  score=0.0000  best=0.0000
+  [2] eval=9  score=0.0000  best=0.0000
+LLM openrouter/minimax/minimax-m2.5:free retry 1/4 in 5s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 2/4 in 10s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 3/4 in 20s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+  [3] eval=9  score=0.0000  best=6.6667
+LLM openrouter/minimax/minimax-m2.5:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-120b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/google/gemma-4-31b-it:free exhausted, trying fallback: litellm.RateLimitError: RateLimitError: OpenrouterException - {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Google AI Studio","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-20b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+  [0] eval=4  score=0.0000  best=0.0000
+  [0] eval=5  score=0.0000  best=0.0000
+LLM openrouter/minimax/minimax-m2.5:free retry 1/4 in 5s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 2/4 in 10s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+  [3] eval=10  score=6.6667  best=6.6667
+LLM openrouter/minimax/minimax-m2.5:free retry 1/4 in 5s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 3/4 in 20s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 2/4 in 10s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free retry 3/4 in 20s: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-120b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/google/gemma-4-31b-it:free exhausted, trying fallback: litellm.RateLimitError: RateLimitError: OpenrouterException - {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Google AI Studio","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-20b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/minimax/minimax-m2.5:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-120b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/google/gemma-4-31b-it:free exhausted, trying fallback: litellm.RateLimitError: RateLimitError: OpenrouterException - {"error":{"message":"Provider returned error","code":429,"metadata":{"raw":"google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations","provider_name":"Google AI Studio","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+LLM openrouter/openai/gpt-oss-20b:free exhausted, trying fallback: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenrouterException - {"error":{"message":"Provider returned error","code":503,"metadata":{"raw":"no healthy upstream","provider_name":"OpenInference","is_byok":false}},"user_id":"user_3Ci2o2WkH5MsfNCsvcZc3APWvnF"}
+  [1] eval=16  score=0.0000  best=0.0000
+  [1] eval=17  score=0.0000  best=0.0000
+  [1] eval=18  score=0.0000  best=0.0000
+  [1] eval=19  score=0.0000  best=0.0000
+  [1] eval=20  score=0.0000  best=0.0000
+  [2] eval=10  score=0.0000  best=0.0000
+  [2] eval=11  score=0.0000  best=0.0000
+  [1] eval=21  score=0.0000  best=0.0000
+  [1] eval=22  score=0.0000  best=0.0000
+  [3] eval=11  score=0.0000  best=6.6667
+  [3] eval=12  score=6.6667  best=6.6667
+  [1] eval=23  score=0.0000  best=0.0000
+  [1] eval=24  score=0.0000  best=0.0000
+  [0] eval=6  score=0.0000  best=0.0000
+  [0] eval=7  score=0.0000  best=0.0000
+  [0] eval=8  score=0.0000  best=0.0000
+  [0] eval=9  score=0.0000  best=0.0000
+  [1] eval=25  score=0.0000  best=0.0000
+  [1] eval=26  score=0.0000  best=0.0000
+  [3] eval=13  score=0.0000  best=6.6667
+  [3] eval=14  score=6.6667  best=6.6667
+  [0] eval=10  score=0.0000  best=0.0000
+  [0] eval=11  score=0.0000  best=0.0000
+  [2] eval=12  score=0.0000  best=0.0000
+  [0] eval=12  score=0.0000  best=0.0000
+  [0] eval=13  score=0.0000  best=0.0000
+  [1] eval=27  score=0.0000  best=0.0000
+  [1] eval=28  score=0.0000  best=0.0000
+  [3] eval=15  score=6.6667  best=6.6667
+  [0] eval=14  score=20.2836  best=20.2836
+  [0] eval=15  score=20.2836  best=20.2836
+  [0] eval=16  score=20.2836  best=20.2836
+  [3] eval=16  score=6.6667  best=6.6667
+  [3] eval=17  score=0.0000  best=6.6667
+  [3] eval=18  score=6.6667  best=6.6667
+  [0] eval=17  score=0.0000  best=20.2836
+  [0] eval=18  score=20.2836  best=20.2836
+  [1] eval=29  score=0.0000  best=0.0000
+  [1] eval=30  score=0.0000  best=0.0000
+  [3] eval=19  score=6.6667  best=6.6667
+  [0] eval=19  score=19.9964  best=20.2836
+  [0] eval=20  score=20.2836  best=20.2836
+  [1] eval=31  score=0.0000  best=0.0000

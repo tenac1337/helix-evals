@@ -1,0 +1,15 @@
+{
+  "problem_id": 52,
+  "track": "algorithmic",
+  "optimizer": "gepa",
+  "status": "error",
+  "best_score": 0.0,
+  "token_summary": {},
+  "duration_s": 0.0013454590225592256,
+  "error": "ValueError: I/O operation on closed file.\nTraceback (most recent call last):\n  File \"/Users/kevinchon/Documents/Research/KDKC/helix_neurips/core/batch_runner.py\", line 217, in _run_one_safe\n    result = inner.submit(self._run_one, problem_id).result(\n        timeout=self.cfg.timeout_per_problem)\n  File \"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/concurrent/futures/_base.py\", line 456, in result\n    return self.__get_result()\n           ~~~~~~~~~~~~~~~~~^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/concurrent/futures/thread.py\", line 59, in run\n    result = self.fn(*self.args, **self.kwargs)\n  File \"/Users/kevinchon/Documents/Research/KDKC/helix_neurips/core/batch_runner.py\", line 244, in _run_one\n    best_score, best_path, eval_count = self._run_gepa(problem_id, pid_dir)\n                                        ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kevinchon/Documents/Research/KDKC/helix_neurips/core/batch_runner.py\", line 322, in _run_gepa\n    print(f\"  [{problem_id}] reflection_lm: {reflection_lm}\", file=__import__(\"sys\").stderr, flush=True)\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.13/site-packages/gepa/logging/logger.py\", line 23, in write\n    f.write(obj)\n    ~~~~~~~^^^^^\n  File \"/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.13/site-packages/gepa/logging/logger.py\", line 23, in write\n    f.write(obj)\n    ~~~~~~~^^^^^\n  File \"/Users/kevinchon/Documents/Research/KDKC/helix_neurips/.venv/lib/python3.13/site-packages/gepa/logging/logger.py\", line 23, in write\n    f.write(obj)\n    ~~~~~~~^^^^^\nValueError: I/O operation on closed file.\n",
+  "best_candidate_path": null,
+  "run_tag": "gepa-algorithmic-qwen3-coder_x_minimax-m2.5-20260424_151139",
+  "task_model": "",
+  "reflection_model": "",
+  "eval_count": 0
+}

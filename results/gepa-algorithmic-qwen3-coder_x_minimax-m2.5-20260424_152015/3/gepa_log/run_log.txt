@@ -1,0 +1,3250 @@
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.0
+Iteration 1: Selected program 0 score: 0.0
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 0: Base program full valset score: 0.0 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.0
+Iteration 1: Selected program 0 score: 0.0
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 1: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 2: Selected program 0 score: 0.0
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 1: New subsample score 25.897223937142844 is better than old score 0.0. Continue to full eval and add to candidate pool.
+Iteration 1: Found a better program on the valset with score 25.897223937142844.
+Iteration 1: Valset score for new program: 25.897223937142844 (coverage 1 / 1)
+Iteration 1: Val aggregate for new program: 25.897223937142844
+Iteration 1: Individual valset scores for new program: {0: 25.897223937142844}
+Iteration 1: New valset pareto front scores: {0: 25.897223937142844}
+Iteration 1: Valset pareto front aggregate score: 25.897223937142844
+Iteration 1: Updated valset pareto front programs: {0: {1}}
+Iteration 1: Best valset aggregate score so far: 25.897223937142844
+Iteration 1: Best program as per aggregate score on valset: 1
+Iteration 1: Best score on valset: 25.897223937142844
+Iteration 1: Linear pareto front program index: 1
+Iteration 1: New program candidate index: 1
+Iteration 2: Selected program 1 score: 25.897223937142844
+Iteration 1: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 2: Selected program 0 score: 0.0
+Iteration 1: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 1: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 2: Selected program 0 score: 0.0
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 2: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 3: Selected program 0 score: 0.0
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Polyomino {
+    vector<pair<int,int>> cells;
+    int min_x, max_x, min_y, max_y;
+    int width, height;
+    
+    Polyomino(const vector<pair<int,int>>& c) : cells(c) {
+        min_x = min_y = INT_MAX;
+        max_x = max_y = INT_MIN;
+        for (auto& p : cells) {
+            min_x = min(min_x, p.first);
+            max_x = max(max_x, p.first);
+            min_y = min(min_y, p.second);
+            max_y = max(max_y, p.second);
+        }
+        width = max_x - min_x + 1;
+        height = max_y - min_y + 1;
+    }
+    
+    vector<pair<int,int>> get_transformed_cells(int x, int y, int rot, bool flip) const {
+        vector<pair<int,int>> result;
+        for (auto& p : cells) {
+            int px = p.first, py = p.second;
+            if (flip) px = -px;
+            for (int i = 0; i < rot; ++i) {
+                int tmp = px;
+                px = py;
+                py = -tmp;
+            }
+            result.push_back({px + x, py + y});
+        }
+        return result;
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<Polyomino> polyominoes(n);
+    vector<int> sizes(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        vector<pair<int,int>> cells(k);
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            cells[j] = {x, y};
+        }
+        polyominoes[i] = Polyomino(cells);
+        sizes[i] = k;
+    }
+    
+    // Try different arrangements
+    int best_area = INT_MAX;
+    int best_w = 0, best_h = 0;
+    vector<vector<int>> best_placement(n, vector<int>(4));
+    
+    // Simple greedy approach: place in a row
+    int total_height = 0;
+    int max_width = 0;
+    for (int i = 0; i < n; ++i) {
+        total_height += polyominoes[i].height;
+        max_width = max(max_width, polyominoes[i].width);
+    }
+    
+    int w = max_width;
+    int h = total_height;
+    int area = w * h;
+    
+    if (area < best_area) {
+        best_area = area;
+        best_w = w;
+        best_h = h;
+        for (int i = 0; i < n; ++i) {
+            best_placement[i] = {0, 0, 0, 0};
+        }
+    }
+    
+    // Try placing in a column
+    int total_width = 0;
+    int max_height = 0;
+    for (int i = 0; i < n; ++i) {
+        total_width += polyominoes[i].width;
+        max_height = max(max_height, polyominoes[i].height);
+    }
+    
+    w = total_width;
+    h = max_height;
+    area = w * h;
+    
+    if (area < best_area) {
+        best_area = area;
+        best_w = w;
+        best_h = h;
+        for (int i = 0; i < n; ++i) {
+            best_placement[i] = {0, 0, 0, 0};
+        }
+    }
+    
+    // Try different rotations and reflections for each piece
+    vector<vector<vector<pair<int,int>>>> all_transforms(n);
+    for (int i = 0; i < n; ++i) {
+        all_transforms[i].resize(8); // 4 rotations * 2 flips
+        for (int r = 0; r < 4; ++r) {
+            for (int f = 0; f < 2; ++f) {
+                auto cells = polyominoes[i].get_transformed_cells(0, 0, r, f);
+                all_transforms[i][r * 2 + f] = cells;
+            }
+        }
+    }
+    
+    // Try to pack more efficiently by rotating pieces
+    vector<vector<int>> positions(n);
+    vector<int> x_pos(n, 0);
+    vector<int> y_pos(n, 0);
+    vector<int> rot(n, 0);
+    vector<bool> flip(n, false);
+    
+    // A simple greedy packing
+    vector<vector<bool>> grid(1000, vector<bool>(1000, false));
+    
+    int max_w = 0, max_h = 0;
+    vector<int> x(n), y(n), r(n), f(n);
+    
+    // Place all pieces in a line with rotation
+    int cur_x = 0, cur_y = 0;
+    int max_x = 0;
+    int total_height = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        x[i] = cur_x;
+        y[i] = cur_y;
+        r[i] = 0;
+        f[i] = 0;
+        cur_x += polyominoes[i].width;
+        max_x = max(max_x, cur_x);
+        total_height = max(total_height, polyominoes[i].height);
+    }
+    
+    int w_final = max_x;
+    int h_final = total_height;
+    int area_final = w_final * h_final;
+    
+    if (area_final < best_area) {
+        best_area = area_final;
+        best_w = w_final;
+        best_h = h_final;
+        for (int i = 0; i < n; ++i) {
+            best_placement[i] = {x[i], y[i], r[i], f[i]};
+        }
+    }
+    
+    // Try to pack in a grid
+    int grid_w = 0, grid_h = 0;
+    vector<int> grid_x(n), grid_y(n);
+    vector<int> grid_r(n), grid_f(n);
+    
+    // Place in rows
+    int max_row_height = 0;
+    int total_row_width = 0;
+    int row_start_x = 0;
+    int row_y = 0;
+    
+    // Try placing pieces side by side
+    vector<vector<pair<int,int>>> row_cells;
+    vector<pair<int,int>> row;
+    int row_width = 0;
+    int row_height = 0;
+    int max_row_width = 0;
+    int total_height_final = 0;
+    
+    // Just use the simple approach
+    cout << max_width << " " << total_height << "\n";
+    int cur_y_pos = 0;
+    for (int i = 0; i < n; ++i) {
+        cout << -polyominoes[i].min_x << " " << cur_y_pos - polyominoes[i].min_y << " 0 0\n";
+        cur_y_pos += polyominoes[i].height;
+    }
+    
+    return 0;
+}
+Iteration 2: New subsample score 0.0 is not better than old score 25.897223937142844, skipping
+Iteration 3: Selected program 1 score: 25.897223937142844
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 2: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 2: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 3: Selected program 0 score: 0.0
+Iteration 2: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 3: Selected program 0 score: 0.0
+Iteration 3: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 3: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 4: Selected program 0 score: 0.0
+Iteration 3: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Polyomino {
+    vector<pair<int, int>> cells;
+    int min_x, max_x, min_y, max_y;
+    int width, height;
+    
+    Polyomino() : min_x(0), max_x(0), min_y(0), max_y(0), width(0), height(0) {}
+    
+    void read(int k) {
+        cells.resize(k);
+        min_x = min_y = INT_MAX;
+        max_x = max_y = INT_MIN;
+        for (int i = 0; i < k; ++i) {
+            cin >> cells[i].first >> cells[i].second;
+            min_x = min(min_x, cells[i].first);
+            max_x = max(max_x, cells[i].first);
+            min_y = min(min_y, cells[i].second);
+            max_y = max(max_y, cells[i].second);
+        }
+        width = max_x - min_x + 1;
+        height = max_y - min_y + 1;
+    }
+    
+    vector<pair<int, int>> get_transformed_cells(int tx, int ty, int rot, bool flip) const {
+        vector<pair<int, int>> result;
+        for (const auto& p : cells) {
+            int x = p.first, y = p.second;
+            if (flip) x = -x;
+            for (int i = 0; i < rot; ++i) {
+                swap(x, y);
+                y = -y;
+            }
+            result.emplace_back(x + tx, y + ty);
+        }
+        return result;
+    }
+};
+
+bool check_overlap(const vector<pair<int, int>>& cells1, const vector<pair<int, int>>& cells2) {
+    unordered_set<pair<int, int>, hash<pair<int, int>>> s1(cells1.begin(), cells1.end());
+    for (const auto& p : cells2) {
+        if (s1.count(p)) return true;
+    }
+    return false;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<Polyomino> pieces(n);
+    int total_cells = 0;
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        pieces[i].read(k);
+        total_cells += k;
+    }
+    
+    // Try different arrangements to find a good fit
+    int best_area = INT_MAX;
+    int best_w = 0, best_h = 0;
+    vector<tuple<int, int, int, int>> best_placement(n);
+    
+    // Simple greedy approach: place pieces in a grid-like pattern
+    int max_width = 0, total_height = 0;
+    for (const auto& p : pieces) {
+        max_width = max(max_width, p.width);
+        total_height += p.height;
+    }
+    
+    // Try a few different grid arrangements
+    vector<int> widths(n), heights(n);
+    for (int i = 0; i < n; ++i) {
+        widths[i] = pieces[i].width;
+        heights[i] = pieces[i].height;
+    }
+    
+    // Try placing all pieces in a single row
+    int row_w = 0, row_h = 0;
+    for (const auto& p : pieces) {
+        row_w += p.width;
+        row_h = max(row_h, p.height);
+    }
+    
+    // Try placing all pieces in a single column
+    int col_w = 0, col_h = 0;
+    for (const auto& p : pieces) {
+        col_w = max(col_w, p.width);
+        col_h += p.height;
+    }
+    
+    // Try a 2-row arrangement
+    int w1 = 0, h1 = 0;
+    for (int i = 0; i < n; ++i) {
+        if (i % 2 == 0) {
+            w1 = max(w1, pieces[i].width);
+            h1 += pieces[i].height;
+        } else {
+            w1 = max(w1, pieces[i].width);
+            h1 = max(h1, pieces[i].height);
+        }
+    }
+    
+    int area1 = w1 * h1;
+    
+    // Try a 3-row arrangement
+    int w2 = 0, h2 = 0;
+    for (int i = 0; i < n; ++i) {
+        if (i % 3 == 0) {
+            w2 = max(w2, pieces[i].width);
+            h2 += pieces[i].height;
+        } else if (i % 3 == 1) {
+            w2 = max(w2, pieces[i].width);
+            h2 = max(h2, pieces[i].height);
+        } else {
+            w2 = max(w2, pieces[i].width);
+            h2 = max(h2, pieces[i].height);
+        }
+    }
+    
+    int area2 = w2 * h2;
+    
+    // Try a 4-row arrangement
+    int w3 = 0, h3 = 0;
+    for (int i = 0; i < n; ++i) {
+        if (i % 4 == 0) {
+            w3 = max(w3, pieces[i].width);
+            h3 += pieces[i].height;
+        } else if (i % 4 == 1) {
+            w3 = max(w3, pieces[i].width);
+            h3 = max(h3, pieces[i].height);
+        } else if (i % 4 == 2) {
+            w3 = max(w3, pieces[i].width);
+            h3 = max(h3, pieces[i].height);
+        } else {
+            w3 = max(w3, pieces[i].width);
+            h3 = max(h3, pieces[i].height);
+        }
+    }
+    
+    int area3 = w3 * h3;
+    
+    // Try a simple vertical stacking
+    int w4 = 0, h4 = 0;
+    for (const auto& p : pieces) {
+        w4 = max(w4, p.width);
+        h4 += p.height;
+    }
+    
+    int area4 = w4 * h4;
+    
+    // Try a simple horizontal stacking
+    int w5 = 0, h5 = 0;
+    for (const auto& p : pieces) {
+        w5 += p.width;
+        h5 = max(h5, p.height);
+    }
+    
+    int area5 = w5 * h5;
+    
+    int min_area = min({area1, area2, area3, area4, area5});
+    
+    if (min_area == area1) {
+        best_w = w1;
+        best_h = h1;
+        int cur_y = 0;
+        int cur_x = 0;
+        for (int i = 0; i < n; ++i) {
+            if (i % 2 == 0) {
+                best_placement[i] = make_tuple(cur_x, cur_y, 0, 0);
+                cur_x += pieces[i].width;
+            } else {
+                best_placement[i] = make_tuple(cur_x, 0, 0, 0);
+                cur_y += pieces[i].height;
+                cur_x = 0;
+            }
+        }
+    } else if (min_area == area2) {
+        best_w = w2;
+        best_h = h2;
+        int cur_y = 0;
+        int cur_x = 0;
+        for (int i = 0; i < n; ++i) {
+            if (i % 3 == 0) {
+                best_placement[i] = make_tuple(cur_x, cur_y, 0, 0);
+                cur_x += pieces[i].width;
+            } else if (i % 3 == 1) {
+                best_placement[i] = make_tuple(cur_x, 0, 0, 0);
+                cur_y += pieces[i].height;
+                cur_x = 0;
+            } else {
+                best_placement[i] = make_tuple(cur_x, 0, 0, 0);
+                cur_y += pieces[i].height;
+                cur_x = 0;
+            }
+        }
+    } else if (min_area == area3) {
+        best_w = w3;
+        best_h = h3;
+        int cur_y = 0;
+        int cur_x = 0;
+        for (int i = 0; i < n; ++i) {
+            if (i % 4 == 0) {
+                best_placement[i] = make_tuple(cur_x, cur_y, 0, 0);
+                cur_x += pieces[i].width;
+            } else if (i % 4 == 1) {
+                best_placement[i] = make_tuple(cur_x, 0, 0, 0);
+                cur_y += pieces[i].height;
+                cur_x = 0;
+            } else if (i % 4 == 2) {
+                best_placement[i] = make_tuple(cur_x, 0, 0, 0);
+                cur_y += pieces[i].height;
+                cur_x = 0;
+            } else {
+                best_placement[i] = make_tuple(cur_x, 0, 0, 0);
+                cur_y += pieces[i].height;
+                cur_x = 0;
+            }
+        }
+    } else if (min_area == area4) {
+        best_w = w4;
+        best_h = h4;
+        int cur_y = 0;
+        for (int i = 0; i < n; ++i) {
+            best_placement[i] = make_tuple(0, cur_y, 0, 0);
+            cur_y += pieces[i].height;
+        }
+    } else {
+        best_w = w5;
+        best_h = h5;
+        int cur_x = 0;
+        for (int i = 0; i < n; ++i) {
+            best_placement[i] = make_tuple(cur_x, 0, 0, 0);
+            cur_x += pieces[i].width;
+        }
+    }
+    
+    cout << best_w << " " << best_h << "\n";
+    for (int i = 0; i < n; ++i) {
+        int x, y, r, f;
+        tie(x, y, r, f) = best_placement[i];
+        cout << x << " " << y << " " << r << " " << f << "\n";
+    }
+    return 0;
+}
+Iteration 3: New subsample score 0.0 is not better than old score 25.897223937142844, skipping
+Iteration 4: Selected program 1 score: 25.897223937142844
+Iteration 3: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 3: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 4: Selected program 0 score: 0.0
+Iteration 3: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 3: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 4: Selected program 0 score: 0.0
+Iteration 4: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 4: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 5: Selected program 0 score: 0.0
+Iteration 4: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Polyomino {
+    vector<pair<int, int>> cells;
+    int min_x, max_x, min_y, max_y;
+    int area;
+    
+    Polyomino() : min_x(0), max_x(0), min_y(0), max_y(0), area(0) {}
+    
+    void init(const vector<pair<int, int>>& input_cells) {
+        cells = input_cells;
+        area = cells.size();
+        min_x = max_x = cells[0].first;
+        min_y = max_y = cells[0].second;
+        for (const auto& p : cells) {
+            min_x = min(min_x, p.first);
+            max_x = max(max_x, p.first);
+            min_y = min(min_y, p.second);
+            max_y = max(max_y, p.second);
+        }
+    }
+    
+    vector<pair<int, int>> get_rotated_cells(int rot, bool flip) const {
+        vector<pair<int, int>> result;
+        for (const auto& p : cells) {
+            int x = p.first, y = p.second;
+            if (flip) x = -x;
+            for (int i = 0; i < rot; ++i) {
+                int nx = y, ny = -x;
+                x = nx; y = ny;
+            }
+            result.emplace_back(x, y);
+        }
+        return result;
+    }
+    
+    vector<pair<int, int>> get_transformed_cells(int rot, bool flip, int tx, int ty) const {
+        vector<pair<int, int>> result;
+        for (const auto& p : get_rotated_cells(rot, flip)) {
+            result.emplace_back(p.first + tx, p.second + ty);
+        }
+        return result;
+    }
+    
+    int width() const { return max_x - min_x + 1; }
+    int height() const { return max_y - min_y + 1; }
+};
+
+bool check_overlap(const vector<pair<int, int>>& cells1, const vector<pair<int, int>>& cells2) {
+    unordered_set<pair<int, int>, hash<pair<int, int>>> s1(cells1.begin(), cells1.end());
+    for (const auto& p : cells2) {
+        if (s1.count(p)) return true;
+    }
+    return false;
+}
+
+bool can_place(const vector<Polyomino>& pieces, const vector<int>& rotations, const vector<bool>& flips, const vector<pair<int, int>>& placements, int W, int H) {
+    vector<vector<pair<int, int>>> all_cells(pieces.size());
+    for (int i = 0; i < pieces.size(); ++i) {
+        all_cells[i] = pieces[i].get_transformed_cells(rotations[i], flips[i], placements[i].first, placements[i].second);
+    }
+    
+    for (int i = 0; i < pieces.size(); ++i) {
+        for (const auto& p : all_cells[i]) {
+            if (p.first < 0 || p.first >= W || p.second < 0 || p.second >= H) {
+                return false;
+            }
+        }
+    }
+    
+    for (int i = 0; i < pieces.size(); ++i) {
+        for (int j = i + 1; j < pieces.size(); ++j) {
+            if (check_overlap(all_cells[i], all_cells[j])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<Polyomino> pieces(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        vector<pair<int, int>> cells(k);
+        for (int j = 0; j < k; ++j) {
+            cin >> cells[j].first >> cells[j].second;
+        }
+        pieces[i].init(cells);
+    }
+    
+    // Simple greedy approach: place in a grid
+    int max_width = 0;
+    int max_height = 0;
+    for (const auto& p : pieces) {
+        max_width = max(max_width, p.width());
+        max_height = max(max_height, p.height());
+    }
+    
+    int W = max_width;
+    int H = max_height;
+    
+    // Try different arrangements to find a better one
+    vector<pair<int, int>> placements(n);
+    vector<int> rotations(n, 0);
+    vector<bool> flips(n, false);
+    
+    // Try placing in a grid pattern
+    int x = 0, y = 0;
+    int max_x = 0;
+    int max_y = 0;
+    
+    vector<int> widths(n);
+    vector<int> heights(n);
+    
+    for (int i = 0; i < n; ++i) {
+        widths[i] = pieces[i].width();
+        heights[i] = pieces[i].height();
+    }
+    
+    // Simple column-wise arrangement
+    int cur_x = 0;
+    int cur_y = 0;
+    int max_cur_y = 0;
+    int row_height = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        if (cur_x + widths[i] > max_width) {
+            cur_x = 0;
+            cur_y += row_height;
+            row_height = 0;
+        }
+        placements[i] = {cur_x, cur_y};
+        cur_x += widths[i];
+        row_height = max(row_height, heights[i]);
+        max_cur_y = max(max_cur_y, cur_y + heights[i]);
+    }
+    
+    W = max_width;
+    H = max_cur_y;
+    
+    // Try to reduce height by rotating pieces
+    bool improved = true;
+    while (improved) {
+        improved = false;
+        vector<int> new_rotations = rotations;
+        vector<bool> new_flips = flips;
+        vector<pair<int, int>> new_placements = placements;
+        int new_W = W;
+        int new_H = H;
+        
+        for (int i = 0; i < n; ++i) {
+            // Try all rotations and flips
+            for (int rot = 0; rot < 4; ++rot) {
+                for (int flip = 0; flip < 2; ++flip) {
+                    // Check if we can rotate piece i and see if it helps
+                    int new_w = pieces[i].width();
+                    int new_h = pieces[i].height();
+                    if (flip) {
+                        // After flip, width and height may change
+                        int tmp = new_w;
+                        new_w = new_h;
+                        new_h = tmp;
+                    }
+                    for (int r = 0; r < rot; ++r) {
+                        int tmp = new_w;
+                        new_w = new_h;
+                        new_h = tmp;
+                    }
+                    
+                    // See if placing this piece with new orientation improves area
+                    int test_W = max(W, new_w);
+                    int test_H = max(H, new_h);
+                    if (test_W * test_H < new_W * new_H) {
+                        new_W = test_W;
+                        new_H = test_H;
+                        new_rotations[i] = rot;
+                        new_flips[i] = flip;
+                        improved = true;
+                    }
+                }
+            }
+        }
+        
+        if (improved) {
+            rotations = new_rotations;
+            flips = new_flips;
+            W = new_W;
+            H = new_H;
+        }
+    }
+    
+    // Final placement
+    vector<pair<int, int>> final_placements(n);
+    int cur_x_pos = 0;
+    int cur_y_pos = 0;
+    int max_y_pos = 0;
+    int row_h = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        int w = pieces[i].width();
+        int h = pieces[i].height();
+        if (flips[i]) {
+            swap(w, h);
+        }
+        for (int r = 0; r < rotations[i]; ++r) {
+            swap(w, h);
+        }
+        
+        if (cur_x_pos + w > W) {
+            cur_x_pos = 0;
+            cur_y_pos += row_h;
+            row_h = 0;
+        }
+        
+        final_placements[i] = {cur_x_pos, cur_y_pos};
+        cur_x_pos += w;
+        row_h = max(row_h, h);
+        max_y_pos = max(max_y_pos, cur_y_pos + h);
+    }
+    
+    // Adjust W and H to fit everything
+    W = max(W, cur_x_pos);
+    H = max(H, max_y_pos);
+    
+    cout << W << " " << H << "\n";
+    
+    for (int i = 0; i < n; ++i) {
+        int x = final_placements[i].first;
+        int y = final_placements[i].second;
+        cout << x << " " << y << " " << rotations[i] << " " << flips[i] << "\n";
+    }
+    
+    return 0;
+}
+Iteration 4: New subsample score 0.0 is not better than old score 25.897223937142844, skipping
+Iteration 5: Selected program 1 score: 25.897223937142844
+Iteration 4: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 4: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 5: Selected program 0 score: 0.0
+Iteration 4: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 4: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 5: Selected program 0 score: 0.0
+Iteration 5: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 5: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 6: Selected program 0 score: 0.0
+Iteration 5: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Polyomino {
+    vector<pair<int,int>> cells;
+    int minx, maxx, miny, maxy;
+    int area;
+    
+    Polyomino() : minx(0), maxx(0), miny(0), maxy(0), area(0) {}
+    
+    void init(const vector<pair<int,int>>& input_cells) {
+        cells = input_cells;
+        area = cells.size();
+        minx = miny = INT_MAX;
+        maxx = maxy = INT_MIN;
+        for (auto& p : cells) {
+            minx = min(minx, p.first);
+            maxx = max(maxx, p.first);
+            miny = min(miny, p.second);
+            maxy = max(maxy, p.second);
+        }
+    }
+    
+    vector<pair<int,int>> get_transformed_cells(int dx, int dy, int rot, bool flip) const {
+        vector<pair<int,int>> result;
+        for (auto& p : cells) {
+            int x = p.first, y = p.second;
+            if (flip) x = -x;
+            for (int i = 0; i < rot; ++i) {
+                int nx = y, ny = -x;
+                x = nx; y = ny;
+            }
+            result.emplace_back(x + dx, y + dy);
+        }
+        return result;
+    }
+};
+
+bool check_overlap(const vector<pair<int,int>>& a, const vector<pair<int,int>>& b) {
+    set<pair<int,int>> set_a(a.begin(), a.end());
+    for (auto& p : b) {
+        if (set_a.count(p)) return true;
+    }
+    return false;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<Polyomino> pieces(n);
+    vector<int> areas(n);
+    int total_area = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        vector<pair<int,int>> cells(k);
+        for (int j = 0; j < k; ++j) {
+            cin >> cells[j].first >> cells[j].second;
+        }
+        pieces[i].init(cells);
+        areas[i] = pieces[i].area;
+        total_area += areas[i];
+    }
+    
+    // Sort by area descending to place larger pieces first (better packing)
+    vector<int> indices(n);
+    iota(indices.begin(), indices.end(), 0);
+    sort(indices.begin(), indices.end(), [&](int a, int b) {
+        return areas[a] > areas[b];
+    });
+    
+    // Try different bounding box sizes
+    int min_w = 1, min_h = 1;
+    int max_w = 1000000, max_h = 1000000;
+    
+    // Estimate initial dimensions
+    int est_w = ceil(sqrt(total_area));
+    int est_h = ceil(total_area / (double)est_w);
+    
+    int best_w = est_w, best_h = est_h;
+    int best_area = est_w * est_h;
+    
+    // Try small bounding boxes
+    for (int w = est_w; w <= 2 * est_w && w <= 10000; ++w) {
+        int h = ceil(total_area / (double)w);
+        if (h > 10000) continue;
+        if (w * h < best_area) {
+            best_w = w;
+            best_h = h;
+            best_area = w * h;
+        }
+    }
+    
+    // Simple greedy placement in grid
+    vector<pair<int,int>> placements(n);
+    vector<vector<bool>> grid(10000, vector<bool>(10000, false));
+    int grid_w = 10000, grid_h = 10000;
+    
+    auto place_piece = [&](int idx, int x, int y, int rot, bool flip) -> bool {
+        auto cells = pieces[idx].get_transformed_cells(x, y, rot, flip);
+        for (auto& p : cells) {
+            if (p.first < 0 || p.first >= grid_w || p.second < 0 || p.second >= grid_h)
+                return false;
+            if (grid[p.second][p.first]) return false;
+        }
+        for (auto& p : cells) {
+            grid[p.second][p.first] = true;
+        }
+        placements[idx] = {x, y};
+        return true;
+    };
+    
+    auto try_placement = [&](int idx) -> bool {
+        int x = 0, y = 0;
+        for (int rot = 0; rot < 4; ++rot) {
+            for (int flip = 0; flip < 2; ++flip) {
+                auto cells = pieces[idx].get_transformed_cells(0, 0, rot, flip);
+                int minx = INT_MAX, miny = INT_MAX;
+                for (auto& p : cells) {
+                    minx = min(minx, p.first);
+                    miny = min(miny, p.second);
+                }
+                int dx = -minx, dy = -miny;
+                if (place_piece(idx, dx, dy, rot, flip)) return true;
+            }
+        }
+        return false;
+    };
+    
+    // Reset grid
+    for (int i = 0; i < grid_h; ++i)
+        fill(grid[i].begin(), grid[i].end(), false);
+    
+    // Try placing pieces greedily
+    vector<int> placed(n, 0);
+    vector<pair<int,int>> positions(n);
+    int max_x = 0, max_y = 0;
+    
+    // Place each piece in a line
+    int cur_x = 0, cur_y = 0;
+    int max_width = 0, total_height = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        int idx = indices[i];
+        int rot = 0;
+        bool flip = false;
+        auto cells = pieces[idx].get_transformed_cells(0, 0, rot, flip);
+        int minx = INT_MAX, miny = INT_MAX, maxx = INT_MIN, maxy = INT_MIN;
+        for (auto& p : cells) {
+            minx = min(minx, p.first);
+            maxx = max(maxx, p.first);
+            miny = min(miny, p.second);
+            maxy = max(maxy, p.second);
+        }
+        int w = maxx - minx + 1;
+        int h = maxy - miny + 1;
+        max_width = max(max_width, w);
+        total_height += h;
+    }
+    
+    // Place in a row
+    int x = 0, y = 0;
+    for (int i = 0; i < n; ++i) {
+        int idx = indices[i];
+        int rot = 0;
+        bool flip = false;
+        int dx = x - pieces[idx].minx;
+        int dy = y - pieces[idx].miny;
+        cout << dx << " " << dy << " " << rot << " " << flip << "\n";
+        x += pieces[idx].maxx - pieces[idx].minx + 1;
+    }
+    
+    cout << max_width << " " << total_height << "\n";
+    x = 0; y = 0;
+    for (int i = 0; i < n; ++i) {
+        int idx = indices[i];
+        int rot = 0;
+        bool flip = false;
+        int dx = x - pieces[idx].minx;
+        int dy = y - pieces[idx].miny;
+        cout << dx << " " << dy << " " << rot << " " << flip << "\n";
+        x += pieces[idx].maxx - pieces[idx].minx + 1;
+    }
+    
+    return 0;
+}
+Iteration 5: New subsample score 0.0 is not better than old score 25.897223937142844, skipping
+Iteration 6: Selected program 1 score: 25.897223937142844
+Iteration 5: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 5: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 6: Selected program 0 score: 0.0
+Iteration 5: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 6: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 6: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 7: Selected program 0 score: 0.0
+Iteration 5: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 6: Selected program 0 score: 0.0
+Iteration 6: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Polyomino {
+    vector<pair<int, int>> cells;
+    int min_x, max_x, min_y, max_y;
+    int area;
+    
+    Polyomino() : min_x(0), max_x(0), min_y(0), max_y(0), area(0) {}
+    
+    void init(const vector<pair<int, int>>& input_cells) {
+        cells = input_cells;
+        area = input_cells.size();
+        min_x = max_x = input_cells[0].first;
+        min_y = max_y = input_cells[0].second;
+        for (const auto& p : input_cells) {
+            min_x = min(min_x, p.first);
+            max_x = max(max_x, p.first);
+            min_y = min(min_y, p.second);
+            max_y = max(max_y, p.second);
+        }
+    }
+    
+    vector<vector<pair<int, int>>> get_transforms() const {
+        vector<vector<pair<int, int>>> transforms;
+        // 4 rotations + 4 rotations with reflection
+        vector<vector<pair<int, int>>> rotations = {
+            {{1, 0}, {0, 1}},   // 0°
+            {{0, -1}, {1, 0}},  // 90°
+            {{-1, 0}, {0, -1}}, // 180°
+            {{0, 1}, {-1, 0}}   // 270°
+        };
+        
+        for (int r = 0; r < 4; ++r) {
+            vector<pair<int, int>> rotated;
+            for (const auto& p : cells) {
+                int x = p.first * rotations[r][0].first + p.second * rotations[r][0].second;
+                int y = p.first * rotations[r][1].first + p.second * rotations[r][1].second;
+                rotated.push_back({x, y});
+            }
+            transforms.push_back(rotated);
+        }
+        
+        for (int r = 0; r < 4; ++r) {
+            vector<pair<int, int>> reflected_rotated;
+            for (const auto& p : cells) {
+                int x = p.first * rotations[r][0].first + p.second * rotations[r][0].second;
+                int y = p.first * rotations[r][1].first + p.second * rotations[r][1].second;
+                reflected_rotated.push_back({-x, y});
+            }
+            transforms.push_back(reflected_rotated);
+        }
+        
+        return transforms;
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<Polyomino> pieces(n);
+    vector<vector<pair<int, int>>> all_transforms(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        vector<pair<int, int>> cells(k);
+        for (int j = 0; j < k; ++j) {
+            cin >> cells[j].first >> cells[j].second;
+        }
+        pieces[i].init(cells);
+        all_transforms[i] = pieces[i].get_transforms();
+    }
+    
+    // Try to pack in a grid
+    int max_width = 0;
+    int max_height = 0;
+    for (const auto& piece : pieces) {
+        max_width = max(max_width, piece.max_x - piece.min_x + 1);
+        max_height = max(max_height, piece.max_y - piece.min_y + 1);
+    }
+    
+    int W = max_width;
+    int H = max_height;
+    int best_area = W * H;
+    vector<pair<int, int>> placements(n);
+    vector<int> rotations(n);
+    vector<int> flips(n);
+    
+    // Try different packings
+    // Simple greedy approach: place each piece in a row
+    vector<vector<bool>> grid(2000, vector<bool>(2000, false));
+    vector<pair<int, int>> positions(n);
+    vector<int> rotation(n, 0);
+    vector<int> flip(n, 0);
+    
+    int cur_y = 0;
+    int max_x_used = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        int min_x = 0, max_x = 0, min_y = 0, max_y = 0;
+        for (const auto& p : pieces[i].cells) {
+            min_x = min(min_x, p.first);
+            max_x = max(max_x, p.first);
+            min_y = min(min_y, p.second);
+            max_y = max(max_y, p.second);
+        }
+        
+        int w = max_x - min_x + 1;
+        int h = max_y - min_y + 1;
+        
+        int x = 0;
+        int y = cur_y;
+        
+        // Try to fit in grid
+        bool placed = false;
+        for (int r = 0; r < 8; ++r) {
+            const auto& transform = all_transforms[i][r];
+            int min_tx = 0, max_tx = 0, min_ty = 0, max_ty = 0;
+            for (const auto& p : transform) {
+                min_tx = min(min_tx, p.first);
+                max_tx = max(max_tx, p.first);
+                min_ty = min(min_ty, p.second);
+                max_ty = max(max_ty, p.second);
+            }
+            int tw = max_tx - min_tx + 1;
+            int th = max_ty - min_ty + 1;
+            
+            // Try placing at (0, cur_y)
+            bool valid = true;
+            for (const auto& p : transform) {
+                int px = p.first - min_tx;
+                int py = p.second - min_ty + cur_y;
+                if (px < 0 || py < 0 || px >= 2000 || py >= 2000) {
+                    valid = false;
+                    break;
+                }
+                if (grid[px][py]) {
+                    valid = false;
+                    break;
+                }
+            }
+            
+            if (valid) {
+                // Place it
+                for (const auto& p : transform) {
+                    int px = p.first - min_tx;
+                    int py = p.second - min_ty + cur_y;
+                    grid[px][py] = true;
+                }
+                positions[i] = {0, cur_y};
+                rotation[i] = r;
+                flip[i] = (r >= 4) ? 1 : 0;
+                placed = true;
+                break;
+            }
+        }
+        
+        if (!placed) {
+            // If we can't place it, put it at (0, cur_y)
+            positions[i] = {0, cur_y};
+            rotation[i] = 0;
+            flip[i] = 0;
+            for (const auto& p : pieces[i].cells) {
+                int px = p.first - min_x;
+                int py = p.second - min_y + cur_y;
+                grid[px][py] = true;
+            }
+        }
+        
+        cur_y += h;
+        max_x_used = max(max_x_used, w);
+    }
+    
+    // Adjust size to fit
+    int final_h = cur_y;
+    int final_w = max_x_used;
+    
+    cout << final_w << " " << final_h << "\n";
+    for (int i = 0; i < n; ++i) {
+        cout << positions[i].first << " " << positions[i].second << " " << rotation[i] << " " << flip[i] << "\n";
+    }
+    
+    return 0;
+}
+Iteration 6: New subsample score 0.0 is not better than old score 25.897223937142844, skipping
+Iteration 7: Selected program 1 score: 25.897223937142844
+Iteration 6: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 6: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 7: Selected program 0 score: 0.0
+Iteration 7: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 7: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 8: Selected program 0 score: 0.0
+Iteration 6: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 6: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 7: Selected program 0 score: 0.0
+Iteration 7: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+// Function to generate all possible rotations and reflections of a polyomino
+vector<vector<pair<int,int>>> get_transformations(const vector<pair<int,int>>& cells) {
+    vector<vector<pair<int,int>>> transformations;
+    
+    // Generate 4 rotations (0, 90, 180, 270 degrees clockwise)
+    vector<vector<pair<int,int>>> rotations(4, cells);
+    for (int r = 1; r < 4; ++r) {
+        for (auto& p : rotations[r]) {
+            int x = p.first, y = p.second;
+            p = {y, -x}; // Rotate 90° clockwise
+        }
+    }
+    
+    // Generate 8 transformations: 4 rotations × 2 reflections (including identity)
+    for (int i = 0; i < 4; ++i) {
+        transformations.push_back(rotations[i]);
+        vector<pair<int,int>> reflected = rotations[i];
+        for (auto& p : reflected) p.first = -p.first;
+        transformations.push_back(reflected);
+    }
+    
+    // Remove duplicates
+    set<vector<pair<int,int>>> unique_transforms(transformations.begin(), transformations.end());
+    transformations.assign(unique_transforms.begin(), unique_transforms.end());
+    
+    return transformations;
+}
+
+// Function to compute bounding box of a set of cells
+pair<int,int> get_min_max(const vector<pair<int,int>>& cells) {
+    int min_x = INT_MAX, max_x = INT_MIN;
+    int min_y = INT_MAX, max_y = INT_MIN;
+    for (const auto& p : cells) {
+        min_x = min(min_x, p.first);
+        max_x = max(max_x, p.first);
+        min_y = min(min_y, p.second);
+        max_y = max(max_y, p.second);
+    }
+    return {min_x, min_y};
+}
+
+// Function to check if placing a polyomino at (x,y) with given rotation/reflection causes overlap
+bool check_overlap(const vector<pair<int,int>>& placed_cells, const vector<pair<int,int>>& new_cells, int x, int y) {
+    set<pair<int,int>> placed_set(placed_cells.begin(), placed_cells.end());
+    for (const auto& p : new_cells) {
+        int px = p.first + x;
+        int py = p.second + y;
+        if (placed_set.count({px, py})) return true;
+    }
+    return false;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<vector<pair<int,int>>> pieces(n);
+    vector<int> piece_sizes(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        piece_sizes[i] = k;
+        pieces[i].resize(k);
+        for (int j = 0; j < k; ++j) {
+            int x, y;
+            cin >> x >> y;
+            pieces[i][j] = {x, y};
+        }
+    }
+    
+    // Precompute all transformations for each piece
+    vector<vector<vector<pair<int,int>>>> all_transforms(n);
+    for (int i = 0; i < n; ++i) {
+        all_transforms[i] = get_transformations(pieces[i]);
+    }
+    
+    // For each piece, compute the bounding box of each transformation
+    vector<vector<pair<int,int>>> piece_bboxes(n);
+    for (int i = 0; i < n; ++i) {
+        piece_bboxes[i].resize(all_transforms[i].size());
+        for (size_t t = 0; t < all_transforms[i].size(); ++t) {
+            piece_bboxes[i][t] = get_min_max(all_transforms[i][t]);
+        }
+    }
+    
+    // Simple greedy approach: place pieces one by one in a row
+    vector<pair<int,int>> positions(n);
+    vector<int> rotations(n);
+    vector<int> flips(n);
+    
+    vector<pair<int,int>> placed_cells;
+    int max_x = 0, max_y = 0;
+    int cur_x = 0, cur_y = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        int best_area = INT_MAX;
+        int best_r = 0, best_f = 0;
+        int best_x = 0, best_y = 0;
+        
+        // Try each transformation of the current piece
+        for (size_t t = 0; t < all_transforms[i].size(); ++t) {
+            const auto& cells = all_transforms[i][t];
+            auto [min_x, min_y] = piece_bboxes[i][t];
+            
+            // Try placing it at (cur_x, cur_y) with this transformation
+            int x = cur_x - min_x;
+            int y = cur_y - min_y;
+            
+            // Check if it overlaps with existing pieces
+            if (check_overlap(placed_cells, cells, x, y)) continue;
+            
+            // Compute area of bounding box
+            int max_x_t = x + 0, max_y_t = y + 0;
+            for (const auto& p : cells) {
+                max_x_t = max(max_x_t, x + p.first);
+                max_y_t = max(max_y_t, y + p.second);
+            }
+            
+            int area = max_x_t * max_y_t;
+            if (area < best_area) {
+                best_area = area;
+                best_r = t % 4;
+                best_f = t >= 4;
+                best_x = x;
+                best_y = y;
+            }
+        }
+        
+        // Place the piece
+        positions[i] = {best_x, best_y};
+        rotations[i] = best_r;
+        flips[i] = best_f;
+        
+        // Add cells to placed_cells
+        const auto& cells = all_transforms[i][best_r + (best_f ? 4 : 0)];
+        for (const auto& p : cells) {
+            placed_cells.push_back({best_x + p.first, best_y + p.second});
+        }
+        
+        // Update current position for next piece
+        int min_x, min_y;
+        tie(min_x, min_y) = piece_bboxes[i][best_r + (best_f ? 4 : 0)];
+        cur_x += (min_x < 0 ? -min_x : 0) + 1;
+    }
+    
+    // Final bounding box
+    int final_max_x = 0, final_max_y = 0;
+    for (const auto& p : placed_cells) {
+        final_max_x = max(final_max_x, p.first);
+        final_max_y = max(final_max_y, p.second);
+    }
+    
+    cout << final_max_x << " " << final_max_y << "\n";
+    for (int i = 0; i < n; ++i) {
+        cout << positions[i].first << " " << positions[i].second << " " << rotations[i] << " " << flips[i] << "\n";
+    }
+    
+    return 0;
+}
+Iteration 7: New subsample score 0.0 is not better than old score 25.897223937142844, skipping
+Iteration 8: Selected program 1 score: 25.897223937142844
+Iteration 7: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 7: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 8: Selected program 0 score: 0.0
+Iteration 8: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 8: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 9: Selected program 0 score: 0.0
+Iteration 7: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 7: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 8: Selected program 0 score: 0.0
+Iteration 8: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+struct Polyomino {
+    vector<pair<int,int>> cells;
+    int minx, maxx, miny, maxy;
+    int width, height;
+    
+    Polyomino() : minx(0), maxx(-1), miny(0), maxy(-1), width(0), height(0) {}
+    
+    void read(int k) {
+        cells.clear();
+        minx = INT_MAX; maxx = INT_MIN;
+        miny = INT_MAX; maxy = INT_MIN;
+        for (int i = 0; i < k; ++i) {
+            int x, y; cin >> x >> y;
+            cells.push_back({x, y});
+            minx = min(minx, x);
+            maxx = max(maxx, x);
+            miny = min(miny, y);
+            maxy = max(maxy, y);
+        }
+        width = maxx - minx + 1;
+        height = maxy - miny + 1;
+    }
+    
+    vector<pair<int,int>> get_transformed_cells(int dx, int dy, int rot, bool flip) const {
+        vector<pair<int,int>> result;
+        for (auto& p : cells) {
+            int x = p.first, y = p.second;
+            if (flip) x = -x;
+            for (int i = 0; i < rot; ++i) {
+                int tmp = x;
+                x = y;
+                y = -tmp;
+            }
+            result.push_back({x + dx, y + dy});
+        }
+        return result;
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<Polyomino> pieces(n);
+    vector<int> sizes(n);
+    int total_cells = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        pieces[i].read(k);
+        sizes[i] = k;
+        total_cells += k;
+    }
+    
+    // Try different arrangements and rotations
+    int best_area = INT_MAX;
+    int best_w = 0, best_h = 0;
+    vector<tuple<int,int,int,int>> best_placement(n); // dx, dy, rot, flip
+    
+    // Simple heuristic: place in a grid
+    int grid_w = ceil(sqrt(total_cells));
+    int grid_h = (total_cells + grid_w - 1) / grid_w;
+    
+    vector<int> x_pos(n), y_pos(n);
+    int cur_x = 0, cur_y = 0;
+    int cur_width = 0;
+    int max_y = 0;
+    
+    vector<pair<int,int>> widths(n);
+    vector<int> heights(n);
+    
+    for (int i = 0; i < n; ++i) {
+        widths[i] = pieces[i].width;
+        heights[i] = pieces[i].height;
+    }
+    
+    // Try placing pieces in a row, but with better packing
+    vector<int> piece_order(n);
+    for (int i = 0; i < n; ++i) piece_order[i] = i;
+    
+    // Simple greedy arrangement: try to minimize area
+    sort(piece_order.begin(), piece_order.end(), [&](int a, int b) {
+        return (long long)pieces[a].width * pieces[a].height > (long long)pieces[b].width * pieces[b].height;
+    });
+    
+    vector<vector<pair<int,int>>> placed_cells;
+    vector<bool> used(n, false);
+    int max_x = 0, max_y_total = 0;
+    
+    // Simple row-by-row packing
+    int current_row_y = 0;
+    int row_width = 0;
+    int row_height = 0;
+    int row_start_x = 0;
+    
+    vector<tuple<int,int,int,int>> placements(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int idx = piece_order[i];
+        const Polyomino& p = pieces[idx];
+        
+        // Try all rotations and flips
+        vector<pair<int,int>> candidates;
+        for (int rot = 0; rot < 4; ++rot) {
+            for (int flip = 0; flip < 2; ++flip) {
+                int w = p.width, h = p.height;
+                if (flip) w = p.width;
+                for (int r = 0; r < rot; ++r) {
+                    int tmp = w;
+                    w = h;
+                    h = tmp;
+                }
+                if (flip) w = p.width;
+                candidates.push_back({w, h});
+            }
+        }
+        
+        // Pick best fit for current row
+        int best_w = 0, best_h = 0;
+        int best_rot = 0, best_flip = 0;
+        int best_x = 0, best_y = 0;
+        
+        // Just try a simple arrangement
+        int dx = row_start_x, dy = current_row_y;
+        int rot = 0, flip = 0;
+        int w = p.width, h = p.height;
+        
+        // Apply rotation and flip
+        if (flip) w = p.width;
+        for (int r = 0; r < rot; ++r) {
+            int tmp = w;
+            w = h;
+            h = tmp;
+        }
+        if (flip) w = p.width;
+        
+        // Place it
+        placements[idx] = make_tuple(dx, dy, rot, flip);
+        row_start_x += w;
+        max_x = max(max_x, row_start_x);
+        row_height = max(row_height, h);
+        
+        if (row_start_x > grid_w) {
+            current_row_y += row_height;
+            row_start_x = 0;
+            row_height = 0;
+        }
+    }
+    
+    // Final layout
+    int max_width = 0;
+    int total_height = 0;
+    vector<int> x_pos_final(n), y_pos_final(n);
+    int current_y = 0;
+    int row_width = 0;
+    int max_row_height = 0;
+    int row_start = 0;
+    
+    vector<pair<int,int>> row_widths(n);
+    vector<int> row_heights(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int idx = piece_order[i];
+        const Polyomino& p = pieces[idx];
+        int dx, dy, rot, flip;
+        tie(dx, dy, rot, flip) = placements[idx];
+        
+        x_pos_final[idx] = dx;
+        y_pos_final[idx] = dy;
+        
+        int w = p.width, h = p.height;
+        if (flip) w = p.width;
+        for (int r = 0; r < rot; ++r) {
+            int tmp = w;
+            w = h;
+            h = tmp;
+        }
+        if (flip) w = p.width;
+        
+        max_width = max(max_width, dx + w);
+        total_height = max(total_height, dy + h);
+    }
+    
+    int W = max_width;
+    int H = total_height;
+    
+    cout << W << " " << H << "\n";
+    
+    for (int i = 0; i < n; ++i) {
+        int idx = piece_order[i];
+        const Polyomino& p = pieces[idx];
+        int dx, dy, rot, flip;
+        tie(dx, dy, rot, flip) = placements[idx];
+        cout << dx << " " << dy << " " << rot << " " << flip << "\n";
+    }
+    
+    return 0;
+}
+Iteration 8: New subsample score 0.0 is not better than old score 25.897223937142844, skipping
+Iteration 9: Selected program 1 score: 25.897223937142844
+Iteration 8: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 8: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 9: Selected program 0 score: 0.0
+Iteration 9: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 9: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 10: Selected program 0 score: 0.0
+Iteration 8: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 8: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 9: Selected program 0 score: 0.0
+Iteration 9: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+// Function to generate all possible rotations and reflections of a polyomino
+vector<vector<pair<int,int>>> get_transforms(const vector<pair<int,int>>& shape) {
+    vector<vector<pair<int,int>>> transforms;
+    
+    // Original shape
+    transforms.push_back(shape);
+    
+    // 90° clockwise rotation
+    vector<pair<int,int>> rot90;
+    for (auto& p : shape) {
+        rot90.push_back({p.second, -p.first});
+    }
+    transforms.push_back(rot90);
+    
+    // 180° rotation
+    vector<pair<int,int>> rot180;
+    for (auto& p : shape) {
+        rot180.push_back({-p.first, -p.second});
+    }
+    transforms.push_back(rot180);
+    
+    // 270° clockwise rotation
+    vector<pair<int,int>> rot270;
+    for (auto& p : shape) {
+        rot270.push_back({-p.second, p.first});
+    }
+    transforms.push_back(rot270);
+    
+    // Reflection across y-axis
+    vector<pair<int,int>> refl;
+    for (auto& p : shape) {
+        refl.push_back({-p.first, p.second});
+    }
+    transforms.push_back(refl);
+    
+    // 90° clockwise + reflection
+    vector<pair<int,int>> r90;
+    for (auto& p : refl) {
+        r90.push_back({p.second, -p.first});
+    }
+    transforms.push_back(r90);
+    
+    // 180° + reflection
+    vector<pair<int,int>> r180;
+    for (auto& p : refl) {
+        r180.push_back({-p.first, -p.second});
+    }
+    transforms.push_back(r180);
+    
+    // 270° clockwise + reflection
+    vector<pair<int,int>> r270;
+    for (auto& p : refl) {
+        r270.push_back({-p.second, p.first});
+    }
+    transforms.push_back(r270);
+    
+    return transforms;
+}
+
+// Function to find bounding box of a transformed shape
+pair<int,int> get_min_max(const vector<pair<int,int>>& shape) {
+    int min_x = INT_MAX, max_x = INT_MIN;
+    int min_y = INT_MAX, max_y = INT_MIN;
+    for (auto& p : shape) {
+        min_x = min(min_x, p.first);
+        max_x = max(max_x, p.first);
+        min_y = min(min_y, p.second);
+        max_y = max(max_y, p.second);
+    }
+    return {min_x, min_y};
+}
+
+// Function to check if two shapes overlap
+bool overlaps(const vector<pair<int,int>>& s1, const vector<pair<int,int>>& s2, int x1, int y1, int x2, int y2) {
+    // Translate both shapes
+    set<pair<int,int>> cells1, cells2;
+    for (auto& p : s1) {
+        cells1.insert({p.first + x1, p.second + y1});
+    }
+    for (auto& p : s2) {
+        cells2.insert({p.first + x2, p.second + y2});
+    }
+    
+    // Check for intersection
+    for (auto& p : cells1) {
+        if (cells2.count(p)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Function to compute area of a shape
+int compute_area(const vector<pair<int,int>>& shape) {
+    set<pair<int,int>> unique_cells(shape.begin(), shape.end());
+    return unique_cells.size();
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<vector<pair<int,int>>> pieces(n);
+    vector<int> piece_sizes(n);
+    vector<vector<vector<pair<int,int>>>> all_transforms(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k;
+        cin >> k;
+        piece_sizes[i] = k;
+        vector<pair<int,int>> shape(k);
+        int min_x = INT_MAX, max_x = INT_MIN;
+        int min_y = INT_MAX, max_y = INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y;
+            cin >> x >> y;
+            shape[j] = {x, y};
+            min_x = min(min_x, x);
+            max_x = max(max_x, x);
+            min_y = min(min_y, y);
+            max_y = max(max_y, y);
+        }
+        pieces[i] = shape;
+        all_transforms[i] = get_transforms(shape);
+    }
+    
+    // Try placing pieces in a row, but allow for better packing
+    vector<int> x(n), y(n);
+    vector<int> rot(n), flip(n);
+    int total_cells = 0;
+    for (int i = 0; i < n; ++i) {
+        total_cells += piece_sizes[i];
+    }
+    
+    // Initial estimate for width and height
+    int W = 1000000, H = 1000000;
+    
+    // Brute-force try different arrangements
+    // For simplicity, we'll just try a greedy approach with rotations and reflections
+    
+    vector<pair<int,int>> placed_cells;
+    vector<vector<pair<int,int>>> placed_shapes(n);
+    vector<int> placed_x(n), placed_y(n);
+    vector<int> placed_rot(n), placed_flip(n);
+    
+    int cur_x = 0, cur_y = 0;
+    int max_width = 0;
+    int max_height = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        int best_w = INT_MAX;
+        int best_h = INT_MAX;
+        int best_x = 0;
+        int best_y = 0;
+        int best_rot = 0;
+        int best_flip = 0;
+        vector<pair<int,int>> best_shape;
+        
+        // Try all transforms for this piece
+        for (int r = 0; r < 8; ++r) {
+            const auto& t = all_transforms[i][r];
+            int min_x = INT_MAX, max_x = INT_MIN;
+            int min_y = INT_MAX, max_y = INT_MIN;
+            for (auto& p : t) {
+                min_x = min(min_x, p.first);
+                max_x = max(max_x, p.first);
+                min_y = min(min_y, p.second);
+                max_y = max(max_y, p.second);
+            }
+            int w = max_x - min_x + 1;
+            int h = max_y - min_y + 1;
+            if (w * h < best_w * best_h) {
+                best_w = w;
+                best_h = h;
+                best_shape = t;
+                best_rot = r % 4;
+                best_flip = r >= 4 ? 1 : 0;
+            }
+        }
+        
+        // Place this piece
+        placed_shapes[i] = best_shape;
+        placed_rot[i] = best_rot;
+        placed_flip[i] = best_flip;
+        
+        // Try placing at current position
+        int min_x = INT_MAX, max_x = INT_MIN;
+        int min_y = INT_MAX, max_y = INT_MIN;
+        for (auto& p : best_shape) {
+            min_x = min(min_x, p.first);
+            max_x = max(max_x, p.first);
+            min_y = min(min_y, p.second);
+            max_y = max(max_y, p.second);
+        }
+        
+        int tx = cur_x - min_x;
+        int ty = cur_y - min_y;
+        
+        placed_x[i] = tx;
+        placed_y[i] = ty;
+        
+        cur_x += max_x - min_x + 1;
+        max_width = max(max_width, cur_x);
+        max_height = max(max_height, ty + max_y - min_y + 1);
+    }
+    
+    // Final output
+    cout << max_width << " " << max_height << "\n";
+    for (int i = 0; i < n; ++i) {
+        cout << placed_x[i] << " " << placed_y[i] << " " << placed_rot[i] << " " << placed_flip[i] << "\n";
+    }
+    
+    return 0;
+}
+Iteration 9: New subsample score 0.0 is not better than old score 25.897223937142844, skipping
+Iteration 10: Selected program 1 score: 25.897223937142844
+Iteration 9: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 9: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 10: Selected program 0 score: 0.0
+Iteration 10: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 10: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 11: Selected program 0 score: 0.0
+Iteration 9: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 9: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 10: Selected program 0 score: 0.0
+Iteration 10: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<vector<pair<int,int>>> shapes(n);
+    vector<int> sizes(n);
+    vector<int> minx(n), miny(n), maxx(n), maxy(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        sizes[i] = k;
+        shapes[i].resize(k);
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            shapes[i][j] = {x, y};
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        maxx[i]=mxx; maxy[i]=mxy;
+    }
+    
+    // Generate all 8 transformations for each shape
+    vector<vector<vector<pair<int,int>>>> all_transforms(n);
+    for (int i = 0; i < n; ++i) {
+        vector<vector<pair<int,int>>> transforms;
+        // 4 rotations without reflection
+        vector<pair<int,int>> shape = shapes[i];
+        for (int rot = 0; rot < 4; ++rot) {
+            vector<pair<int,int>> rotated(shape.size());
+            for (int j = 0; j < shape.size(); ++j) {
+                int x = shape[j].first, y = shape[j].second;
+                if (rot == 0) rotated[j] = {x, y};
+                else if (rot == 1) rotated[j] = {y, -x};
+                else if (rot == 2) rotated[j] = {-x, -y};
+                else rotated[j] = {-y, x};
+            }
+            transforms.push_back(rotated);
+            shape = rotated;
+        }
+        
+        // 4 rotations with reflection
+        shape = shapes[i];
+        for (int rot = 0; rot < 4; ++rot) {
+            vector<pair<int,int>> reflected(shape.size());
+            for (int j = 0; j < shape.size(); ++j) {
+                int x = shape[j].first, y = shape[j].second;
+                if (rot == 0) reflected[j] = {-x, y};
+                else if (rot == 1) reflected[j] = {y, x};
+                else if (rot == 2) reflected[j] = {x, -y};
+                else reflected[j] = {-y, -x};
+            }
+            transforms.push_back(reflected);
+            shape = reflected;
+        }
+        
+        all_transforms[i] = transforms;
+    }
+    
+    // Try placing shapes in a row with different rotations/reflections
+    vector<pair<int,int>> placements(n);
+    int max_width = 0;
+    int total_height = 0;
+    vector<int> heights(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int w = maxx[i] - minx[i] + 1;
+        int h = maxy[i] - miny[i] + 1;
+        max_width = max(max_width, w);
+        heights[i] = h;
+        total_height += h;
+    }
+    
+    // Try to pack in a grid-like arrangement
+    int grid_width = max_width;
+    int grid_height = total_height;
+    int best_area = grid_width * grid_height;
+    int best_w = grid_width, best_h = grid_height;
+    
+    vector<tuple<int,int,int,int>> best_placements(n); // x, y, rot, flip
+    
+    // Simple greedy approach: place each shape in order
+    vector<bool> used(n, false);
+    int cur_x = 0, cur_y = 0;
+    vector<tuple<int,int,int,int>> current_placement(n);
+    
+    vector<pair<int,int>> pos;
+    vector<vector<bool>> grid(20000, vector<bool>(20000, false)); // large enough
+    
+    auto check_and_place = [&](int idx, int x, int y, int rot, int flip) -> bool {
+        auto& shape = all_transforms[idx][rot + (flip ? 4 : 0)];
+        for (auto& p : shape) {
+            int px = x + p.first;
+            int py = y + p.second;
+            if (px < 0 || py < 0 || px >= 20000 || py >= 20000) return false;
+            if (grid[py][px]) return false;
+        }
+        for (auto& p : shape) {
+            int px = x + p.first;
+            int py = y + p.second;
+            grid[py][px] = true;
+        }
+        return true;
+    };
+    
+    auto clear_grid = [&]() {
+        for (int i = 0; i < 20000; ++i)
+            for (int j = 0; j < 20000; ++j)
+                grid[i][j] = false;
+    };
+    
+    // Try different arrangement strategies
+    int best_w2 = 1000000, best_h2 = 1000000;
+    vector<tuple<int,int,int,int>> best_placement2(n);
+    
+    // Strategy 1: place in a row (as before, but with transformations)
+    int x = 0, y = 0;
+    int max_h = 0;
+    int total_cells = 0;
+    
+    clear_grid();
+    vector<tuple<int,int,int,int>> current_placement2(n);
+    vector<int> temp_heights(n);
+    
+    vector<pair<int,int>> shape_sizes(n);
+    for (int i = 0; i < n; ++i) {
+        int w = maxx[i] - minx[i] + 1;
+        int h = maxy[i] - miny[i] + 1;
+        shape_sizes[i] = {w, h};
+    }
+    
+    // Try placing shapes one by one in a row, but with rotation/reflection
+    vector<int> indices(n);
+    iota(indices.begin(), indices.end(), 0);
+    random_shuffle(indices.begin(), indices.end());
+    
+    vector<int> x_pos(n), y_pos(n);
+    vector<int> rot(n), flip(n);
+    
+    // Simple row arrangement
+    int cur_x2 = 0, cur_y2 = 0;
+    int max_width2 = 0;
+    int total_height2 = 0;
+    
+    // Just use a simple row arrangement for now
+    vector<int> widths(n);
+    vector<int> heights2(n);
+    int total_w = 0;
+    int max_h2 = 0;
+    
+    for (int i = 0; i < n; ++i) {
+        int w = maxx[i] - minx[i] + 1;
+        int h = maxy[i] - miny[i] + 1;
+        widths[i] = w;
+        heights2[i] = h;
+        total_w += w;
+        max_h2 = max(max_h2, h);
+    }
+    
+    // Try placing them in a row, but optimize for area
+    int W = total_w;
+    int H = max_h2;
+    int area = W * H;
+    
+    // Try to fit them better
+    int best_area2 = area;
+    int best_W = W;
+    int best_H = H;
+    
+    vector<tuple<int,int,int,int>> final_placement(n);
+    
+    // Simple row placement
+    int cur_x3 = 0;
+    int max_h3 = 0;
+    for (int i = 0; i < n; ++i) {
+        int w = maxx[i] - minx[i] + 1;
+        int h = maxy[i] - miny[i] + 1;
+        max_h3 = max(max_h3, h);
+        final_placement[i] = {cur_x3 - minx[i], 0 - miny[i], 0, 0};
+        cur_x3 += w;
+    }
+    
+    int final_w = cur_x3;
+    int final_h = max_h3;
+    
+    cout << final_w << " " << final_h << "\n";
+    for (int i = 0; i < n; ++i) {
+        cout << get<0>(final_placement[i]) << " " << get<1>(final_placement[i]) << " " << get<2>(final_placement[i]) << " " << get<3>(final_placement[i]) << "\n";
+    }
+    
+    return 0;
+}
+Iteration 10: New subsample score 27.810517627142843 is better than old score 25.897223937142844. Continue to full eval and add to candidate pool.
+Iteration 10: Found a better program on the valset with score 27.810517627142843.
+Iteration 10: Valset score for new program: 27.810517627142843 (coverage 1 / 1)
+Iteration 10: Val aggregate for new program: 27.810517627142843
+Iteration 10: Individual valset scores for new program: {0: 27.810517627142843}
+Iteration 10: New valset pareto front scores: {0: 27.810517627142843}
+Iteration 10: Valset pareto front aggregate score: 27.810517627142843
+Iteration 10: Updated valset pareto front programs: {0: {2}}
+Iteration 10: Best valset aggregate score so far: 27.810517627142843
+Iteration 10: Best program as per aggregate score on valset: 2
+Iteration 10: Best score on valset: 27.810517627142843
+Iteration 10: Linear pareto front program index: 2
+Iteration 10: New program candidate index: 2
+Iteration 11: Selected program 2 score: 27.810517627142843
+Iteration 10: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 10: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 11: Selected program 0 score: 0.0
+Iteration 11: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 11: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 12: Selected program 0 score: 0.0
+Iteration 10: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 10: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 11: Selected program 0 score: 0.0
+Iteration 11: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    
+    vector<vector<pair<int,int>>> shapes(n);
+    vector<int> sizes(n);
+    
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        sizes[i] = k;
+        shapes[i].resize(k);
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            shapes[i][j] = {x, y};
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+    }
+    
+    // Generate all 8 transformations for each shape
+    vector<vector<vector<pair<int,int>>>> all_transforms(n);
+    for (int i = 0; i < n; ++i) {
+        vector<vector<pair<int,int>>> transforms;
+        // 4 rotations without reflection
+        vector<pair<int,int>> shape = shapes[i];
+        for (int rot = 0; rot < 4; ++rot) {
+            vector<pair<int,int>> rotated(shape.size());
+            for (int j = 0; j < shape.size(); ++j) {
+                int x = shape[j].first, y = shape[j].second;
+                if (rot == 0) rotated[j] = {x, y};
+                else if (rot == 1) rotated[j] = {y, -x};
+                else if (rot == 2) rotated[j] = {-x, -y};
+                else rotated[j] = {-y, x};
+            }
+            transforms.push_back(rotated);
+            shape = rotated;
+        }
+        
+        // 4 rotations with reflection
+        shape = shapes[i];
+        for (int rot = 0; rot < 4; ++rot) {
+            vector<pair<int,int>> reflected(shape.size());
+            for (int j = 0; j < shape.size(); ++j) {
+                int x = shape[j].first, y = shape[j].second;
+                if (rot == 0) reflected[j] = {-x, y};
+                else if (rot == 1) reflected[j] = {y, x};
+                else if (rot == 2) reflected[j] = {x, -y};
+                else reflected[j] = {-y, -x};
+            }
+            transforms.push_back(reflected);
+            shape = reflected;
+        }
+        
+        all_transforms[i] = transforms;
+    }
+    
+    // Simple greedy approach: place each shape in order with best fit
+    vector<tuple<int,int,int,int>> final_placement(n); // x, y, rot, flip
+    
+    vector<int> widths(n), heights(n);
+    for (int i = 0; i < n; ++i) {
+        int w = 0, h = 0;
+        for (auto& p : shapes[i]) {
+            w = max(w, p.first);
+            h = max(h, p.second);
+        }
+        widths[i] = w + 1;
+        heights[i] = h + 1;
+    }
+    
+    // Try placing them in a row with minimal height
+    int total_width = 0;
+    int max_height = 0;
+    for (int i = 0; i < n; ++i) {
+        total_width += widths[i];
+        max_height = max(max_height, heights[i]);
+    }
+    
+    int W = total_width;
+    int H = max_height;
+    
+    // Place in a row starting from (0,0)
+    int cur_x = 0;
+    for (int i = 0; i < n; ++i) {
+        final_placement[i] = {cur_x - shapes[i][0].first, 0 - shapes[i][0].second, 0, 0};
+        cur_x += widths[i];
+    }
+    
+    cout << W << " " << H << "\n";
+    for (int i = 0; i < n; ++i) {
+        cout << get<0>(final_placement[i]) << " " << get<1>(final_placement[i]) << " " << get<2>(final_placement[i]) << " " << get<3>(final_placement[i]) << "\n";
+    }
+    
+    return 0;
+}
+Iteration 11: New subsample score 0.0 is not better than old score 27.810517627142843, skipping
+Iteration 12: Selected program 2 score: 27.810517627142843
+Iteration 11: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 11: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 12: Selected program 0 score: 0.0
+Iteration 12: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}
+Iteration 12: New subsample score 0.0 is not better than old score 0.0, skipping
+Iteration 13: Selected program 0 score: 0.0
+Iteration 11: Proposed new text for current_candidate: #include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int n;
+    if (!(cin >> n)) return 0;
+    vector<int> minx(n), miny(n);
+    int max_width = 0;
+    int cur_y = 0;
+    vector<int> heights(n);
+    for (int i = 0; i < n; ++i) {
+        int k; cin >> k;
+        int mnx=INT_MAX, mxx=INT_MIN, mny=INT_MAX, mxy=INT_MIN;
+        for (int j = 0; j < k; ++j) {
+            int x, y; cin >> x >> y;
+            mnx=min(mnx,x); mxx=max(mxx,x);
+            mny=min(mny,y); mxy=max(mxy,y);
+        }
+        minx[i]=mnx; miny[i]=mny;
+        int w=mxx-mnx+1, h=mxy-mny+1;
+        heights[i]=h;
+        max_width=max(max_width,w);
+        cur_y+=h;
+    }
+    cout << max_width << " " << cur_y << "\n";
+    int y=0;
+    for (int i = 0; i < n; ++i) {
+        cout << -minx[i] << " " << y-miny[i] << " 0 0\n";
+        y+=heights[i];
+    }
+    return 0;
+}

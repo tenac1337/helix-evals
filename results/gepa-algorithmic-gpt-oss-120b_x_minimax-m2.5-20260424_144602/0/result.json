@@ -1,0 +1,28 @@
+{
+  "problem_id": 0,
+  "track": "algorithmic",
+  "optimizer": "gepa",
+  "status": "ok",
+  "best_score": 0.0,
+  "token_summary": {
+    "run_id": "gepa-algorithmic-gpt-oss-120b_x_minimax-m2.5-20260424_144602-0",
+    "problem_id": "0",
+    "experiment_tag": "track_c",
+    "total_calls": 0,
+    "task_calls": 0,
+    "reflection_calls": 0,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0,
+    "total_tokens": 0,
+    "tokens_per_call_avg": 0.0,
+    "total_latency_s": 0.0,
+    "latency_per_call_avg": 0.0
+  },
+  "duration_s": 147.65,
+  "error": null,
+  "best_candidate_path": "results/gepa-algorithmic-gpt-oss-120b_x_minimax-m2.5-20260424_144602/0/best_candidate.cpp",
+  "run_tag": "gepa-algorithmic-gpt-oss-120b_x_minimax-m2.5-20260424_144602",
+  "task_model": "openrouter/openai/gpt-oss-120b:free",
+  "reflection_model": "openrouter/minimax/minimax-m2.5:free",
+  "eval_count": 11
+}
