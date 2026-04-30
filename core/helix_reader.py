@@ -61,18 +61,40 @@ class HelixReader:
 
     def best_score(self) -> float:
         """Return the best score seen across all evaluations."""
-        # Method A: scan evaluations/ directory (most reliable)
+        # Method A: parse helix_stdout.log (most reliable for our setup)
+        score = self._score_from_stdout_log()
+        if score is not None:
+            return score
+
+        # Method B: scan evaluations/ directory
         score = self._score_from_evaluations()
         if score is not None:
             return score
 
-        # Method B: run `helix best` and parse stdout
+        # Method C: run `helix best` and parse stdout
         score = self._score_from_helix_best()
         if score is not None:
             return score
 
-        # Method C: parse state.json (fragile, schema may change)
+        # Method D: parse state.json (fragile, schema may change)
         return self._score_from_state_json() or 0.0
+
+    def _score_from_stdout_log(self) -> Optional[float]:
+        """Parse score from helix_stdout.log in parent's parent directory."""
+        import re
+        # helix_stdout.log is at: result_dir/problem_id/helix_stdout.log
+        # self.helix_dir is: result_dir/problem_id/helix_project/.helix
+        stdout_log = self.helix_dir.parent.parent / "helix_stdout.log"
+        if not stdout_log.exists():
+            return None
+        try:
+            content = stdout_log.read_text(errors="replace")
+            scores = re.findall(r'"score":\s*([\d.]+)', content)
+            if scores:
+                return max(float(s) for s in scores)
+        except Exception:
+            pass
+        return None
 
     def _score_from_evaluations(self) -> Optional[float]:
         evals_dir = self.helix_dir / "evaluations"

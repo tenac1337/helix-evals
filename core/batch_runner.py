@@ -72,9 +72,9 @@ class RunConfig:
     reflection_model: str = ""
     helix_claude_model: str = "sonnet"
     max_metric_calls: int = 30
-    max_generations: int = 5
-    max_evaluations: int = 20
-    max_turns: int = 10
+    max_generations: int = 2
+    max_evaluations: int = 6
+    max_turns: int = 5
     max_workers: int = 4
     run_tag: str = ""
     results_root: str = "results"
@@ -85,11 +85,15 @@ class RunConfig:
     def __post_init__(self) -> None:
         if not self.run_tag:
             ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            t = (self.task_model or os.environ.get("TASK_MODEL","default")).split("/")[-1]
-            r = (self.reflection_model or os.environ.get("REFLECTION_MODEL","default")).split("/")[-1]
-            t = t.replace(":free","").replace(":","")
-            r = r.replace(":free","").replace(":","")
-            self.run_tag = f"{self.optimizer}-{self.track}-{t}_x_{r}-{ts}"
+            def _short(m: str) -> str:
+                return m.split("/")[-1].replace(":free", "").replace(":", "")
+            c = _short(self.helix_claude_model or "default")
+            t = _short(self.task_model or os.environ.get("TASK_MODEL", "default"))
+            r = _short(self.reflection_model or os.environ.get("REFLECTION_MODEL", "default"))
+            # Format: <optimizer>-<track>-<claude>_x_<task>_x_<refl>-<ts>
+            # All three model slots are always included so HELIX and GEPA runs
+            # share the same shape and can be diff'd by filename alone.
+            self.run_tag = f"{self.optimizer}-{self.track}-{c}_x_{t}_x_{r}-{ts}"
 
     def effective_task_model(self) -> str:
         return self.task_model or os.environ.get("TASK_MODEL","openrouter/openai/gpt-oss-120b:free")
@@ -400,6 +404,19 @@ class BatchRunner:
         adapter_dir = str(pathlib.Path(__file__).parent.parent.resolve())
         self._write_helix_project(proj, problem_id, adapter_dir)
         env = os.environ.copy()
+        # Pass ANTHROPIC_API_KEY to Claude Code subprocess
+        import pathlib as _pl
+        for _line in (_pl.Path(__file__).parent.parent / ".env").read_text().splitlines():
+            _line = _line.strip()
+            if _line.startswith("ANTHROPIC_API_KEY="):
+                env["ANTHROPIC_API_KEY"] = _line.split("=",1)[1].strip().strip('"').strip("'")
+                break
+        # Clean any previous helix state before fresh run
+        subprocess.call(["helix", "clean"], cwd=proj, env=env,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        # Clean any previous helix state before fresh run
+        subprocess.call(["helix", "clean"], cwd=proj, env=env,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         with open(out_dir / "helix_stdout.log", "w") as log_f:
             subprocess.call(["helix", "evolve"], cwd=proj, env=env,
                             stdout=log_f, stderr=subprocess.STDOUT)
@@ -420,33 +437,21 @@ class BatchRunner:
         (proj/"helix.toml").write_text("\n".join([
             f'objective = "Maximize Frontier-CS score for problem {problem_id}."',
             '', 'seed = "."', 'rng_seed = 0', '',
-            '[evaluator]', 'command = "python evaluate.py"', 'score_parser = "json_score"',
+            'passthrough_env = ["ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL", "PATH", "HOME"]', '', '[evaluator]', 'command = "/Users/kevinchon/Documents/Research/KDKC/helix-evals/.venv/bin/python3 evaluate.py"', 'score_parser = "json_score"',
             'include_stdout = true', 'include_stderr = true',
             'protected_files = ["evaluate.py", "problem.json"]', '',
             '[evolution]', f'max_generations = {self.cfg.max_generations}',
             f'max_evaluations = {self.cfg.max_evaluations}',
             'merge_enabled = false', 'minibatch_size = 1', 'cache_evaluation = true',
             'acceptance_criterion = "strict_improvement"', '',
-            '[claude]', f'model = "{self.cfg.helix_claude_model}"', 'effort = "medium"',
+            '[agent]', f'backend = "{self.cfg.helix_backend}"',
+            f'model = "{"openrouter/anthropic/claude-sonnet-4.6" if self.cfg.helix_backend == "opencode" else self.cfg.helix_claude_model}"',
+            'effort = "medium"',
             f'max_turns = {self.cfg.max_turns}',
             'allowed_tools = ["Read", "Edit", "Write", "Bash", "Glob", "Grep"]',
             'background = "Only modify solve.cpp."', '', '[worktree]',
             'base_dir = ".helix/worktrees"']) + "\n")
-        (proj/"evaluate.py").write_text(
-            "import json, pathlib, sys, traceback\n"
-            f"sys.path.insert(0, {repr(adapter_dir)})\n"
-            "from frontier_adapter import FrontierCSAdapter, FrontierTask\n"
-            "root = pathlib.Path(__file__).parent\n"
-            "spec = json.loads((root/'problem.json').read_text())\n"
-            "code = (root/'solve.cpp').read_text()\n"
-            "try:\n"
-            "    adapter = FrontierCSAdapter(backend='docker')\n"
-            "    score, asi = adapter.evaluate(code, FrontierTask(\n"
-            "        track=spec['track'], problem_id=spec['problem_id'], language='cpp'))\n"
-            "    print(json.dumps({'score': score, 'instance_scores': {str(spec['problem_id']): score}, 'asi': asi[:4000]}))\n"
-            "except Exception as exc:\n"
-            "    print(json.dumps({'score': 0.0, 'instance_scores': {str(spec['problem_id']): 0.0},\n"
-            "        'error': f'{type(exc).__name__}: {exc}', 'traceback': traceback.format_exc()}))\n")
+        (proj/"evaluate.py").write_text('import subprocess, sys, json, pathlib, tempfile, os\n# Write inner script to temp file\n_inner = "import json, pathlib, sys, io, traceback, warnings, os\\nwarnings.filterwarnings(\'ignore\')\\nos.environ[\'FRONTIER_CS_REPO\'] = \'/Users/kevinchon/Documents/Research/KDKC/Frontier-CS\'\\nsys.path.insert(0, \'/Users/kevinchon/Documents/Research/KDKC/helix-evals\')\\nfrom frontier_adapter import FrontierCSAdapter, FrontierTask\\nroot = pathlib.Path(__file__).parent\\nspec = json.loads((root/\'problem.json\').read_text())\\ncode = (root/\'solve.cpp\').read_text()\\n_real_stdout = sys.stdout\\nsys.stdout = io.StringIO()\\ntry:\\n    adapter = FrontierCSAdapter(backend=\'docker\')\\n    score, asi = adapter.evaluate(code, FrontierTask(\\n        track=spec[\'track\'], problem_id=spec[\'problem_id\'], language=\'cpp\'))\\n    _out = json.dumps({\'score\': score, \'instance_scores\': {str(spec[\'problem_id\']): score}, \'asi\': asi[:4000]})\\nexcept Exception as exc:\\n    _out = json.dumps({\'score\': 0.0, \'instance_scores\': {str(spec[\'problem_id\']): 0.0},\\n        \'error\': f\'{type(exc).__name__}: {exc}\', \'traceback\': traceback.format_exc()})\\nfinally:\\n    sys.stdout = _real_stdout\\nprint(_out)\\n"\n_tmp = pathlib.Path(__file__).parent / "_inner_eval.py"\n_tmp.write_text(_inner)\nresult = subprocess.run(\n    [\'/Users/kevinchon/Documents/Research/KDKC/helix-evals/.venv/bin/python3\', str(_tmp)],\n    capture_output=True, text=True,\n    cwd=str(pathlib.Path(__file__).parent)\n)\n# Find the JSON line in stdout\nfor line in result.stdout.strip().splitlines():\n    line = line.strip()\n    if line.startswith(\'{"score"\') or line.startswith(\'{"error"\'):\n        print(line)\n        sys.exit(0)\n# fallback\nprint(json.dumps({"score": 0.0, "instance_scores": {}, "error": "no json found", "stdout": result.stdout[:500], "stderr": result.stderr[:500]}))\n')
         (proj/"problem.json").write_text(json.dumps(
             {"track": self.cfg.track, "problem_id": problem_id, "backend": "docker"}, indent=2))
         from seed_cpp import SEED_CPP
