@@ -126,6 +126,28 @@ def _get_problem_ids(frontier_repo: str, n: int) -> list[int]:
     return chosen
 
 
+class _TeeStream:
+    """Mirror writes to two streams (e.g. terminal + log file)."""
+    def __init__(self, *streams):
+        self._streams = streams
+    def write(self, data):
+        for s in self._streams:
+            try:
+                s.write(data)
+                s.flush()
+            except Exception:
+                pass
+        return len(data) if isinstance(data, str) else 0
+    def flush(self):
+        for s in self._streams:
+            try:
+                s.flush()
+            except Exception:
+                pass
+    def isatty(self):
+        return False
+
+
 def _run_single(
     *,
     optimizer: str,
@@ -144,6 +166,7 @@ def _run_single(
         reflection_model=reflection_model,
         helix_claude_model=args.helix_claude_model,
         max_metric_calls=args.max_metric_calls,
+        helix_backend=args.helix_backend,
         max_generations=args.max_generations,
         max_evaluations=args.max_evaluations,
         max_turns=args.max_turns,
@@ -155,17 +178,30 @@ def _run_single(
         run_tag=args.run_tag,
     )
     runner = BatchRunner(cfg)
-    t0 = time.monotonic()
-    runner.run()
-    elapsed = time.monotonic() - t0
-    print(f"\n{optimizer.upper()} run complete in {elapsed / 60:.1f} min")
-    runner.print_summary()
 
-    # Save paper metrics immediately
-    agg = ResultsAggregator(runner.results_root)
-    agg.print_summary(label=label)
-    agg.save_json(label=label)
-    print("LaTeX row:", agg.to_latex_row(label=label))
+    log_dir = _ROOT / "logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / f"{cfg.run_tag}.log"
+    log_f = open(log_path, "w", buffering=1)
+    orig_stdout, orig_stderr = sys.stdout, sys.stderr
+    sys.stdout = _TeeStream(orig_stdout, log_f)
+    sys.stderr = _TeeStream(orig_stderr, log_f)
+    print(f"  driver_log       : {log_path}")
+    try:
+        t0 = time.monotonic()
+        runner.run()
+        elapsed = time.monotonic() - t0
+        print(f"\n{optimizer.upper()} run complete in {elapsed / 60:.1f} min")
+        runner.print_summary()
+
+        # Save paper metrics immediately
+        agg = ResultsAggregator(runner.results_root)
+        agg.print_summary(label=label)
+        agg.save_json(label=label)
+        print("LaTeX row:", agg.to_latex_row(label=label))
+    finally:
+        sys.stdout, sys.stderr = orig_stdout, orig_stderr
+        log_f.close()
 
     return runner.results_root, label
 
@@ -184,7 +220,7 @@ def _parse_args() -> argparse.Namespace:
     ap.add_argument("--optimizer", required=True,
                     choices=["gepa", "helix", "both"],
                     help="Which optimizer to run.")
-    ap.add_argument("--n-problems", type=int, default=5,
+    ap.add_argument("--n-problems", type=int, default=10,
                     help="Number of problems (IDs 0..N-1). Default 5 = smoke test.")
 
     # ── Model selection ──────────────────────────────────────────────────────
@@ -226,8 +262,9 @@ def _parse_args() -> argparse.Namespace:
     # ── Budgets ──────────────────────────────────────────────────────────────
     budget_grp = ap.add_argument_group("Budgets")
     budget_grp.add_argument("--max-metric-calls", type=int, default=30)
-    budget_grp.add_argument("--max-generations", type=int, default=5)
-    budget_grp.add_argument("--max-evaluations", type=int, default=20)
+    budget_grp.add_argument("--helix-backend", type=str, default="claude", choices=["claude","opencode","gemini","codex"])
+    budget_grp.add_argument("--max-generations", type=int, default=2)
+    budget_grp.add_argument("--max-evaluations", type=int, default=6)
     budget_grp.add_argument("--max-turns", type=int, default=10)
 
     # ── Infrastructure ────────────────────────────────────────────────────────
