@@ -1,0 +1,16 @@
+[
+  {
+    "task": "b2_agent_harness",
+    "mode": "per-file",
+    "seed_score": 0.1,
+    "best_score": 0.3,
+    "llm_calls": 9
+  },
+  {
+    "task": "b2_agent_harness",
+    "mode": "concatenated",
+    "seed_score": 0.1,
+    "best_score": 0.9,
+    "llm_calls": 9
+  }
+]

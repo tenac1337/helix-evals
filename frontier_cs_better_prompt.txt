@@ -1,0 +1,12 @@
+Problem Statement: [PROBLEM_TYPE]
+
+Your goal: Write a complete, correct solution that compiles and produces valid output.
+
+Critical checklist before [MUTATION COMPLETE]:
+1. Does it compile without errors? Test: g++ -std=c++17 -O2 -o sol solve.cpp
+2. Does it read input correctly from stdin?
+3. Does it produce output in the required format?
+4. For the sample input, does it produce correct output?
+
+If the current code doesn't work, completely rewrite it from scratch.
+Only emit [MUTATION COMPLETE] when you're confident the solution is correct.

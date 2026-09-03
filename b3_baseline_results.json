@@ -1,0 +1,82 @@
+[
+  {
+    "task": "b3_1_api_versioning",
+    "mode": "per-file",
+    "seed_score": 0.4,
+    "best_score": 0.4,
+    "llm_calls": 5,
+    "wall_s": 72.9
+  },
+  {
+    "task": "b3_1_api_versioning",
+    "mode": "concatenated",
+    "seed_score": 0.4,
+    "best_score": 0.4,
+    "llm_calls": 5,
+    "wall_s": 332.6
+  },
+  {
+    "task": "b3_2_config_refactor",
+    "mode": "per-file",
+    "seed_score": 0.25,
+    "best_score": 0.25,
+    "llm_calls": 5,
+    "wall_s": 121.3
+  },
+  {
+    "task": "b3_2_config_refactor",
+    "mode": "concatenated",
+    "seed_score": 0.25,
+    "best_score": 0.25,
+    "llm_calls": 5,
+    "wall_s": 186.4
+  },
+  {
+    "task": "b3_3_enum_migration",
+    "mode": "per-file",
+    "seed_score": 0.2,
+    "best_score": 0.2,
+    "llm_calls": 5,
+    "wall_s": 80.5
+  },
+  {
+    "task": "b3_3_enum_migration",
+    "mode": "concatenated",
+    "seed_score": 0.2,
+    "best_score": 1.0,
+    "llm_calls": 4,
+    "wall_s": 90.3
+  },
+  {
+    "task": "b3_4_typed_dict",
+    "mode": "per-file",
+    "seed_score": 0.4,
+    "best_score": 0.4,
+    "llm_calls": 5,
+    "wall_s": 48.6
+  },
+  {
+    "task": "b3_4_typed_dict",
+    "mode": "concatenated",
+    "seed_score": 0.4,
+    "best_score": 0.4,
+    "llm_calls": 5,
+    "wall_s": 76.2
+  },
+  {
+    "task": "b3_5_module_restructure",
+    "mode": "per-file",
+    "seed_score": 0.4,
+    "best_score": 0.4,
+    "llm_calls": 5,
+    "wall_s": 88.6
+  },
+  {
+    "task": "b3_5_module_restructure",
+    "mode": "concatenated",
+    "seed_score": 0.4,
+    "best_score": 1.0,
+    "llm_calls": 4,
+    "wall_s": 45.6
+  }
+]

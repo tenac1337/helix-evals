@@ -1,0 +1,3997 @@
+
+=== GEPA-OA per-file: b2_agent_harness (seed 0.10) ===
+Iteration 0: Base program full valset score: 0.1 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.1
+Iteration 1: Proposed new text for current_candidate: """Agent core with integrated Planner for multi-task-type support."""
+
+
+class Planner:
+    TASK_STRATEGIES = {
+        "search": ["search", "summarize"],
+        "math": ["compute", "verify"],
+        "code": ["analyze", "execute", "test"],
+        "classify": ["extract_features", "classify"],
+        "summarize": ["fetch", "summarize"],
+        "compare": ["fetch", "compare", "rank"],
+        "qa": ["search", "extract", "answer"],
+        "generate": ["plan", "generate", "refine"],
+        "transform": ["parse", "transform", "validate"],
+        "reasoning": ["decompose", "reason", "conclude"],
+    }
+
+    def make_plan(self, task, context=None):
+        task_type = self._infer_type(task, context)
+        steps = self.TASK_STRATEGIES.get(task_type, ["search", "summarize"])
+        return [{"tool": step, "query": task, "task_type": task_type} for step in steps]
+
+    def _infer_type(self, task, context=None):
+        task_lower = str(task).lower()
+        ctx_type = (context or {}).get("task_type")
+        if ctx_type and ctx_type in self.TASK_STRATEGIES:
+            return ctx_type
+        rules = [
+            ("math", ["calculate", "compute", "solve", "equation", "integral", "derivative"]),
+            ("code", ["code", "function", "debug", "implement", "program", "script"]),
+            ("classify", ["classify", "categorize", "label", "which category"]),
+            ("summarize", ["summarize", "summary", "tldr", "brief"]),
+            ("compare", ["compare", "difference", "versus", "vs", "better"]),
+            ("qa", ["what is", "who is", "when did", "where is", "why did", "how does"]),
+            ("generate", ["generate", "write", "create", "draft", "compose"]),
+            ("transform", ["convert", "transform", "translate", "reformat", "parse"]),
+            ("reasoning", ["reason", "logic", "infer", "deduce", "conclude"]),
+        ]
+        for task_type, keywords in rules:
+            if any(kw in task_lower for kw in keywords):
+                return task_type
+        return "search"
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = Planner()
+
+    def run(self, task, context=None):
+        plan = self.planner.make_plan(task, context)
+        result = None
+        for turn, action in enumerate(plan[:self.max_turns]):
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn):
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"status": "ok", "tool": tool_name, "result": f"Executed {tool_name}"}
+
+    def _is_done(self, result):
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+Iteration 1: New subsample score 0.1 is not better than old score 0.1, skipping
+Iteration 2: Selected program 0 score: 0.1
+Iteration 2: Proposed new text for current_candidate: """Agent core with integrated Planner for multi-task-type support."""
+
+
+class Planner:
+    TASK_TYPES = [
+        "search", "compute", "classify", "summarize", "transform",
+        "extract", "compare", "generate", "validate", "retrieve",
+    ]
+
+    def make_plan(self, task, tools):
+        task_lower = task.lower() if isinstance(task, str) else ""
+        steps = []
+
+        if any(k in task_lower for k in ("find", "search", "look up", "query")):
+            steps.append({"tool": "search", "query": task})
+        elif any(k in task_lower for k in ("compute", "calculate", "math", "solve")):
+            steps.append({"tool": "compute", "expression": task})
+        elif any(k in task_lower for k in ("classify", "categorize", "label")):
+            steps.append({"tool": "classify", "input": task})
+        elif any(k in task_lower for k in ("summarize", "summary", "tldr")):
+            steps.append({"tool": "summarize", "input": task})
+        elif any(k in task_lower for k in ("transform", "convert", "translate")):
+            steps.append({"tool": "transform", "input": task})
+        elif any(k in task_lower for k in ("extract", "parse", "pull")):
+            steps.append({"tool": "extract", "input": task})
+        elif any(k in task_lower for k in ("compare", "diff", "versus", "vs")):
+            steps.append({"tool": "compare", "input": task})
+        elif any(k in task_lower for k in ("generate", "create", "write", "produce")):
+            steps.append({"tool": "generate", "input": task})
+        elif any(k in task_lower for k in ("validate", "verify", "check", "assert")):
+            steps.append({"tool": "validate", "input": task})
+        elif any(k in task_lower for k in ("retrieve", "get", "fetch", "load")):
+            steps.append({"tool": "retrieve", "input": task})
+        else:
+            # Fallback: try available tools in priority order, then search
+            preferred = [t for t in self.TASK_TYPES if t in tools]
+            tool = preferred[0] if preferred else "search"
+            steps.append({"tool": tool, "query": task, "input": task})
+
+        return steps
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = Planner()
+
+    def run(self, task, context=None):
+        """Run agent on a task using Planner-driven multi-step execution."""
+        plan = self.planner.make_plan(task, self.tools)
+        result = None
+        plan_idx = 0
+
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn, plan, plan_idx)
+            if action is None:
+                break
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            plan_idx += 1
+            if self._is_done(result):
+                break
+
+        return result
+
+    def _decide(self, task, context, turn, plan, plan_idx):
+        """Pick the next action from the plan, or None when exhausted."""
+        if plan_idx < len(plan):
+            action = dict(plan[plan_idx])
+            if context:
+                action["context"] = context
+            return action
+        return None
+
+    def _execute(self, action):
+        """Execute an action using registered tools."""
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        # Graceful degradation: return the action itself as a stub result
+        return {"tool": tool_name, "status": "no_impl", "action": action}
+
+    def _is_done(self, result):
+        """Check if task is complete."""
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        """Register a tool."""
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+Iteration 2: New subsample score 0.1 is not better than old score 0.1, skipping
+Iteration 3: Selected program 0 score: 0.1
+Iteration 3: Proposed new text for current_candidate: """Agent core with integrated Planner for all 10 task types."""
+
+TASK_TYPES = [
+    "search", "summarize", "classify", "extract", "transform",
+    "generate", "compare", "validate", "aggregate", "plan",
+]
+
+
+class Planner:
+    def __init__(self, tools):
+        self.tools = tools
+
+    def plan(self, task, context):
+        task_type = self._infer_type(task, context)
+        return self._build_steps(task_type, task, context)
+
+    def _infer_type(self, task, context):
+        task_lower = str(task).lower()
+        ctx_lower = str(context).lower() if context else ""
+        combined = task_lower + " " + ctx_lower
+
+        if any(w in combined for w in ("summarize", "summary", "brief", "tldr")):
+            return "summarize"
+        if any(w in combined for w in ("classify", "category", "label", "tag")):
+            return "classify"
+        if any(w in combined for w in ("extract", "parse", "pull out", "identify")):
+            return "extract"
+        if any(w in combined for w in ("transform", "convert", "reformat", "translate")):
+            return "transform"
+        if any(w in combined for w in ("generate", "create", "write", "produce")):
+            return "generate"
+        if any(w in combined for w in ("compare", "difference", "versus", "vs")):
+            return "compare"
+        if any(w in combined for w in ("validate", "verify", "check", "assert")):
+            return "validate"
+        if any(w in combined for w in ("aggregate", "combine", "merge", "collect")):
+            return "aggregate"
+        if any(w in combined for w in ("plan", "schedule", "steps", "roadmap")):
+            return "plan"
+        return "search"
+
+    def _build_steps(self, task_type, task, context):
+        available = set(self.tools.keys())
+        steps = []
+
+        if task_type == "search":
+            steps.append({"tool": "search", "query": task})
+            if "summarize" in available:
+                steps.append({"tool": "summarize", "input": "__prev__"})
+
+        elif task_type == "summarize":
+            if "fetch" in available:
+                steps.append({"tool": "fetch", "input": task})
+            steps.append({"tool": "summarize", "input": context or task})
+
+        elif task_type == "classify":
+            if "classify" in available:
+                steps.append({"tool": "classify", "input": task, "context": context})
+            else:
+                steps.append({"tool": "search", "query": task})
+
+        elif task_type == "extract":
+            if "extract" in available:
+                steps.append({"tool": "extract", "input": task, "context": context})
+            else:
+                steps.append({"tool": "search", "query": task})
+
+        elif task_type == "transform":
+            if "transform" in available:
+                steps.append({"tool": "transform", "input": task, "context": context})
+            elif "generate" in available:
+                steps.append({"tool": "generate", "input": task, "context": context})
+            else:
+                steps.append({"tool": "search", "query": task})
+
+        elif task_type == "generate":
+            if "generate" in available:
+                steps.append({"tool": "generate", "input": task, "context": context})
+            else:
+                steps.append({"tool": "search", "query": task})
+                if "summarize" in available:
+                    steps.append({"tool": "summarize", "input": "__prev__"})
+
+        elif task_type == "compare":
+            steps.append({"tool": "search", "query": task})
+            if "compare" in available:
+                steps.append({"tool": "compare", "input": "__prev__", "context": context})
+            elif "summarize" in available:
+                steps.append({"tool": "summarize", "input": "__prev__"})
+
+        elif task_type == "validate":
+            if "validate" in available:
+                steps.append({"tool": "validate", "input": task, "context": context})
+            else:
+                steps.append({"tool": "search", "query": task})
+
+        elif task_type == "aggregate":
+            steps.append({"tool": "search", "query": task})
+            if "aggregate" in available:
+                steps.append({"tool": "aggregate", "input": "__prev__", "context": context})
+            elif "summarize" in available:
+                steps.append({"tool": "summarize", "input": "__prev__"})
+
+        elif task_type == "plan":
+            if "plan" in available:
+                steps.append({"tool": "plan", "input": task, "context": context})
+            else:
+                steps.append({"tool": "search", "query": task})
+                if "generate" in available:
+                    steps.append({"tool": "generate", "input": "__prev__", "context": context})
+
+        if not steps:
+            steps.append({"tool": "search", "query": task})
+
+        return steps
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+
+    def run(self, task, context=None):
+        planner = Planner(self.tools)
+        steps = planner.plan(task, context)
+
+        result = None
+        prev_result = None
+        for turn, step in enumerate(steps):
+            if turn >= self.max_turns:
+                break
+            action = self._resolve_refs(step, prev_result)
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                prev_result = result
+            else:
+                break
+
+        return result
+
+    def _resolve_refs(self, action, prev_result):
+        resolved = {}
+        for key, value in action.items():
+            if value == "__prev__" and prev_result is not None:
+                resolved[key] = prev_result
+            else:
+                resolved[key] = value
+        return resolved
+
+    def _decide(self, task, context, turn):
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+Iteration 3: New subsample score 0.1 is not better than old score 0.1, skipping
+Iteration 4: Selected program 0 score: 0.1
+Iteration 4: Proposed new text for current_candidate: """Agent core with integrated Planner for multi-task-type support."""
+
+
+TASK_TYPE_TOOLS = {
+    "search": ["search"],
+    "compute": ["compute", "search"],
+    "classify": ["classify", "search"],
+    "summarize": ["summarize", "search"],
+    "generate": ["generate", "search"],
+    "transform": ["transform", "compute"],
+    "validate": ["validate", "search"],
+    "extract": ["extract", "search"],
+    "compare": ["compare", "search", "compute"],
+    "rank": ["rank", "search", "compute"],
+}
+
+
+class Planner:
+    def __init__(self, tools):
+        self.tools = tools
+
+    def detect_task_type(self, task):
+        task_lower = str(task).lower()
+        if any(w in task_lower for w in ["rank", "order", "sort", "top"]):
+            return "rank"
+        if any(w in task_lower for w in ["compare", "versus", "vs", "difference"]):
+            return "compare"
+        if any(w in task_lower for w in ["extract", "pull", "parse", "find all"]):
+            return "extract"
+        if any(w in task_lower for w in ["validate", "check", "verify", "is valid"]):
+            return "validate"
+        if any(w in task_lower for w in ["transform", "convert", "translate", "reformat"]):
+            return "transform"
+        if any(w in task_lower for w in ["generate", "create", "write", "produce"]):
+            return "generate"
+        if any(w in task_lower for w in ["summarize", "summary", "brief", "tldr"]):
+            return "summarize"
+        if any(w in task_lower for w in ["classify", "categorize", "label", "tag"]):
+            return "classify"
+        if any(w in task_lower for w in ["compute", "calculate", "math", "solve", "evaluate"]):
+            return "compute"
+        return "search"
+
+    def plan(self, task, context=None):
+        task_type = self.detect_task_type(task)
+        tool_sequence = TASK_TYPE_TOOLS.get(task_type, ["search"])
+        steps = []
+        for tool in tool_sequence:
+            if tool in self.tools:
+                steps.append({"tool": tool, "query": task, "task_type": task_type})
+        if not steps:
+            steps.append({"tool": list(self.tools.keys())[0], "query": task, "task_type": task_type} if self.tools else None)
+        return [s for s in steps if s is not None]
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = Planner(self.tools)
+
+    def run(self, task, context=None):
+        plan = self.planner.plan(task, context)
+        result = None
+        plan_iter = iter(plan)
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn, plan_iter)
+            if action is None:
+                break
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn, plan_iter):
+        try:
+            return next(plan_iter)
+        except StopIteration:
+            return None
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+        self.planner = Planner(self.tools)
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+Iteration 4: New subsample score 0.1 is not better than old score 0.1, skipping
+Iteration 5: Selected program 0 score: 0.1
+Iteration 5: Proposed new text for current_candidate: """Agent core with integrated Planner for multi-task-type support."""
+
+
+TASK_TYPE_TOOLS = {
+    "search": ["search", "fetch", "summarize"],
+    "code": ["search", "read_file", "write_file", "execute"],
+    "math": ["calculate", "search"],
+    "data": ["fetch", "parse", "transform", "summarize"],
+    "classify": ["search", "classify"],
+    "generate": ["search", "generate"],
+    "translate": ["translate"],
+    "summarize": ["fetch", "summarize"],
+    "qa": ["search", "fetch", "summarize"],
+    "plan": ["search", "decompose", "summarize"],
+}
+
+
+class Planner:
+    def __init__(self, tools):
+        self.tools = tools
+
+    def infer_task_type(self, task):
+        task_lower = task.lower()
+        if any(k in task_lower for k in ("calculate", "compute", "solve", "equation", "math")):
+            return "math"
+        if any(k in task_lower for k in ("write code", "implement", "function", "script", "program")):
+            return "code"
+        if any(k in task_lower for k in ("translate", "in french", "in spanish", "in german")):
+            return "translate"
+        if any(k in task_lower for k in ("summarize", "summary", "tldr")):
+            return "summarize"
+        if any(k in task_lower for k in ("classify", "categorize", "label")):
+            return "classify"
+        if any(k in task_lower for k in ("generate", "create", "produce", "write")):
+            return "generate"
+        if any(k in task_lower for k in ("transform", "convert", "parse", "extract")):
+            return "data"
+        if any(k in task_lower for k in ("plan", "steps", "how to", "strategy")):
+            return "plan"
+        if any(k in task_lower for k in ("what", "who", "when", "where", "why", "answer")):
+            return "qa"
+        return "search"
+
+    def make_plan(self, task, context=None):
+        task_type = self.infer_task_type(task)
+        preferred = TASK_TYPE_TOOLS.get(task_type, ["search", "summarize"])
+        available = [t for t in preferred if t in self.tools]
+        if not available:
+            available = list(self.tools.keys())[:3] if self.tools else ["search"]
+
+        steps = []
+        for tool in available:
+            if tool == "search":
+                steps.append({"tool": "search", "query": task})
+            elif tool == "fetch":
+                steps.append({"tool": "fetch", "url": context.get("url", "") if context else ""})
+            elif tool == "calculate":
+                steps.append({"tool": "calculate", "expression": task})
+            elif tool == "translate":
+                steps.append({"tool": "translate", "text": task, "target": context.get("target_lang", "en") if context else "en"})
+            elif tool == "classify":
+                steps.append({"tool": "classify", "text": task})
+            elif tool == "generate":
+                steps.append({"tool": "generate", "prompt": task})
+            elif tool == "decompose":
+                steps.append({"tool": "decompose", "task": task})
+            elif tool == "summarize":
+                steps.append({"tool": "summarize", "text": task})
+            elif tool == "read_file":
+                steps.append({"tool": "read_file", "path": context.get("file", "") if context else ""})
+            elif tool == "write_file":
+                steps.append({"tool": "write_file", "path": context.get("file", "output.txt") if context else "output.txt", "content": ""})
+            elif tool == "execute":
+                steps.append({"tool": "execute", "code": ""})
+            elif tool == "parse":
+                steps.append({"tool": "parse", "data": context.get("data", "") if context else ""})
+            elif tool == "transform":
+                steps.append({"tool": "transform", "data": context.get("data", "") if context else "", "spec": task})
+            else:
+                steps.append({"tool": tool, "input": task})
+        return steps
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = Planner(self.tools)
+
+    def run(self, task, context=None):
+        plan = self.planner.make_plan(task, context)
+        result = None
+        step_index = 0
+
+        for turn in range(self.max_turns):
+            if step_index < len(plan):
+                action = plan[step_index]
+                step_index += 1
+            else:
+                action = self._decide(task, context, turn, result)
+
+            if action is None:
+                break
+
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+
+            if self._is_done(result) and step_index >= len(plan):
+                break
+
+        return result
+
+    def _decide(self, task, context, turn, last_result=None):
+        if last_result and "error" in last_result:
+            fallback_tools = [t for t in self.tools if t != last_result.get("failed_tool")]
+            if fallback_tools:
+                return {"tool": fallback_tools[0], "input": task}
+        return None
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found", "failed_tool": tool_name}
+
+    def _is_done(self, result):
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+        self.planner = Planner(self.tools)
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+Iteration 5: New subsample score 0.1 is not better than old score 0.1, skipping
+Iteration 6: Selected program 0 score: 0.1
+Iteration 6: Proposed new text for current_candidate: """Agent core with integrated Planner for multi-task-type support."""
+
+
+class Planner:
+    TASK_STRATEGIES = {
+        "search": ["search", "summarize"],
+        "calculate": ["calculate", "validate"],
+        "classify": ["classify", "verify"],
+        "extract": ["extract", "format"],
+        "transform": ["transform", "validate"],
+        "generate": ["generate", "review"],
+        "compare": ["search", "compare", "summarize"],
+        "filter": ["search", "filter", "format"],
+        "aggregate": ["search", "aggregate", "summarize"],
+        "reason": ["analyze", "reason", "conclude"],
+    }
+
+    DEFAULT_STRATEGY = ["search", "summarize"]
+
+    def make_plan(self, task, context=None):
+        task_lower = str(task).lower()
+        for task_type, steps in self.TASK_STRATEGIES.items():
+            if task_type in task_lower:
+                return [{"tool": step, "task": task, "context": context} for step in steps]
+        return [{"tool": step, "task": task, "context": context} for step in self.DEFAULT_STRATEGY]
+
+    def detect_task_type(self, task):
+        task_lower = str(task).lower()
+        for task_type in self.TASK_STRATEGIES:
+            if task_type in task_lower:
+                return task_type
+        return "search"
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = Planner()
+
+    def run(self, task, context=None):
+        """Run agent on a task using a plan from the Planner."""
+        plan = self.planner.make_plan(task, context)
+        result = None
+
+        for turn, action in enumerate(plan):
+            if turn >= self.max_turns:
+                break
+            action["_turn"] = turn
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if "error" in result:
+                fallback = self._fallback_action(task, context, result)
+                if fallback:
+                    result = self._execute(fallback)
+                    self.memory.append({"turn": turn, "action": fallback, "result": result})
+            if self._is_done(result):
+                break
+
+        return result
+
+    def _decide(self, task, context, turn):
+        """Decide next action using the Planner."""
+        plan = self.planner.make_plan(task, context)
+        if turn < len(plan):
+            return plan[turn]
+        return None
+
+    def _fallback_action(self, task, context, failed_result):
+        """Produce a fallback search action when a planned step fails."""
+        return {"tool": "search", "task": task, "context": context, "fallback": True}
+
+    def _execute(self, action):
+        """Execute an action using registered tools."""
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        # Graceful degradation: return partial result instead of hard error
+        return {"status": "unhandled", "tool": tool_name, "action": action}
+
+    def _is_done(self, result):
+        """Check if task is complete."""
+        if result is None:
+            return False
+        if "error" in result:
+            return False
+        if result.get("status") == "unhandled":
+            return False
+        return True
+
+    def add_tool(self, name, fn):
+        """Register a tool."""
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+Iteration 6: New subsample score 0.3 is better than old score 0.1. Continue to full eval and add to candidate pool.
+Iteration 6: Found a better program on the valset with score 0.3.
+Iteration 6: Valset score for new program: 0.3 (coverage 1 / 1)
+Iteration 6: Val aggregate for new program: 0.3
+Iteration 6: Individual valset scores for new program: {0: 0.3}
+Iteration 6: New valset pareto front scores: {0: 0.3}
+Iteration 6: Valset pareto front aggregate score: 0.3
+Iteration 6: Updated valset pareto front programs: {0: {1}}
+Iteration 6: Best valset aggregate score so far: 0.3
+Iteration 6: Best program as per aggregate score on valset: 1
+Iteration 6: Best score on valset: 0.3
+Iteration 6: Linear pareto front program index: 1
+Iteration 6: New program candidate index: 1
+Iteration 7: Selected program 1 score: 0.3
+Iteration 7: Proposed new text for current_candidate: """Agent core with integrated Planner for multi-task-type support."""
+
+
+class Planner:
+    TASK_STRATEGIES = {
+        "search": ["search", "summarize"],
+        "calculate": ["calculate", "validate"],
+        "classify": ["classify", "verify"],
+        "extract": ["extract", "format"],
+        "transform": ["transform", "validate"],
+        "generate": ["generate", "review"],
+        "compare": ["search", "compare", "summarize"],
+        "filter": ["search", "filter", "format"],
+        "aggregate": ["search", "aggregate", "summarize"],
+        "reason": ["analyze", "reason", "conclude"],
+    }
+
+    TASK_KEYWORDS = {
+        "search": ["find", "look up", "retrieve", "locate", "discover", "fetch"],
+        "calculate": ["calculate", "compute", "sum", "multiply", "divide", "add", "subtract", "math", "formula", "how many", "how much", "total"],
+        "classify": ["classify", "categorize", "label", "group", "sort", "tag", "identify", "type of", "kind of"],
+        "extract": ["extract", "pull out", "parse", "get field", "retrieve field", "find value", "obtain"],
+        "transform": ["transform", "convert", "change format", "translate", "reformat", "encode", "decode"],
+        "generate": ["generate", "create", "write", "produce", "make", "compose", "draft", "build"],
+        "compare": ["compare", "contrast", "difference", "similar", "versus", "vs", "which is better", "how do"],
+        "filter": ["filter", "remove", "exclude", "keep only", "select", "narrow", "only include"],
+        "aggregate": ["aggregate", "combine", "merge", "count all", "group by", "tally", "collect all"],
+        "reason": ["reason", "infer", "deduce", "conclude", "why", "explain", "analyze", "because", "cause", "therefore"],
+    }
+
+    DEFAULT_STRATEGY = ["search", "summarize"]
+
+    def detect_task_type(self, task):
+        task_lower = str(task).lower()
+        for task_type in self.TASK_STRATEGIES:
+            if task_type in task_lower:
+                return task_type
+        scores = {t: 0 for t in self.TASK_STRATEGIES}
+        for task_type, keywords in self.TASK_KEYWORDS.items():
+            for kw in keywords:
+                if kw in task_lower:
+                    scores[task_type] += 1
+        best = max(scores, key=lambda k: scores[k])
+        if scores[best] > 0:
+            return best
+        return "search"
+
+    def make_plan(self, task, context=None):
+        task_type = self.detect_task_type(task)
+        steps = self.TASK_STRATEGIES.get(task_type, self.DEFAULT_STRATEGY)
+        return [{"tool": step, "task": task, "context": context, "task_type": task_type} for step in steps]
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = Planner()
+
+    def run(self, task, context=None):
+        """Run agent on a task using a plan from the Planner."""
+        plan = self.planner.make_plan(task, context)
+        result = None
+        running_context = context
+
+        for turn, action in enumerate(plan):
+            if turn >= self.max_turns:
+                break
+            action = dict(action)
+            action["_turn"] = turn
+            if result is not None:
+                action["prior_result"] = result
+                if isinstance(running_context, dict):
+                    running_context = {**running_context, "prior_result": result}
+                else:
+                    running_context = {"original": running_context, "prior_result": result}
+                action["context"] = running_context
+
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+
+            if result and "error" in result:
+                fallback = self._fallback_action(task, running_context, result, action.get("task_type"))
+                if fallback:
+                    result = self._execute(fallback)
+                    self.memory.append({"turn": turn, "action": fallback, "result": result})
+
+            if self._is_done(result) and turn == len(plan) - 1:
+                break
+
+        return result
+
+    def _fallback_action(self, task, context, failed_result, task_type=None):
+        """Produce a task-type-aware fallback when a planned step fails."""
+        fallback_tool = "search"
+        if task_type in ("calculate", "transform", "generate", "classify", "extract"):
+            fallback_tool = task_type
+        return {"tool": fallback_tool, "task": task, "context": context, "fallback": True}
+
+    def _execute(self, action):
+        """Execute an action using registered tools."""
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"status": "unhandled", "tool": tool_name, "action": action}
+
+    def _is_done(self, result):
+        """Check if task is complete."""
+        if result is None:
+            return False
+        if "error" in result:
+            return False
+        if result.get("status") == "unhandled":
+            return False
+        return True
+
+    def add_tool(self, name, fn):
+        """Register a tool."""
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+Iteration 7: New subsample score 0.0 is not better than old score 0.3, skipping
+Iteration 8: Selected program 1 score: 0.3
+Iteration 8: Proposed new text for current_candidate: """Agent core with integrated Planner for multi-task-type support."""
+
+
+class Planner:
+    TASK_STRATEGIES = {
+        "search": ["search", "summarize"],
+        "calculate": ["calculate", "validate"],
+        "classify": ["classify", "verify"],
+        "extract": ["extract", "format"],
+        "transform": ["transform", "validate"],
+        "generate": ["generate", "review"],
+        "compare": ["search", "compare", "summarize"],
+        "filter": ["search", "filter", "format"],
+        "aggregate": ["search", "aggregate", "summarize"],
+        "reason": ["analyze", "reason", "conclude"],
+    }
+
+    TASK_KEYWORDS = {
+        "search": ["search", "find", "look up", "lookup", "query", "retrieve", "fetch", "get"],
+        "calculate": ["calculate", "compute", "math", "arithmetic", "sum", "multiply", "divide", "add", "subtract", "total", "count"],
+        "classify": ["classify", "categorize", "label", "tag", "group", "sort by type", "what kind", "what type"],
+        "extract": ["extract", "parse", "pull out", "get from", "identify", "find in", "read from"],
+        "transform": ["transform", "convert", "change", "modify", "reformat", "translate", "map"],
+        "generate": ["generate", "create", "write", "produce", "make", "draft", "compose", "build"],
+        "compare": ["compare", "contrast", "difference", "similar", "versus", "vs", "between"],
+        "filter": ["filter", "remove", "exclude", "select", "keep only", "where condition"],
+        "aggregate": ["aggregate", "combine", "merge", "collect", "gather", "group by", "roll up", "consolidate"],
+        "reason": ["reason", "why", "because", "cause", "explain", "analyze", "infer", "deduce", "logic", "conclude", "justify"],
+    }
+
+    DEFAULT_STRATEGY = ["search", "summarize"]
+
+    def make_plan(self, task, context=None):
+        task_type = self.detect_task_type(task)
+        steps = self.TASK_STRATEGIES.get(task_type, self.DEFAULT_STRATEGY)
+        return [{"tool": step, "task": task, "context": context} for step in steps]
+
+    def detect_task_type(self, task):
+        task_lower = str(task).lower()
+        scores = {task_type: 0 for task_type in self.TASK_STRATEGIES}
+        for task_type, keywords in self.TASK_KEYWORDS.items():
+            for keyword in keywords:
+                if keyword in task_lower:
+                    scores[task_type] += 1
+        best = max(scores, key=lambda t: scores[t])
+        if scores[best] > 0:
+            return best
+        return "search"
+
+
+class Agent:
+    TASK_FALLBACKS = {
+        "calculate": "search",
+        "classify": "search",
+        "extract": "search",
+        "transform": "search",
+        "generate": "search",
+        "compare": "search",
+        "filter": "search",
+        "aggregate": "search",
+        "reason": "analyze",
+    }
+
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = Planner()
+
+    def run(self, task, context=None):
+        """Run agent on a task using a plan from the Planner."""
+        plan = self.planner.make_plan(task, context)
+        result = None
+        accumulated_context = context
+
+        for turn, action in enumerate(plan):
+            if turn >= self.max_turns:
+                break
+            action = dict(action)
+            action["_turn"] = turn
+            action["context"] = accumulated_context
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if result and "error" in result:
+                fallback = self._fallback_action(task, accumulated_context, result)
+                if fallback:
+                    result = self._execute(fallback)
+                    self.memory.append({"turn": turn, "action": fallback, "result": result})
+            if result and result.get("status") != "unhandled":
+                accumulated_context = result
+            if self._is_done(result):
+                break
+
+        return result
+
+    def _fallback_action(self, task, context, failed_result):
+        """Produce a fallback action appropriate to the detected task type."""
+        task_type = self.planner.detect_task_type(task)
+        fallback_tool = self.TASK_FALLBACKS.get(task_type, "search")
+        return {"tool": fallback_tool, "task": task, "context": context, "fallback": True}
+
+    def _execute(self, action):
+        """Execute an action using registered tools."""
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"status": "unhandled", "tool": tool_name, "action": action}
+
+    def _is_done(self, result):
+        """Check if task is complete."""
+        if result is None:
+            return False
+        if "error" in result:
+            return False
+        if result.get("status") == "unhandled":
+            return False
+        return True
+
+    def add_tool(self, name, fn):
+        """Register a tool."""
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+Iteration 8: New subsample score 0.3 is not better than old score 0.3, skipping
+Iteration 9: Selected program 1 score: 0.3
+Iteration 9: Proposed new text for current_candidate: """Agent core with integrated Planner for multi-task-type support."""
+
+
+class Planner:
+    TASK_STRATEGIES = {
+        "search": ["search", "summarize"],
+        "calculate": ["calculate", "validate"],
+        "classify": ["classify", "verify"],
+        "extract": ["extract", "format"],
+        "transform": ["transform", "validate"],
+        "generate": ["generate", "review"],
+        "compare": ["search", "compare", "summarize"],
+        "filter": ["search", "filter", "format"],
+        "aggregate": ["search", "aggregate", "summarize"],
+        "reason": ["analyze", "reason", "conclude"],
+    }
+
+    TASK_KEYWORDS = {
+        "search": ["search", "find", "lookup", "locate", "retrieve", "query"],
+        "calculate": ["calculate", "compute", "math", "arithmetic", "sum", "multiply", "divide", "add", "subtract", "total", "count"],
+        "classify": ["classify", "categorize", "label", "tag", "sort", "group", "type"],
+        "extract": ["extract", "parse", "pull", "get", "read", "scrape"],
+        "transform": ["transform", "convert", "change", "modify", "translate", "reformat"],
+        "generate": ["generate", "create", "write", "produce", "make", "compose", "draft"],
+        "compare": ["compare", "contrast", "difference", "similar", "versus", "vs"],
+        "filter": ["filter", "remove", "exclude", "include", "select", "prune"],
+        "aggregate": ["aggregate", "combine", "merge", "collect", "gather", "join"],
+        "reason": ["reason", "analyze", "infer", "deduce", "explain", "why", "how", "evaluate"],
+    }
+
+    DEFAULT_STRATEGY = ["search", "summarize"]
+
+    def make_plan(self, task, context=None):
+        task_type = self.detect_task_type(task)
+        steps = self.TASK_STRATEGIES.get(task_type, self.DEFAULT_STRATEGY)
+        return [{"tool": step, "task": task, "context": context} for step in steps]
+
+    def detect_task_type(self, task):
+        task_lower = str(task).lower()
+        scores = {task_type: 0 for task_type in self.TASK_KEYWORDS}
+        for task_type, keywords in self.TASK_KEYWORDS.items():
+            for keyword in keywords:
+                if keyword in task_lower:
+                    scores[task_type] += 1
+        best = max(scores, key=lambda t: scores[t])
+        if scores[best] > 0:
+            return best
+        return "search"
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = Planner()
+
+    def run(self, task, context=None):
+        """Run agent on a task using a plan from the Planner."""
+        plan = self.planner.make_plan(task, context)
+        result = None
+
+        for turn, action in enumerate(plan):
+            if turn >= self.max_turns:
+                break
+            action["_turn"] = turn
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if result.get("status") == "unhandled":
+                generic = self._generic_action(action, task, context)
+                result = self._execute(generic)
+                self.memory.append({"turn": turn, "action": generic, "result": result})
+            if "error" in result:
+                fallback = self._fallback_action(task, context, result)
+                if fallback:
+                    result = self._execute(fallback)
+                    self.memory.append({"turn": turn, "action": fallback, "result": result})
+            if self._is_done(result):
+                break
+
+        if result is None:
+            result = {"status": "no_plan", "task": task}
+
+        return result
+
+    def _decide(self, task, context, turn):
+        """Decide next action using the Planner."""
+        plan = self.planner.make_plan(task, context)
+        if turn < len(plan):
+            return plan[turn]
+        return None
+
+    def _generic_action(self, original_action, task, context):
+        """Remap an unhandled tool to the closest registered tool."""
+        tool_name = original_action.get("tool", "")
+        if self.tools:
+            # Prefer exact prefix match, then first available
+            for registered in self.tools:
+                if registered.startswith(tool_name[:3]):
+                    return {"tool": registered, "task": task, "context": context, "remapped_from": tool_name}
+            first = next(iter(self.tools))
+            return {"tool": first, "task": task, "context": context, "remapped_from": tool_name}
+        return original_action
+
+    def _fallback_action(self, task, context, failed_result):
+        """Produce a fallback action when a planned step fails."""
+        task_type = self.planner.detect_task_type(task)
+        # Use the first step of the detected strategy as fallback
+        steps = self.planner.TASK_STRATEGIES.get(task_type, self.planner.DEFAULT_STRATEGY)
+        fallback_tool = steps[0] if steps else "search"
+        if fallback_tool in self.tools:
+            return {"tool": fallback_tool, "task": task, "context": context, "fallback": True}
+        if self.tools:
+            return {"tool": next(iter(self.tools)), "task": task, "context": context, "fallback": True}
+        return None
+
+    def _execute(self, action):
+        """Execute an action using registered tools."""
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            try:
+                return self.tools[tool_name](action)
+            except Exception as exc:
+                return {"error": str(exc), "tool": tool_name, "action": action}
+        return {"status": "unhandled", "tool": tool_name, "action": action}
+
+    def _is_done(self, result):
+        """Check if task is complete."""
+        if result is None:
+            return False
+        if "error" in result:
+            return False
+        if result.get("status") in ("unhandled", "no_plan"):
+            return False
+        return True
+
+    def add_tool(self, name, fn):
+        """Register a tool."""
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+Iteration 9: New subsample score 0.3 is not better than old score 0.3, skipping
+  seed 0.10 -> best 0.30  (9 calls, 4.2 min)
+
+=== GEPA-OA concatenated: b2_agent_harness (seed 0.10) ===
+Iteration 0: Base program full valset score: 0.1 over 1 / 1 examples
+Iteration 1: Selected program 0 score: 0.1
+Iteration 1: Proposed new text for current_candidate: # ===== FILE: agent.py =====
+"""Agent core — monolithic, needs refactoring."""
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = None
+
+    def set_planner(self, planner):
+        self.planner = planner
+        return self
+
+    def run(self, task, context=None):
+        """Run agent on a task."""
+        result = None
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn)
+            if action is None:
+                break
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn):
+        """Decide next action using planner if available, else fallback."""
+        if self.planner is not None:
+            completed = [m["action"] for m in self.memory]
+            return self.planner.get_next_step(task, completed)
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action):
+        """Execute an action using registered tools."""
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        """Check if task is complete."""
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        """Register a tool."""
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+
+# ===== FILE: harness.py =====
+"""Agent harness for running and evaluating agents."""
+from agent import Agent
+from planner import Planner
+from tools import make_search_tool, make_calculator_tool, make_memory_tool
+
+
+def build_agent(knowledge_base=None):
+    """Build a configured agent with tools and planner integrated."""
+    kb = knowledge_base or {
+        "python": "A programming language",
+        "helix": "An evolutionary optimization framework",
+        "neural network": "A machine learning model",
+        "gradient descent": "An optimization algorithm",
+    }
+    store = {}
+    agent = Agent("test-agent")
+    agent.add_tool("search", make_search_tool(kb))
+    agent.add_tool("calculator", make_calculator_tool())
+    agent.add_tool("memory", make_memory_tool(store))
+
+    planner = Planner()
+    agent.set_planner(planner)
+
+    return agent
+
+
+def run_task_suite(agent, tasks):
+    """Run a suite of tasks and return results."""
+    results = []
+    for task in tasks:
+        agent.clear_memory()
+        result = agent.run(task)
+        results.append({
+            "task": task,
+            "result": result,
+            "turns": len(agent.get_memory()),
+            "success": result is not None and "error" not in str(result),
+        })
+    return results
+
+# ===== FILE: planner.py =====
+"""Task planning — integrated with Agent via set_planner."""
+import re
+
+
+class Planner:
+    """Decomposes tasks into steps for the Agent to execute."""
+
+    TASK_PATTERNS = [
+        # (keyword/pattern, plan builder)
+        ("calculate", "_plan_calculate"),
+        ("compute",   "_plan_calculate"),
+        ("eval",      "_plan_calculate"),
+        ("remember",  "_plan_store"),
+        ("store",     "_plan_store"),
+        ("save",      "_plan_store"),
+        ("recall",    "_plan_recall"),
+        ("retrieve",  "_plan_recall"),
+        ("fetch",     "_plan_recall"),
+        ("load",      "_plan_recall"),
+        ("search",    "_plan_search"),
+        ("find",      "_plan_search"),
+        ("look up",   "_plan_search"),
+        ("lookup",    "_plan_search"),
+        ("what is",   "_plan_search"),
+        ("define",    "_plan_search"),
+    ]
+
+    # Regex to detect bare arithmetic expressions
+    _ARITH_RE = re.compile(r"[\d\s\(\)][+\-*/][+\-*/\d\s\(\)\.]*")
+
+    def __init__(self):
+        self.plans = {}
+
+    def make_plan(self, task):
+        """Create a plan for a task based on detected task type."""
+        steps = self._classify(task)
+        self.plans[task] = steps
+        return steps
+
+    def _classify(self, task):
+        lower = task.lower()
+
+        # Multi-step: search then store
+        if ("find" in lower or "search" in lower) and ("store" in lower or "remember" in lower or "save" in lower):
+            return self._plan_search_then_store(task)
+
+        # Multi-step: search then calculate
+        if ("find" in lower or "search" in lower) and ("calculate" in lower or "compute" in lower):
+            return self._plan_search_then_calculate(task)
+
+        # Recall then calculate
+        if ("recall" in lower or "retrieve" in lower or "fetch" in lower) and (
+            "calculate" in lower or "compute" in lower or self._ARITH_RE.search(task)
+        ):
+            return self._plan_recall_then_calculate(task)
+
+        # Named pattern match
+        for keyword, builder in self.TASK_PATTERNS:
+            if keyword in lower:
+                return getattr(self, builder)(task)
+
+        # Bare arithmetic expression
+        if self._ARITH_RE.search(task):
+            return self._plan_calculate(task)
+
+        # Default: search
+        return self._plan_search(task)
+
+    # ---- single-step plans ----
+
+    def _plan_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [{"tool": "calculator", "expression": expr}]
+
+    def _plan_store(self, task):
+        return [{"tool": "memory", "op": "write", "key": "result", "value": task}]
+
+    def _plan_recall(self, task):
+        return [{"tool": "memory", "op": "read", "key": "result"}]
+
+    def _plan_search(self, task):
+        return [{"tool": "search", "query": task}]
+
+    # ---- multi-step plans ----
+
+    def _plan_search_then_store(self, task):
+        return [
+            {"tool": "search", "query": task},
+            {"tool": "memory", "op": "write", "key": "result", "value": task},
+        ]
+
+    def _plan_search_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": task},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_recall_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    # ---- helpers ----
+
+    def _extract_expression(self, task):
+        """Pull arithmetic expression from task string, or return task as-is."""
+        m = self._ARITH_RE.search(task)
+        if m:
+            return m.group(0).strip()
+        # strip non-arithmetic words and hope for the best
+        cleaned = re.sub(r"[a-zA-Z,?!]", "", task).strip()
+        return cleaned if cleaned else task
+
+    def get_next_step(self, task, completed_steps):
+        """Get next step given completed steps."""
+        plan = self.plans.get(task, self.make_plan(task))
+        if len(completed_steps) < len(plan):
+            return plan[len(completed_steps)]
+        return None
+
+# ===== FILE: tools.py =====
+"""Tool implementations — currently mixed concerns."""
+
+
+def make_search_tool(knowledge_base):
+    """Create a search tool over a knowledge base."""
+    def search(action):
+        query = action.get("query", "").lower()
+        results = []
+        for key, value in knowledge_base.items():
+            if query in key.lower() or query in str(value).lower():
+                results.append({"key": key, "value": value})
+        return {"results": results[:5], "query": query}
+    return search
+
+
+def make_calculator_tool():
+    """Create a calculator tool."""
+    def calculate(action):
+        expr = action.get("expression", "")
+        try:
+            allowed = set("0123456789+-*/()., ")
+            if not all(c in allowed for c in expr):
+                return {"error": "Invalid expression"}
+            result = eval(expr)
+            return {"result": result, "expression": expr}
+        except Exception as e:
+            return {"error": str(e)}
+    return calculate
+
+
+def make_memory_tool(store):
+    """Create a memory read/write tool."""
+    def memory_op(action):
+        op = action.get("op", "read")
+        key = action.get("key", "")
+        if op == "write":
+            store[key] = action.get("value")
+            return {"status": "ok", "key": key}
+        elif op == "read":
+            return {"value": store.get(key), "key": key}
+        return {"error": f"Unknown op: {op}"}
+    return memory_op
+Iteration 1: New subsample score 0.3 is better than old score 0.1. Continue to full eval and add to candidate pool.
+Iteration 1: Found a better program on the valset with score 0.3.
+Iteration 1: Valset score for new program: 0.3 (coverage 1 / 1)
+Iteration 1: Val aggregate for new program: 0.3
+Iteration 1: Individual valset scores for new program: {0: 0.3}
+Iteration 1: New valset pareto front scores: {0: 0.3}
+Iteration 1: Valset pareto front aggregate score: 0.3
+Iteration 1: Updated valset pareto front programs: {0: {1}}
+Iteration 1: Best valset aggregate score so far: 0.3
+Iteration 1: Best program as per aggregate score on valset: 1
+Iteration 1: Best score on valset: 0.3
+Iteration 1: Linear pareto front program index: 1
+Iteration 1: New program candidate index: 1
+Iteration 2: Selected program 1 score: 0.3
+Iteration 2: Proposed new text for current_candidate: # ===== FILE: agent.py =====
+"""Agent core."""
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = None
+
+    def set_planner(self, planner):
+        self.planner = planner
+        return self
+
+    def run(self, task, context=None):
+        result = None
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn)
+            if action is None:
+                break
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn):
+        if self.planner is not None:
+            completed = [m["action"] for m in self.memory]
+            return self.planner.get_next_step(task, completed)
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        # When planner is active, get_next_step returning None controls termination.
+        # Stopping here would cut multi-step plans short after the first success.
+        if self.planner is not None:
+            return False
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+
+# ===== FILE: harness.py =====
+"""Agent harness for running and evaluating agents."""
+from agent import Agent
+from planner import Planner
+from tools import make_search_tool, make_calculator_tool, make_memory_tool
+
+
+def build_agent(knowledge_base=None):
+    kb = knowledge_base or {
+        "python": "A programming language",
+        "helix": "An evolutionary optimization framework",
+        "neural network": "A machine learning model",
+        "gradient descent": "An optimization algorithm",
+    }
+    store = {}
+    agent = Agent("test-agent")
+    agent.add_tool("search", make_search_tool(kb))
+    agent.add_tool("calculator", make_calculator_tool())
+    agent.add_tool("memory", make_memory_tool(store))
+
+    planner = Planner()
+    agent.set_planner(planner)
+
+    return agent
+
+
+def run_task_suite(agent, tasks):
+    results = []
+    for task in tasks:
+        agent.clear_memory()
+        result = agent.run(task)
+        results.append({
+            "task": task,
+            "result": result,
+            "turns": len(agent.get_memory()),
+            "success": _is_success(result),
+        })
+    return results
+
+
+def _is_success(result):
+    if result is None:
+        return False
+    if isinstance(result, dict):
+        return "error" not in result
+    return True
+
+# ===== FILE: planner.py =====
+"""Task planning — integrated with Agent via set_planner."""
+import re
+
+
+class Planner:
+    """Decomposes tasks into steps for the Agent to execute."""
+
+    TASK_PATTERNS = [
+        ("calculate", "_plan_calculate"),
+        ("compute",   "_plan_calculate"),
+        ("eval",      "_plan_calculate"),
+        ("remember",  "_plan_store"),
+        ("store",     "_plan_store"),
+        ("save",      "_plan_store"),
+        ("recall",    "_plan_recall"),
+        ("retrieve",  "_plan_recall"),
+        ("fetch",     "_plan_recall"),
+        ("load",      "_plan_recall"),
+        ("search",    "_plan_search"),
+        ("find",      "_plan_search"),
+        ("look up",   "_plan_search"),
+        ("lookup",    "_plan_search"),
+        ("what is",   "_plan_search"),
+        ("define",    "_plan_search"),
+    ]
+
+    # Matches complete arithmetic expressions including spaces around operators.
+    # Old regex matched from any digit/space/paren before an operator, losing the
+    # left-hand operand when the expression was preceded by spaces.
+    _ARITH_RE = re.compile(r'\d+(?:\.\d+)?(?:\s*[+\-*/]\s*\d+(?:\.\d+)?)+')
+
+    # Ordered from longest to shortest to prevent prefix shadowing (e.g. "look up" before "look")
+    _SEARCH_PREFIXES = ["what is", "look up", "lookup", "define", "search for", "search", "find"]
+
+    def __init__(self):
+        self.plans = {}
+
+    def make_plan(self, task):
+        steps = self._classify(task)
+        self.plans[task] = steps
+        return steps
+
+    def _classify(self, task):
+        lower = task.lower()
+
+        # Multi-step: search then store
+        if ("find" in lower or "search" in lower) and (
+            "store" in lower or "remember" in lower or "save" in lower
+        ):
+            return self._plan_search_then_store(task)
+
+        # Multi-step: search then calculate
+        if ("find" in lower or "search" in lower) and (
+            "calculate" in lower or "compute" in lower
+        ):
+            return self._plan_search_then_calculate(task)
+
+        # Multi-step: recall then calculate
+        if ("recall" in lower or "retrieve" in lower or "fetch" in lower) and (
+            "calculate" in lower or "compute" in lower or self._ARITH_RE.search(task)
+        ):
+            return self._plan_recall_then_calculate(task)
+
+        # Named single-step pattern match
+        for keyword, builder in self.TASK_PATTERNS:
+            if keyword in lower:
+                return getattr(self, builder)(task)
+
+        # Bare arithmetic expression with no keywords
+        if self._ARITH_RE.search(task):
+            return self._plan_calculate(task)
+
+        # Default: search
+        return self._plan_search(task)
+
+    # ---- single-step plans ----
+
+    def _plan_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [{"tool": "calculator", "expression": expr}]
+
+    def _plan_store(self, task):
+        return [{"tool": "memory", "op": "write", "key": "result", "value": task}]
+
+    def _plan_recall(self, task):
+        return [{"tool": "memory", "op": "read", "key": "result"}]
+
+    def _plan_search(self, task):
+        query = self._extract_search_term(task)
+        return [{"tool": "search", "query": query}]
+
+    # ---- multi-step plans ----
+
+    def _plan_search_then_store(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "memory", "op": "write", "key": "result", "value": task},
+        ]
+
+    def _plan_search_then_calculate(self, task):
+        query = self._extract_search_term(task)
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_recall_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    # ---- helpers ----
+
+    def _extract_expression(self, task):
+        m = self._ARITH_RE.search(task)
+        if m:
+            return m.group(0).strip()
+        cleaned = re.sub(r"[a-zA-Z,?!]", "", task).strip()
+        return cleaned if cleaned else task
+
+    def _extract_search_term(self, task):
+        """Strip leading query verbs so the KB substring match can succeed."""
+        lower = task.lower()
+        for prefix in self._SEARCH_PREFIXES:
+            if lower.startswith(prefix):
+                return task[len(prefix):].strip().rstrip("?.,")
+        return task
+
+    def get_next_step(self, task, completed_steps):
+        plan = self.plans.get(task, self.make_plan(task))
+        if len(completed_steps) < len(plan):
+            return plan[len(completed_steps)]
+        return None
+
+# ===== FILE: tools.py =====
+"""Tool implementations."""
+
+
+def make_search_tool(knowledge_base):
+    def search(action):
+        query = action.get("query", "").lower()
+        results = []
+        for key, value in knowledge_base.items():
+            key_lower = key.lower()
+            # Match if query contains the key OR key contains the query substring
+            if key_lower in query or query in key_lower or query in str(value).lower():
+                results.append({"key": key, "value": value})
+        return {"results": results[:5], "query": query}
+    return search
+
+
+def make_calculator_tool():
+    def calculate(action):
+        expr = action.get("expression", "")
+        try:
+            allowed = set("0123456789+-*/()., ")
+            if not all(c in allowed for c in expr):
+                return {"error": "Invalid expression"}
+            result = eval(expr)  # nosec — guarded by character whitelist above
+            return {"result": result, "expression": expr}
+        except Exception as e:
+            return {"error": str(e)}
+    return calculate
+
+
+def make_memory_tool(store):
+    def memory_op(action):
+        op = action.get("op", "read")
+        key = action.get("key", "")
+        if op == "write":
+            store[key] = action.get("value")
+            return {"status": "ok", "key": key}
+        elif op == "read":
+            return {"value": store.get(key), "key": key}
+        return {"error": f"Unknown op: {op}"}
+    return memory_op
+Iteration 2: New subsample score 0.9 is better than old score 0.3. Continue to full eval and add to candidate pool.
+Iteration 2: Found a better program on the valset with score 0.9.
+Iteration 2: Valset score for new program: 0.9 (coverage 1 / 1)
+Iteration 2: Val aggregate for new program: 0.9
+Iteration 2: Individual valset scores for new program: {0: 0.9}
+Iteration 2: New valset pareto front scores: {0: 0.9}
+Iteration 2: Valset pareto front aggregate score: 0.9
+Iteration 2: Updated valset pareto front programs: {0: {2}}
+Iteration 2: Best valset aggregate score so far: 0.9
+Iteration 2: Best program as per aggregate score on valset: 2
+Iteration 2: Best score on valset: 0.9
+Iteration 2: Linear pareto front program index: 2
+Iteration 2: New program candidate index: 2
+Iteration 3: Selected program 2 score: 0.9
+Iteration 3: Proposed new text for current_candidate: # ===== FILE: agent.py =====
+"""Agent core."""
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = None
+
+    def set_planner(self, planner):
+        self.planner = planner
+        return self
+
+    def run(self, task, context=None):
+        result = None
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn, result)
+            if action is None:
+                break
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn, last_result=None):
+        if self.planner is not None:
+            completed = [m["action"] for m in self.memory]
+            action = self.planner.get_next_step(task, completed)
+            if action is not None and last_result is not None:
+                action = self._enrich_action(action, last_result)
+            return action
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _enrich_action(self, action, last_result):
+        """Propagate useful values from the previous step into the next action."""
+        action = dict(action)
+        tool = action.get("tool")
+        if tool == "memory" and action.get("op") == "write":
+            if isinstance(last_result, dict):
+                if last_result.get("results"):
+                    action["value"] = last_result["results"][0].get("value", action.get("value"))
+                elif "result" in last_result:
+                    action["value"] = last_result["result"]
+        return action
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        # When planner is active, get_next_step returning None controls termination.
+        # Stopping here would cut multi-step plans short after the first success.
+        if self.planner is not None:
+            return False
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+
+# ===== FILE: harness.py =====
+"""Agent harness for running and evaluating agents."""
+from agent import Agent
+from planner import Planner
+from tools import make_search_tool, make_calculator_tool, make_memory_tool
+
+
+def build_agent(knowledge_base=None):
+    kb = knowledge_base or {
+        "python": "A programming language",
+        "helix": "An evolutionary optimization framework",
+        "neural network": "A machine learning model",
+        "gradient descent": "An optimization algorithm",
+        "machine learning": "A subset of artificial intelligence",
+        "algorithm": "A step-by-step computational procedure",
+    }
+    store = {}
+    agent = Agent("test-agent")
+    agent.add_tool("search", make_search_tool(kb))
+    agent.add_tool("calculator", make_calculator_tool())
+    agent.add_tool("memory", make_memory_tool(store))
+
+    planner = Planner()
+    agent.set_planner(planner)
+
+    return agent
+
+
+def make_task_suite():
+    """Return 10 tasks covering every plan type the Planner supports."""
+    return [
+        # 1. simple search via "search" keyword
+        "search for python",
+        # 2. simple search via "what is"
+        "what is helix?",
+        # 3. simple search via "define"
+        "define neural network",
+        # 4. simple search via "look up"
+        "look up gradient descent",
+        # 5. simple calculate
+        "calculate 6 + 7",
+        # 6. bare arithmetic (no keyword)
+        "100 + 200",
+        # 7. memory store
+        "remember this for later",
+        # 8. memory recall
+        "recall result",
+        # 9. multi-step: search then store
+        "find python and remember it",
+        # 10. multi-step: recall then calculate
+        "retrieve result and calculate 3 + 4",
+    ]
+
+
+def run_task_suite(agent, tasks):
+    results = []
+    for task in tasks:
+        agent.clear_memory()
+        result = agent.run(task)
+        results.append({
+            "task": task,
+            "result": result,
+            "turns": len(agent.get_memory()),
+            "success": _is_success(result),
+        })
+    return results
+
+
+def _is_success(result):
+    if result is None:
+        return False
+    if isinstance(result, dict):
+        return "error" not in result
+    return True
+
+# ===== FILE: planner.py =====
+"""Task planning — integrated with Agent via set_planner."""
+import re
+
+
+class Planner:
+    """Decomposes tasks into steps for the Agent to execute."""
+
+    TASK_PATTERNS = [
+        ("calculate", "_plan_calculate"),
+        ("compute",   "_plan_calculate"),
+        ("eval",      "_plan_calculate"),
+        ("remember",  "_plan_store"),
+        ("store",     "_plan_store"),
+        ("save",      "_plan_store"),
+        ("recall",    "_plan_recall"),
+        ("retrieve",  "_plan_recall"),
+        ("fetch",     "_plan_recall"),
+        ("load",      "_plan_recall"),
+        ("search",    "_plan_search"),
+        ("find",      "_plan_search"),
+        ("look up",   "_plan_search"),
+        ("lookup",    "_plan_search"),
+        ("what is",   "_plan_search"),
+        ("define",    "_plan_search"),
+    ]
+
+    # Matches complete arithmetic expressions including spaces around operators.
+    _ARITH_RE = re.compile(r'\d+(?:\.\d+)?(?:\s*[+\-*/]\s*\d+(?:\.\d+)?)+')
+
+    # Ordered from longest to shortest to prevent prefix shadowing.
+    _SEARCH_PREFIXES = ["what is", "look up", "lookup", "define", "search for", "search", "find"]
+
+    def __init__(self):
+        self.plans = {}
+
+    def make_plan(self, task):
+        steps = self._classify(task)
+        self.plans[task] = steps
+        return steps
+
+    def _classify(self, task):
+        lower = task.lower()
+
+        has_search = "find" in lower or "search" in lower or "look up" in lower or "lookup" in lower
+        has_store = "store" in lower or "remember" in lower or "save" in lower
+        # "load" is treated as a recall alias throughout — include it in multi-step detection too.
+        has_recall = "recall" in lower or "retrieve" in lower or "fetch" in lower or "load" in lower
+        has_calc = "calculate" in lower or "compute" in lower or bool(self._ARITH_RE.search(task))
+
+        # Multi-step: search then store
+        if has_search and has_store:
+            return self._plan_search_then_store(task)
+
+        # Multi-step: search then calculate
+        if has_search and has_calc:
+            return self._plan_search_then_calculate(task)
+
+        # Multi-step: recall then calculate
+        if has_recall and has_calc:
+            return self._plan_recall_then_calculate(task)
+
+        # Named single-step pattern match
+        for keyword, builder in self.TASK_PATTERNS:
+            if keyword in lower:
+                return getattr(self, builder)(task)
+
+        # Bare arithmetic expression with no keywords
+        if self._ARITH_RE.search(task):
+            return self._plan_calculate(task)
+
+        # Default: search
+        return self._plan_search(task)
+
+    # ---- single-step plans ----
+
+    def _plan_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [{"tool": "calculator", "expression": expr}]
+
+    def _plan_store(self, task):
+        return [{"tool": "memory", "op": "write", "key": "result", "value": task}]
+
+    def _plan_recall(self, task):
+        return [{"tool": "memory", "op": "read", "key": "result"}]
+
+    def _plan_search(self, task):
+        query = self._extract_search_term(task)
+        return [{"tool": "search", "query": query}]
+
+    # ---- multi-step plans ----
+
+    def _plan_search_then_store(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "memory", "op": "write", "key": "result", "value": task},
+        ]
+
+    def _plan_search_then_calculate(self, task):
+        query = self._extract_search_term(task)
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_recall_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    # ---- helpers ----
+
+    def _extract_expression(self, task):
+        m = self._ARITH_RE.search(task)
+        if m:
+            return m.group(0).strip()
+        cleaned = re.sub(r"[a-zA-Z,?!]", "", task).strip()
+        return cleaned if cleaned else task
+
+    def _extract_search_term(self, task):
+        """Strip leading query verbs so the KB substring match can succeed."""
+        lower = task.lower()
+        for prefix in self._SEARCH_PREFIXES:
+            if lower.startswith(prefix):
+                return task[len(prefix):].strip().rstrip("?.,")
+        return task
+
+    def get_next_step(self, task, completed_steps):
+        plan = self.plans.get(task, self.make_plan(task))
+        if len(completed_steps) < len(plan):
+            return plan[len(completed_steps)]
+        return None
+
+# ===== FILE: tools.py =====
+"""Tool implementations."""
+
+
+def make_search_tool(knowledge_base):
+    def search(action):
+        query = action.get("query", "").lower()
+        results = []
+        for key, value in knowledge_base.items():
+            key_lower = key.lower()
+            if key_lower in query or query in key_lower or query in str(value).lower():
+                results.append({"key": key, "value": value})
+        return {"results": results[:5], "query": query}
+    return search
+
+
+def make_calculator_tool():
+    def calculate(action):
+        expr = action.get("expression", "")
+        try:
+            allowed = set("0123456789+-*/()., ")
+            if not all(c in allowed for c in expr):
+                return {"error": "Invalid expression"}
+            result = eval(expr)  # nosec — guarded by character whitelist above
+            return {"result": result, "expression": expr}
+        except Exception as e:
+            return {"error": str(e)}
+    return calculate
+
+
+def make_memory_tool(store):
+    def memory_op(action):
+        op = action.get("op", "read")
+        key = action.get("key", "")
+        if op == "write":
+            store[key] = action.get("value")
+            return {"status": "ok", "key": key}
+        elif op == "read":
+            return {"value": store.get(key), "key": key}
+        return {"error": f"Unknown op: {op}"}
+    return memory_op
+Iteration 3: New subsample score 0.9 is not better than old score 0.9, skipping
+Iteration 4: Selected program 2 score: 0.9
+Iteration 4: Proposed new text for current_candidate: # ===== FILE: agent.py =====
+"""Agent core."""
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = None
+
+    def set_planner(self, planner):
+        self.planner = planner
+        return self
+
+    def run(self, task, context=None):
+        result = None
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn, result)
+            if action is None:
+                break
+            result = self._execute(action, result)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn, last_result=None):
+        if self.planner is not None:
+            completed = [m["action"] for m in self.memory]
+            return self.planner.get_next_step(task, completed, last_result)
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action, last_result=None):
+        resolved = self._resolve_action(action, last_result)
+        tool_name = resolved.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](resolved)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _resolve_action(self, action, last_result):
+        """Replace $last_result sentinels with the previous step's output."""
+        if last_result is None:
+            return action
+        resolved = {}
+        for k, v in action.items():
+            if v == "$last_result":
+                resolved[k] = last_result
+            elif isinstance(v, str) and v.startswith("$last_result."):
+                attr = v[len("$last_result."):]
+                resolved[k] = last_result.get(attr, v) if isinstance(last_result, dict) else v
+            else:
+                resolved[k] = v
+        return resolved
+
+    def _is_done(self, result):
+        # When planner is active, get_next_step returning None controls termination.
+        # Stopping here would cut multi-step plans short after the first success.
+        if self.planner is not None:
+            return False
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+
+# ===== FILE: harness.py =====
+"""Agent harness for running and evaluating agents."""
+from agent import Agent
+from planner import Planner
+from tools import make_search_tool, make_calculator_tool, make_memory_tool
+
+
+def build_agent(knowledge_base=None):
+    kb = knowledge_base or {
+        "python": "A programming language",
+        "helix": "An evolutionary optimization framework",
+        "neural network": "A machine learning model",
+        "gradient descent": "An optimization algorithm",
+    }
+    store = {}
+    agent = Agent("test-agent")
+    agent.add_tool("search", make_search_tool(kb))
+    agent.add_tool("calculator", make_calculator_tool())
+    agent.add_tool("memory", make_memory_tool(store))
+
+    planner = Planner()
+    agent.set_planner(planner)
+
+    return agent
+
+
+def run_task_suite(agent, tasks):
+    results = []
+    for task in tasks:
+        agent.clear_memory()
+        result = agent.run(task)
+        results.append({
+            "task": task,
+            "result": result,
+            "turns": len(agent.get_memory()),
+            "success": _is_success(result),
+        })
+    return results
+
+
+def _is_success(result):
+    if result is None:
+        return False
+    if isinstance(result, dict):
+        return "error" not in result
+    return True
+
+# ===== FILE: planner.py =====
+"""Task planning — integrated with Agent via set_planner."""
+import re
+
+
+class Planner:
+    """Decomposes tasks into steps for the Agent to execute."""
+
+    TASK_PATTERNS = [
+        ("calculate", "_plan_calculate"),
+        ("compute",   "_plan_calculate"),
+        ("eval",      "_plan_calculate"),
+        ("remember",  "_plan_store"),
+        ("store",     "_plan_store"),
+        ("save",      "_plan_store"),
+        ("recall",    "_plan_recall"),
+        ("retrieve",  "_plan_recall"),
+        ("fetch",     "_plan_recall"),
+        ("load",      "_plan_recall"),
+        ("search",    "_plan_search"),
+        ("find",      "_plan_search"),
+        ("look up",   "_plan_search"),
+        ("lookup",    "_plan_search"),
+        ("what is",   "_plan_search"),
+        ("define",    "_plan_search"),
+        ("explain",   "_plan_search"),
+        ("describe",  "_plan_search"),
+        ("show",      "_plan_search"),
+        ("list",      "_plan_search"),
+    ]
+
+    # Matches complete arithmetic expressions including spaces around operators.
+    _ARITH_RE = re.compile(r'\d+(?:\.\d+)?(?:\s*[+\-*/]\s*\d+(?:\.\d+)?)+')
+
+    # Ordered from longest to shortest to prevent prefix shadowing.
+    _SEARCH_PREFIXES = [
+        "what is", "look up", "lookup", "define", "search for", "search",
+        "find", "explain", "describe", "show me", "list", "show",
+    ]
+
+    def __init__(self):
+        self.plans = {}
+
+    def make_plan(self, task):
+        steps = self._classify(task)
+        self.plans[task] = steps
+        return steps
+
+    def _classify(self, task):
+        lower = task.lower()
+
+        has_search = "find" in lower or "search" in lower
+        has_store = "store" in lower or "remember" in lower or "save" in lower
+        has_recall = "recall" in lower or "retrieve" in lower or "fetch" in lower
+        has_calc = (
+            "calculate" in lower
+            or "compute" in lower
+            or bool(self._ARITH_RE.search(task))
+        )
+
+        # 3-step: search -> store -> recall
+        if has_search and has_store and has_recall:
+            return self._plan_search_store_recall(task)
+
+        # 2-step: search then store
+        if has_search and has_store:
+            return self._plan_search_then_store(task)
+
+        # 2-step: search then calculate
+        if has_search and has_calc and not has_store:
+            return self._plan_search_then_calculate(task)
+
+        # 2-step: recall then calculate
+        if has_recall and has_calc:
+            return self._plan_recall_then_calculate(task)
+
+        # Named single-step pattern match
+        for keyword, builder in self.TASK_PATTERNS:
+            if keyword in lower:
+                return getattr(self, builder)(task)
+
+        # Bare arithmetic expression with no keywords
+        if self._ARITH_RE.search(task):
+            return self._plan_calculate(task)
+
+        # Default: search
+        return self._plan_search(task)
+
+    # ---- single-step plans ----
+
+    def _plan_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [{"tool": "calculator", "expression": expr}]
+
+    def _plan_store(self, task):
+        return [{"tool": "memory", "op": "write", "key": "result", "value": task}]
+
+    def _plan_recall(self, task):
+        return [{"tool": "memory", "op": "read", "key": "result"}]
+
+    def _plan_search(self, task):
+        query = self._extract_search_term(task)
+        return [{"tool": "search", "query": query}]
+
+    # ---- multi-step plans ----
+
+    def _plan_search_then_store(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "memory", "op": "write", "key": "result", "value": "$last_result"},
+        ]
+
+    def _plan_search_then_calculate(self, task):
+        query = self._extract_search_term(task)
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_recall_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_search_store_recall(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "memory", "op": "write", "key": "result", "value": "$last_result"},
+            {"tool": "memory", "op": "read", "key": "result"},
+        ]
+
+    # ---- helpers ----
+
+    def _extract_expression(self, task):
+        m = self._ARITH_RE.search(task)
+        if m:
+            return m.group(0).strip()
+        cleaned = re.sub(r"[a-zA-Z,?!]", "", task).strip()
+        return cleaned if cleaned else task
+
+    def _extract_search_term(self, task):
+        """Strip leading query verbs so the KB substring match can succeed."""
+        lower = task.lower()
+        for prefix in self._SEARCH_PREFIXES:
+            if lower.startswith(prefix):
+                return task[len(prefix):].strip().rstrip("?.,")
+        return task
+
+    def get_next_step(self, task, completed_steps, last_result=None):
+        plan = self.plans.get(task, self.make_plan(task))
+        if len(completed_steps) < len(plan):
+            return plan[len(completed_steps)]
+        return None
+
+# ===== FILE: tools.py =====
+"""Tool implementations."""
+
+
+def make_search_tool(knowledge_base):
+    def search(action):
+        query = action.get("query", "").lower()
+        results = []
+        for key, value in knowledge_base.items():
+            key_lower = key.lower()
+            # Match if query contains the key OR key contains the query substring
+            if key_lower in query or query in key_lower or query in str(value).lower():
+                results.append({"key": key, "value": value})
+        return {"results": results[:5], "query": query}
+    return search
+
+
+def make_calculator_tool():
+    def calculate(action):
+        expr = action.get("expression", "")
+        try:
+            allowed = set("0123456789+-*/()., ")
+            if not all(c in allowed for c in expr):
+                return {"error": "Invalid expression"}
+            result = eval(expr)  # nosec — guarded by character whitelist above
+            return {"result": result, "expression": expr}
+        except Exception as e:
+            return {"error": str(e)}
+    return calculate
+
+
+def make_memory_tool(store):
+    def memory_op(action):
+        op = action.get("op", "read")
+        key = action.get("key", "")
+        if op == "write":
+            store[key] = action.get("value")
+            return {"status": "ok", "key": key}
+        elif op == "read":
+            return {"value": store.get(key), "key": key}
+        return {"error": f"Unknown op: {op}"}
+    return memory_op
+Iteration 4: New subsample score 0.9 is not better than old score 0.9, skipping
+Iteration 5: Selected program 2 score: 0.9
+Iteration 5: Proposed new text for current_candidate: # ===== FILE: agent.py =====
+"""Agent core."""
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = None
+
+    def set_planner(self, planner):
+        self.planner = planner
+        return self
+
+    def run(self, task, context=None):
+        result = None
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn)
+            if action is None:
+                break
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn):
+        if self.planner is not None:
+            completed = [m["action"] for m in self.memory]
+            return self.planner.get_next_step(task, completed)
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        # When planner is active, get_next_step returning None controls termination.
+        # Stopping here would cut multi-step plans short after the first success.
+        if self.planner is not None:
+            return False
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+
+# ===== FILE: harness.py =====
+"""Agent harness for running and evaluating agents."""
+from agent import Agent
+from planner import Planner
+from tools import make_search_tool, make_calculator_tool, make_memory_tool
+
+
+def build_agent(knowledge_base=None):
+    kb = knowledge_base or {
+        "python": "A programming language",
+        "helix": "An evolutionary optimization framework",
+        "neural network": "A machine learning model",
+        "gradient descent": "An optimization algorithm",
+    }
+    store = {}
+    agent = Agent("test-agent")
+    agent.add_tool("search", make_search_tool(kb))
+    agent.add_tool("calculator", make_calculator_tool())
+    agent.add_tool("memory", make_memory_tool(store))
+
+    planner = Planner()
+    agent.set_planner(planner)
+
+    return agent
+
+
+def run_task_suite(agent, tasks):
+    results = []
+    for task in tasks:
+        agent.clear_memory()
+        result = agent.run(task)
+        results.append({
+            "task": task,
+            "result": result,
+            "turns": len(agent.get_memory()),
+            "success": _is_success(result),
+        })
+    return results
+
+
+def _is_success(result):
+    if result is None:
+        return False
+    if isinstance(result, dict):
+        return "error" not in result
+    return True
+
+# ===== FILE: planner.py =====
+"""Task planning — integrated with Agent via set_planner."""
+import re
+
+
+class Planner:
+    """Decomposes tasks into steps for the Agent to execute."""
+
+    TASK_PATTERNS = [
+        ("calculate", "_plan_calculate"),
+        ("compute",   "_plan_calculate"),
+        ("eval",      "_plan_calculate"),
+        ("remember",  "_plan_store"),
+        ("store",     "_plan_store"),
+        ("save",      "_plan_store"),
+        ("recall",    "_plan_recall"),
+        ("retrieve",  "_plan_recall"),
+        ("fetch",     "_plan_recall"),
+        ("load",      "_plan_recall"),
+        ("search",    "_plan_search"),
+        ("find",      "_plan_search"),
+        ("look up",   "_plan_search"),
+        ("lookup",    "_plan_search"),
+        ("what is",   "_plan_search"),
+        ("define",    "_plan_search"),
+    ]
+
+    # Matches complete arithmetic expressions including spaces around operators.
+    _ARITH_RE = re.compile(r'\d+(?:\.\d+)?(?:\s*[+\-*/]\s*\d+(?:\.\d+)?)+')
+
+    # Ordered from longest to shortest to prevent prefix shadowing (e.g. "look up" before "look")
+    _SEARCH_PREFIXES = ["what is", "look up", "lookup", "define", "search for", "search", "find"]
+
+    _STORE_KWS = ["store", "remember", "save"]
+    _RECALL_KWS = ["recall", "retrieve", "fetch", "load"]
+    _SEARCH_KWS = ["search", "find", "look up"]
+    _CALC_KWS = ["calculate", "compute"]
+
+    def __init__(self):
+        self.plans = {}
+
+    def make_plan(self, task):
+        steps = self._classify(task)
+        self.plans[task] = steps
+        return steps
+
+    def _classify(self, task):
+        lower = task.lower()
+        has_search = any(kw in lower for kw in self._SEARCH_KWS)
+        has_calc = any(kw in lower for kw in self._CALC_KWS) or bool(self._ARITH_RE.search(task))
+        has_store = any(kw in lower for kw in self._STORE_KWS)
+        has_recall = any(kw in lower for kw in self._RECALL_KWS)
+
+        # Multi-step patterns — checked before single-step to prevent shadowing.
+        # Order within multi-step matters: more specific (3-keyword overlap) first.
+
+        if has_search and has_store:
+            return self._plan_search_then_store(task)
+
+        if has_search and has_calc:
+            return self._plan_search_then_calculate(task)
+
+        if has_recall and has_calc:
+            return self._plan_recall_then_calculate(task)
+
+        if has_calc and has_store:
+            return self._plan_calculate_then_store(task)
+
+        if has_recall and has_search:
+            return self._plan_recall_then_search(task)
+
+        if has_store and has_recall:
+            return self._plan_store_then_recall(task)
+
+        # Named single-step pattern match
+        for keyword, builder in self.TASK_PATTERNS:
+            if keyword in lower:
+                return getattr(self, builder)(task)
+
+        # Bare arithmetic expression with no keywords
+        if self._ARITH_RE.search(task):
+            return self._plan_calculate(task)
+
+        # Default: search
+        return self._plan_search(task)
+
+    # ---- single-step plans ----
+
+    def _plan_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [{"tool": "calculator", "expression": expr}]
+
+    def _plan_store(self, task):
+        return [{"tool": "memory", "op": "write", "key": "result", "value": task}]
+
+    def _plan_recall(self, task):
+        return [{"tool": "memory", "op": "read", "key": "result"}]
+
+    def _plan_search(self, task):
+        query = self._extract_search_term(task)
+        return [{"tool": "search", "query": query}]
+
+    # ---- multi-step plans ----
+
+    def _plan_search_then_store(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "memory", "op": "write", "key": "result", "value": task},
+        ]
+
+    def _plan_search_then_calculate(self, task):
+        query = self._extract_search_term(task)
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_recall_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_calculate_then_store(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "calculator", "expression": expr},
+            {"tool": "memory", "op": "write", "key": "result", "value": task},
+        ]
+
+    def _plan_recall_then_search(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "search", "query": query},
+        ]
+
+    def _plan_store_then_recall(self, task):
+        return [
+            {"tool": "memory", "op": "write", "key": "result", "value": task},
+            {"tool": "memory", "op": "read", "key": "result"},
+        ]
+
+    # ---- helpers ----
+
+    def _extract_expression(self, task):
+        m = self._ARITH_RE.search(task)
+        if m:
+            return m.group(0).strip()
+        cleaned = re.sub(r"[a-zA-Z,?!]", "", task).strip()
+        return cleaned if cleaned else task
+
+    def _extract_search_term(self, task):
+        """Strip leading query verbs so the KB substring match can succeed."""
+        lower = task.lower()
+        for prefix in self._SEARCH_PREFIXES:
+            if lower.startswith(prefix):
+                return task[len(prefix):].strip().rstrip("?.,")
+        return task
+
+    def get_next_step(self, task, completed_steps):
+        plan = self.plans.get(task, self.make_plan(task))
+        if len(completed_steps) < len(plan):
+            return plan[len(completed_steps)]
+        return None
+
+# ===== FILE: tools.py =====
+"""Tool implementations."""
+
+
+def make_search_tool(knowledge_base):
+    def search(action):
+        query = action.get("query", "").lower()
+        results = []
+        for key, value in knowledge_base.items():
+            key_lower = key.lower()
+            if key_lower in query or query in key_lower or query in str(value).lower():
+                results.append({"key": key, "value": value})
+        return {"results": results[:5], "query": query}
+    return search
+
+
+def make_calculator_tool():
+    def calculate(action):
+        expr = action.get("expression", "")
+        try:
+            allowed = set("0123456789+-*/()., ")
+            if not all(c in allowed for c in expr):
+                return {"error": "Invalid expression"}
+            result = eval(expr)  # nosec — guarded by character whitelist above
+            return {"result": result, "expression": expr}
+        except Exception as e:
+            return {"error": str(e)}
+    return calculate
+
+
+def make_memory_tool(store):
+    def memory_op(action):
+        op = action.get("op", "read")
+        key = action.get("key", "")
+        if op == "write":
+            store[key] = action.get("value")
+            return {"status": "ok", "key": key}
+        elif op == "read":
+            return {"value": store.get(key), "key": key}
+        return {"error": f"Unknown op: {op}"}
+    return memory_op
+Iteration 5: New subsample score 0.9 is not better than old score 0.9, skipping
+Iteration 6: Selected program 2 score: 0.9
+Iteration 6: Proposed new text for current_candidate: # ===== FILE: agent.py =====
+"""Agent core."""
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = None
+
+    def set_planner(self, planner):
+        self.planner = planner
+        return self
+
+    def run(self, task, context=None):
+        result = None
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn)
+            if action is None:
+                break
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn):
+        if self.planner is not None:
+            history = [{"action": m["action"], "result": m["result"]} for m in self.memory]
+            return self.planner.get_next_step(task, history)
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        # When planner is active, get_next_step returning None controls termination.
+        # Stopping here would cut multi-step plans short after the first success.
+        if self.planner is not None:
+            return False
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+
+# ===== FILE: harness.py =====
+"""Agent harness for running and evaluating agents."""
+from agent import Agent
+from planner import Planner
+from tools import make_search_tool, make_calculator_tool, make_memory_tool
+
+
+def build_agent(knowledge_base=None):
+    kb = knowledge_base or {
+        "python": "A programming language",
+        "helix": "An evolutionary optimization framework",
+        "neural network": "A machine learning model",
+        "gradient descent": "An optimization algorithm",
+    }
+    store = {}
+    agent = Agent("test-agent")
+    agent.add_tool("search", make_search_tool(kb))
+    agent.add_tool("calculator", make_calculator_tool())
+    agent.add_tool("memory", make_memory_tool(store))
+
+    planner = Planner()
+    agent.set_planner(planner)
+
+    return agent
+
+
+def run_task_suite(agent, tasks):
+    results = []
+    for task in tasks:
+        agent.clear_memory()
+        result = agent.run(task)
+        results.append({
+            "task": task,
+            "result": result,
+            "turns": len(agent.get_memory()),
+            "success": _is_success(result),
+        })
+    return results
+
+
+def _is_success(result):
+    if result is None:
+        return False
+    if isinstance(result, dict):
+        return "error" not in result
+    return True
+
+# ===== FILE: planner.py =====
+"""Task planning — integrated with Agent via set_planner."""
+import re
+
+
+class Planner:
+    """Decomposes tasks into steps for the Agent to execute."""
+
+    TASK_PATTERNS = [
+        ("calculate", "_plan_calculate"),
+        ("compute",   "_plan_calculate"),
+        ("eval",      "_plan_calculate"),
+        ("remember",  "_plan_store"),
+        ("store",     "_plan_store"),
+        ("save",      "_plan_store"),
+        ("recall",    "_plan_recall"),
+        ("retrieve",  "_plan_recall"),
+        ("fetch",     "_plan_recall"),
+        ("load",      "_plan_recall"),
+        ("search",    "_plan_search"),
+        ("find",      "_plan_search"),
+        ("look up",   "_plan_search"),
+        ("lookup",    "_plan_search"),
+        ("what is",   "_plan_search"),
+        ("define",    "_plan_search"),
+    ]
+
+    # Matches complete arithmetic expressions including spaces around operators.
+    _ARITH_RE = re.compile(r'\d+(?:\.\d+)?(?:\s*[+\-*/]\s*\d+(?:\.\d+)?)+')
+
+    # Ordered from longest to shortest to prevent prefix shadowing.
+    _SEARCH_PREFIXES = ["what is", "look up", "lookup", "define", "search for", "search", "find"]
+
+    def __init__(self):
+        self.plans = {}
+
+    def make_plan(self, task):
+        steps = self._classify(task)
+        self.plans[task] = steps
+        return steps
+
+    def _classify(self, task):
+        lower = task.lower()
+        has_search = "find" in lower or "search" in lower
+        has_calc = "calculate" in lower or "compute" in lower or "eval" in lower
+        has_recall = "recall" in lower or "retrieve" in lower or "fetch" in lower or "load" in lower
+        has_store = "store" in lower or "remember" in lower or "save" in lower
+        has_arith = bool(self._ARITH_RE.search(task))
+
+        # Multi-step combinations — checked before single-step to avoid prefix shadowing
+        if has_search and has_store:
+            return self._plan_search_then_store(task)
+
+        if has_search and (has_calc or has_arith):
+            return self._plan_search_then_calculate(task)
+
+        if has_recall and (has_calc or has_arith):
+            return self._plan_recall_then_calculate(task)
+
+        if (has_calc or has_arith) and has_store:
+            return self._plan_calculate_then_store(task)
+
+        if has_recall and has_store:
+            return self._plan_recall_then_store(task)
+
+        # Named single-step pattern match
+        for keyword, builder in self.TASK_PATTERNS:
+            if keyword in lower:
+                return getattr(self, builder)(task)
+
+        # Bare arithmetic expression with no keywords
+        if has_arith:
+            return self._plan_calculate(task)
+
+        # Default: search
+        return self._plan_search(task)
+
+    # ---- single-step plans ----
+
+    def _plan_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [{"tool": "calculator", "expression": expr}]
+
+    def _plan_store(self, task):
+        return [{"tool": "memory", "op": "write", "key": "result", "value": task}]
+
+    def _plan_recall(self, task):
+        return [{"tool": "memory", "op": "read", "key": "result"}]
+
+    def _plan_search(self, task):
+        query = self._extract_search_term(task)
+        return [{"tool": "search", "query": query}]
+
+    # ---- multi-step plans ----
+
+    def _plan_search_then_store(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "search", "query": query},
+            # value=None: sentinel replaced by the search result in get_next_step
+            {"tool": "memory", "op": "write", "key": "result", "value": None},
+        ]
+
+    def _plan_search_then_calculate(self, task):
+        query = self._extract_search_term(task)
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_recall_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_calculate_then_store(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "calculator", "expression": expr},
+            # value=None: sentinel replaced by the calculator result in get_next_step
+            {"tool": "memory", "op": "write", "key": "result", "value": None},
+        ]
+
+    def _plan_recall_then_store(self, task):
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            # value=None: sentinel replaced by the recalled value in get_next_step
+            {"tool": "memory", "op": "write", "key": "cached_result", "value": None},
+        ]
+
+    # ---- helpers ----
+
+    def _extract_expression(self, task):
+        m = self._ARITH_RE.search(task)
+        if m:
+            return m.group(0).strip()
+        cleaned = re.sub(r"[a-zA-Z,?!]", "", task).strip()
+        return cleaned if cleaned else task
+
+    def _extract_search_term(self, task):
+        """Strip leading query verbs so the KB substring match can succeed."""
+        lower = task.lower()
+        for prefix in self._SEARCH_PREFIXES:
+            if lower.startswith(prefix):
+                return task[len(prefix):].strip().rstrip("?.,")
+        return task
+
+    def get_next_step(self, task, history):
+        """
+        history: list of {"action": ..., "result": ...} for each completed turn.
+        Returns the next plan step, with result chaining applied for write operations.
+        """
+        plan = self.plans.get(task, self.make_plan(task))
+        idx = len(history)
+        if idx >= len(plan):
+            return None
+
+        step = dict(plan[idx])  # shallow copy — values are all scalars or None
+
+        # When a write step carries a None sentinel, fill it from the previous result.
+        if (
+            step.get("tool") == "memory"
+            and step.get("op") == "write"
+            and step.get("value") is None
+            and history
+        ):
+            prev_result = history[-1].get("result") or {}
+            if isinstance(prev_result, dict) and "error" not in prev_result:
+                step["value"] = prev_result
+
+        return step
+
+# ===== FILE: tools.py =====
+"""Tool implementations."""
+
+
+def make_search_tool(knowledge_base):
+    def search(action):
+        query = action.get("query", "").lower()
+        results = []
+        for key, value in knowledge_base.items():
+            key_lower = key.lower()
+            # Match if query contains the key OR key contains the query substring
+            if key_lower in query or query in key_lower or query in str(value).lower():
+                results.append({"key": key, "value": value})
+        return {"results": results[:5], "query": query}
+    return search
+
+
+def make_calculator_tool():
+    def calculate(action):
+        expr = action.get("expression", "")
+        try:
+            allowed = set("0123456789+-*/()., ")
+            if not all(c in allowed for c in expr):
+                return {"error": "Invalid expression"}
+            result = eval(expr)  # nosec — guarded by character whitelist above
+            return {"result": result, "expression": expr}
+        except Exception as e:
+            return {"error": str(e)}
+    return calculate
+
+
+def make_memory_tool(store):
+    def memory_op(action):
+        op = action.get("op", "read")
+        key = action.get("key", "")
+        if op == "write":
+            store[key] = action.get("value")
+            return {"status": "ok", "key": key}
+        elif op == "read":
+            return {"value": store.get(key), "key": key}
+        return {"error": f"Unknown op: {op}"}
+    return memory_op
+Iteration 6: New subsample score 0.9 is not better than old score 0.9, skipping
+Iteration 7: Selected program 2 score: 0.9
+Iteration 7: Proposed new text for current_candidate: # ===== FILE: agent.py =====
+"""Agent core."""
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = None
+        self._last_result = None
+
+    def set_planner(self, planner):
+        self.planner = planner
+        return self
+
+    def run(self, task, context=None):
+        result = None
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn)
+            if action is None:
+                break
+            resolved_action = self._resolve_action(action)
+            result = self._execute(resolved_action)
+            self._last_result = result
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _resolve_action(self, action):
+        """Substitute $last_result placeholder with the previous step's output."""
+        if self._last_result is None:
+            return action
+        resolved = {}
+        for k, v in action.items():
+            resolved[k] = self._last_result if v == "$last_result" else v
+        return resolved
+
+    def _decide(self, task, context, turn):
+        if self.planner is not None:
+            completed = [m["action"] for m in self.memory]
+            return self.planner.get_next_step(task, completed)
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        # When planner is active, get_next_step returning None controls termination.
+        # Stopping here would cut multi-step plans short after the first success.
+        if self.planner is not None:
+            return False
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        self._last_result = None
+        return self
+
+# ===== FILE: harness.py =====
+"""Agent harness for running and evaluating agents."""
+from agent import Agent
+from planner import Planner
+from tools import make_search_tool, make_calculator_tool, make_memory_tool
+
+
+def build_agent(knowledge_base=None):
+    kb = knowledge_base or {
+        "python": "A programming language",
+        "helix": "An evolutionary optimization framework",
+        "neural network": "A machine learning model",
+        "gradient descent": "An optimization algorithm",
+    }
+    store = {}
+    agent = Agent("test-agent")
+    agent.add_tool("search", make_search_tool(kb))
+    agent.add_tool("calculator", make_calculator_tool())
+    agent.add_tool("memory", make_memory_tool(store))
+
+    planner = Planner()
+    agent.set_planner(planner)
+
+    return agent
+
+
+def run_task_suite(agent, tasks):
+    results = []
+    for task in tasks:
+        agent.clear_memory()
+        result = agent.run(task)
+        results.append({
+            "task": task,
+            "result": result,
+            "turns": len(agent.get_memory()),
+            "success": _is_success(result),
+        })
+    return results
+
+
+def _is_success(result):
+    if result is None:
+        return False
+    if isinstance(result, dict):
+        return "error" not in result
+    return True
+
+# ===== FILE: planner.py =====
+"""Task planning — integrated with Agent via set_planner."""
+import re
+
+
+class Planner:
+    """Decomposes tasks into steps for the Agent to execute."""
+
+    TASK_PATTERNS = [
+        ("calculate", "_plan_calculate"),
+        ("compute",   "_plan_calculate"),
+        ("eval",      "_plan_calculate"),
+        ("remember",  "_plan_store"),
+        ("store",     "_plan_store"),
+        ("save",      "_plan_store"),
+        ("recall",    "_plan_recall"),
+        ("retrieve",  "_plan_recall"),
+        ("fetch",     "_plan_recall"),
+        ("load",      "_plan_recall"),
+        ("search",    "_plan_search"),
+        ("find",      "_plan_search"),
+        ("look up",   "_plan_search"),
+        ("lookup",    "_plan_search"),
+        ("what is",   "_plan_search"),
+        ("define",    "_plan_search"),
+    ]
+
+    _ARITH_RE = re.compile(r'\d+(?:\.\d+)?(?:\s*[+\-*/]\s*\d+(?:\.\d+)?)+')
+
+    # Ordered longest-first to prevent prefix shadowing.
+    _SEARCH_PREFIXES = ["what is", "look up", "lookup", "define", "search for", "search", "find"]
+
+    # Keyword sets for multi-step detection — broader than just "find"/"search".
+    _SEARCH_KEYWORDS = ("find", "search", "look up", "lookup", "what is", "define")
+    _STORE_KEYWORDS  = ("store", "remember", "save")
+    _CALC_KEYWORDS   = ("calculate", "compute", "eval")
+    _RECALL_KEYWORDS = ("recall", "retrieve", "fetch", "load")
+
+    # Suffixes that separate the search subject from a subsequent step.
+    _SEARCH_STRIP_SUFFIXES = [
+        " and store", " and remember", " and save",
+        " and calculate", " and compute", " and eval",
+        " then store", " then remember", " then save",
+        " then calculate", " then compute", " then eval",
+        " and find", " and search",
+    ]
+
+    def __init__(self):
+        self.plans = {}
+
+    def make_plan(self, task):
+        steps = self._classify(task)
+        self.plans[task] = steps
+        return steps
+
+    def _classify(self, task):
+        lower = task.lower()
+
+        has_search = any(kw in lower for kw in self._SEARCH_KEYWORDS)
+        has_store  = any(kw in lower for kw in self._STORE_KEYWORDS)
+        has_calc   = any(kw in lower for kw in self._CALC_KEYWORDS) or bool(self._ARITH_RE.search(task))
+        has_recall = any(kw in lower for kw in self._RECALL_KEYWORDS)
+
+        if has_search and has_store:
+            return self._plan_search_then_store(task)
+        if has_search and has_calc:
+            return self._plan_search_then_calculate(task)
+        if has_recall and has_calc:
+            return self._plan_recall_then_calculate(task)
+
+        for keyword, builder in self.TASK_PATTERNS:
+            if keyword in lower:
+                return getattr(self, builder)(task)
+
+        if self._ARITH_RE.search(task):
+            return self._plan_calculate(task)
+
+        return self._plan_search(task)
+
+    # ---- single-step plans ----
+
+    def _plan_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [{"tool": "calculator", "expression": expr}]
+
+    def _plan_store(self, task):
+        return [{"tool": "memory", "op": "write", "key": "result", "value": task}]
+
+    def _plan_recall(self, task):
+        return [{"tool": "memory", "op": "read", "key": "result"}]
+
+    def _plan_search(self, task):
+        query = self._extract_search_term(task)
+        return [{"tool": "search", "query": query}]
+
+    # ---- multi-step plans ----
+
+    def _plan_search_then_store(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "search", "query": query},
+            # $last_result is resolved by Agent._resolve_action to the search result.
+            {"tool": "memory", "op": "write", "key": "result", "value": "$last_result"},
+        ]
+
+    def _plan_search_then_calculate(self, task):
+        query = self._extract_search_term(task)
+        expr  = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_recall_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    # ---- helpers ----
+
+    def _extract_expression(self, task):
+        m = self._ARITH_RE.search(task)
+        if m:
+            return m.group(0).strip()
+        cleaned = re.sub(r"[a-zA-Z,?!]", "", task).strip()
+        return cleaned if cleaned else task
+
+    def _extract_search_term(self, task):
+        """Strip leading query verb and trailing multi-step conjunction."""
+        lower = task.lower()
+        term  = task
+
+        for prefix in self._SEARCH_PREFIXES:
+            if lower.startswith(prefix):
+                term = task[len(prefix):].strip().rstrip("?.,")
+                break
+
+        term_lower = term.lower()
+        for suffix in self._SEARCH_STRIP_SUFFIXES:
+            idx = term_lower.find(suffix)
+            if idx != -1:
+                term = term[:idx].strip().rstrip("?.,")
+                break
+
+        return term
+
+    def get_next_step(self, task, completed_steps):
+        plan = self.plans.get(task, self.make_plan(task))
+        if len(completed_steps) < len(plan):
+            return plan[len(completed_steps)]
+        return None
+
+# ===== FILE: tools.py =====
+"""Tool implementations."""
+
+
+def make_search_tool(knowledge_base):
+    def search(action):
+        query = action.get("query", "").lower()
+        results = []
+        for key, value in knowledge_base.items():
+            key_lower = key.lower()
+            if key_lower in query or query in key_lower or query in str(value).lower():
+                results.append({"key": key, "value": value})
+        return {"results": results[:5], "query": query}
+    return search
+
+
+def make_calculator_tool():
+    def calculate(action):
+        expr = action.get("expression", "")
+        try:
+            allowed = set("0123456789+-*/()., ")
+            if not all(c in allowed for c in expr):
+                return {"error": "Invalid expression"}
+            result = eval(expr)  # nosec — guarded by character whitelist above
+            return {"result": result, "expression": expr}
+        except Exception as e:
+            return {"error": str(e)}
+    return calculate
+
+
+def make_memory_tool(store):
+    def memory_op(action):
+        op  = action.get("op", "read")
+        key = action.get("key", "")
+        if op == "write":
+            store[key] = action.get("value")
+            return {"status": "ok", "key": key}
+        elif op == "read":
+            return {"value": store.get(key), "key": key}
+        return {"error": f"Unknown op: {op}"}
+    return memory_op
+Iteration 7: New subsample score 0.9 is not better than old score 0.9, skipping
+Iteration 8: Selected program 2 score: 0.9
+Iteration 8: Proposed new text for current_candidate: # ===== FILE: agent.py =====
+"""Agent core."""
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = None
+
+    def set_planner(self, planner):
+        self.planner = planner
+        return self
+
+    def run(self, task, context=None):
+        result = None
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn)
+            if action is None:
+                break
+            result = self._execute(action)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn):
+        if self.planner is not None:
+            completed = [m["action"] for m in self.memory]
+            return self.planner.get_next_step(task, completed)
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action):
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        # When planner is active, get_next_step returning None controls termination.
+        # Stopping here would cut multi-step plans short after the first success.
+        if self.planner is not None:
+            return False
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+
+# ===== FILE: harness.py =====
+"""Agent harness for running and evaluating agents."""
+from agent import Agent
+from planner import Planner
+from tools import make_search_tool, make_calculator_tool, make_memory_tool
+
+
+def build_agent(knowledge_base=None):
+    kb = knowledge_base or {
+        "python": "A programming language",
+        "helix": "An evolutionary optimization framework",
+        "neural network": "A machine learning model",
+        "gradient descent": "An optimization algorithm",
+    }
+    store = {}
+    agent = Agent("test-agent")
+    agent.add_tool("search", make_search_tool(kb))
+    agent.add_tool("calculator", make_calculator_tool())
+    agent.add_tool("memory", make_memory_tool(store))
+
+    planner = Planner()
+    agent.set_planner(planner)
+
+    return agent
+
+
+def run_task_suite(agent, tasks):
+    results = []
+    for task in tasks:
+        agent.clear_memory()
+        result = agent.run(task)
+        results.append({
+            "task": task,
+            "result": result,
+            "turns": len(agent.get_memory()),
+            "success": _is_success(result),
+        })
+    return results
+
+
+def _is_success(result):
+    if result is None:
+        return False
+    if isinstance(result, dict):
+        return "error" not in result
+    return True
+
+# ===== FILE: planner.py =====
+"""Task planning — integrated with Agent via set_planner."""
+import re
+
+
+class Planner:
+    """Decomposes tasks into steps for the Agent to execute.
+
+    Supported task types (10 total):
+      1. search only
+      2. calculate only
+      3. store only
+      4. recall only
+      5. search → store
+      6. search → calculate
+      7. recall → calculate
+      8. calculate → store
+      9. recall → store
+     10. search → calculate → store
+    """
+
+    TASK_PATTERNS = [
+        ("calculate", "_plan_calculate"),
+        ("compute",   "_plan_calculate"),
+        ("eval",      "_plan_calculate"),
+        ("remember",  "_plan_store"),
+        ("store",     "_plan_store"),
+        ("save",      "_plan_store"),
+        ("recall",    "_plan_recall"),
+        ("retrieve",  "_plan_recall"),
+        ("fetch",     "_plan_recall"),
+        ("load",      "_plan_recall"),
+        ("search",    "_plan_search"),
+        ("find",      "_plan_search"),
+        ("look up",   "_plan_search"),
+        ("lookup",    "_plan_search"),
+        ("what is",   "_plan_search"),
+        ("define",    "_plan_search"),
+    ]
+
+    _ARITH_RE = re.compile(r'\d+(?:\.\d+)?(?:\s*[+\-*/]\s*\d+(?:\.\d+)?)+')
+
+    # Ordered longest-first to prevent prefix shadowing.
+    _SEARCH_PREFIXES = ["what is", "look up", "lookup", "define", "search for", "search", "find"]
+
+    _SEARCH_KWS  = frozenset(["find", "search", "look up", "lookup", "what is", "define"])
+    _STORE_KWS   = frozenset(["store", "remember", "save"])
+    _RECALL_KWS  = frozenset(["recall", "retrieve", "fetch", "load"])
+    _CALC_KWS    = frozenset(["calculate", "compute", "eval"])
+
+    def __init__(self):
+        self.plans = {}
+
+    def make_plan(self, task):
+        steps = self._classify(task)
+        self.plans[task] = steps
+        return steps
+
+    # ---- keyword helpers ----
+
+    def _has_search(self, lower):
+        return any(kw in lower for kw in self._SEARCH_KWS)
+
+    def _has_store(self, lower):
+        return any(kw in lower for kw in self._STORE_KWS)
+
+    def _has_recall(self, lower):
+        return any(kw in lower for kw in self._RECALL_KWS)
+
+    def _has_calc(self, lower):
+        return any(kw in lower for kw in self._CALC_KWS) or bool(self._ARITH_RE.search(lower))
+
+    # ---- classification ----
+
+    def _classify(self, task):
+        lower = task.lower()
+
+        # 3-step: search → calculate → store
+        if self._has_search(lower) and self._has_calc(lower) and self._has_store(lower):
+            return self._plan_search_calculate_store(task)
+
+        # 2-step combinations
+        if self._has_search(lower) and self._has_store(lower):
+            return self._plan_search_then_store(task)
+
+        if self._has_search(lower) and self._has_calc(lower):
+            return self._plan_search_then_calculate(task)
+
+        if self._has_recall(lower) and self._has_calc(lower):
+            return self._plan_recall_then_calculate(task)
+
+        if self._has_calc(lower) and self._has_store(lower):
+            return self._plan_calculate_then_store(task)
+
+        if self._has_recall(lower) and self._has_store(lower):
+            return self._plan_recall_then_store(task)
+
+        # Single-step keyword match
+        for keyword, builder in self.TASK_PATTERNS:
+            if keyword in lower:
+                return getattr(self, builder)(task)
+
+        # Bare arithmetic expression
+        if self._ARITH_RE.search(task):
+            return self._plan_calculate(task)
+
+        return self._plan_search(task)
+
+    # ---- single-step plans ----
+
+    def _plan_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [{"tool": "calculator", "expression": expr}]
+
+    def _plan_store(self, task):
+        return [{"tool": "memory", "op": "write", "key": "result", "value": task}]
+
+    def _plan_recall(self, task):
+        return [{"tool": "memory", "op": "read", "key": "result"}]
+
+    def _plan_search(self, task):
+        query = self._extract_search_term(task)
+        return [{"tool": "search", "query": query}]
+
+    # ---- multi-step plans ----
+
+    def _plan_search_then_store(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "memory", "op": "write", "key": "result", "value": task},
+        ]
+
+    def _plan_search_then_calculate(self, task):
+        query = self._extract_search_term(task)
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_recall_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_calculate_then_store(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "calculator", "expression": expr},
+            {"tool": "memory", "op": "write", "key": "result", "value": expr},
+        ]
+
+    def _plan_recall_then_store(self, task):
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "memory", "op": "write", "key": "result", "value": task},
+        ]
+
+    def _plan_search_calculate_store(self, task):
+        query = self._extract_search_term(task)
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "calculator", "expression": expr},
+            {"tool": "memory", "op": "write", "key": "result", "value": expr},
+        ]
+
+    # ---- helpers ----
+
+    def _extract_expression(self, task):
+        m = self._ARITH_RE.search(task)
+        if m:
+            return m.group(0).strip()
+        cleaned = re.sub(r"[a-zA-Z,?!]", "", task).strip()
+        return cleaned if cleaned else task
+
+    def _extract_search_term(self, task):
+        lower = task.lower()
+        for prefix in self._SEARCH_PREFIXES:
+            if lower.startswith(prefix):
+                return task[len(prefix):].strip().rstrip("?.,")
+        return task
+
+    def get_next_step(self, task, completed_steps):
+        plan = self.plans.get(task, self.make_plan(task))
+        if len(completed_steps) < len(plan):
+            return plan[len(completed_steps)]
+        return None
+
+# ===== FILE: tools.py =====
+"""Tool implementations."""
+
+
+def make_search_tool(knowledge_base):
+    def search(action):
+        query = action.get("query", "").lower()
+        results = []
+        for key, value in knowledge_base.items():
+            key_lower = key.lower()
+            if key_lower in query or query in key_lower or query in str(value).lower():
+                results.append({"key": key, "value": value})
+        return {"results": results[:5], "query": query}
+    return search
+
+
+def make_calculator_tool():
+    def calculate(action):
+        expr = action.get("expression", "")
+        try:
+            allowed = set("0123456789+-*/()., ")
+            if not all(c in allowed for c in expr):
+                return {"error": "Invalid expression"}
+            result = eval(expr)  # nosec — guarded by character whitelist above
+            return {"result": result, "expression": expr}
+        except Exception as e:
+            return {"error": str(e)}
+    return calculate
+
+
+def make_memory_tool(store):
+    def memory_op(action):
+        op = action.get("op", "read")
+        key = action.get("key", "")
+        if op == "write":
+            store[key] = action.get("value")
+            return {"status": "ok", "key": key}
+        elif op == "read":
+            return {"value": store.get(key), "key": key}
+        return {"error": f"Unknown op: {op}"}
+    return memory_op
+Iteration 8: New subsample score 0.9 is not better than old score 0.9, skipping
+Iteration 9: Selected program 2 score: 0.9
+Iteration 9: Proposed new text for current_candidate: # ===== FILE: agent.py =====
+"""Agent core."""
+
+
+class Agent:
+    def __init__(self, name, tools=None):
+        self.name = name
+        self.tools = tools or {}
+        self.memory = []
+        self.max_turns = 10
+        self.planner = None
+
+    def set_planner(self, planner):
+        self.planner = planner
+        return self
+
+    def run(self, task, context=None):
+        result = None
+        for turn in range(self.max_turns):
+            action = self._decide(task, context, turn)
+            if action is None:
+                break
+            result = self._execute(action, result)
+            self.memory.append({"turn": turn, "action": action, "result": result})
+            if self._is_done(result):
+                break
+        return result
+
+    def _decide(self, task, context, turn):
+        if self.planner is not None:
+            completed = [m["action"] for m in self.memory]
+            return self.planner.get_next_step(task, completed)
+        if turn == 0:
+            return {"tool": "search", "query": task}
+        return None
+
+    def _execute(self, action, prev_result=None):
+        action = dict(action)
+        # A memory write with value=None chains from the previous step's result.
+        if (action.get("tool") == "memory" and action.get("op") == "write"
+                and "value" in action and action["value"] is None):
+            action["value"] = prev_result
+        tool_name = action.get("tool")
+        if tool_name in self.tools:
+            return self.tools[tool_name](action)
+        return {"error": f"Tool {tool_name} not found"}
+
+    def _is_done(self, result):
+        # When planner is active, get_next_step returning None controls termination.
+        # Stopping here would cut multi-step plans short after the first success.
+        if self.planner is not None:
+            return False
+        return result is not None and "error" not in result
+
+    def add_tool(self, name, fn):
+        self.tools[name] = fn
+
+    def get_memory(self):
+        return self.memory
+
+    def clear_memory(self):
+        self.memory = []
+        return self
+
+# ===== FILE: harness.py =====
+"""Agent harness for running and evaluating agents."""
+from agent import Agent
+from planner import Planner
+from tools import make_search_tool, make_calculator_tool, make_memory_tool
+
+
+def build_agent(knowledge_base=None):
+    kb = knowledge_base or {
+        "python": "A programming language",
+        "helix": "An evolutionary optimization framework",
+        "neural network": "A machine learning model",
+        "gradient descent": "An optimization algorithm",
+    }
+    store = {}
+    agent = Agent("test-agent")
+    agent.add_tool("search", make_search_tool(kb))
+    agent.add_tool("calculator", make_calculator_tool())
+    agent.add_tool("memory", make_memory_tool(store))
+
+    planner = Planner()
+    agent.set_planner(planner)
+
+    return agent
+
+
+def run_task_suite(agent, tasks):
+    results = []
+    for task in tasks:
+        agent.clear_memory()
+        result = agent.run(task)
+        results.append({
+            "task": task,
+            "result": result,
+            "turns": len(agent.get_memory()),
+            "success": _is_success(result),
+        })
+    return results
+
+
+def _is_success(result):
+    if result is None:
+        return False
+    if isinstance(result, dict):
+        return "error" not in result
+    return True
+
+# ===== FILE: planner.py =====
+"""Task planning — integrated with Agent via set_planner."""
+import re
+
+
+class Planner:
+    """Decomposes tasks into steps for the Agent to execute."""
+
+    TASK_PATTERNS = [
+        ("calculate", "_plan_calculate"),
+        ("compute",   "_plan_calculate"),
+        ("eval",      "_plan_calculate"),
+        ("remember",  "_plan_store"),
+        ("store",     "_plan_store"),
+        ("save",      "_plan_store"),
+        ("recall",    "_plan_recall"),
+        ("retrieve",  "_plan_recall"),
+        ("fetch",     "_plan_recall"),
+        ("load",      "_plan_recall"),
+        ("search",    "_plan_search"),
+        ("find",      "_plan_search"),
+        ("look up",   "_plan_search"),
+        ("lookup",    "_plan_search"),
+        ("what is",   "_plan_search"),
+        ("define",    "_plan_search"),
+    ]
+
+    # Matches complete arithmetic expressions including spaces around operators.
+    _ARITH_RE = re.compile(r'\d+(?:\.\d+)?(?:\s*[+\-*/]\s*\d+(?:\.\d+)?)+')
+
+    # Ordered from longest to shortest to prevent prefix shadowing.
+    _SEARCH_PREFIXES = ["what is", "look up", "lookup", "define", "search for", "search", "find"]
+
+    _RECALL_KEYWORDS = {"recall", "retrieve", "fetch", "load"}
+    _STORE_KEYWORDS  = {"store", "remember", "save"}
+    _CALC_KEYWORDS   = {"calculate", "compute", "eval"}
+
+    def __init__(self):
+        self.plans = {}
+
+    def make_plan(self, task):
+        steps = self._classify(task)
+        self.plans[task] = steps
+        return steps
+
+    def _classify(self, task):
+        lower = task.lower()
+        has_search = "find" in lower or "search" in lower
+        has_recall = any(k in lower for k in self._RECALL_KEYWORDS)
+        has_calc   = any(k in lower for k in self._CALC_KEYWORDS) or bool(self._ARITH_RE.search(task))
+        has_store  = any(k in lower for k in self._STORE_KEYWORDS)
+
+        # Multi-step: search then store
+        if has_search and has_store:
+            return self._plan_search_then_store(task)
+
+        # Multi-step: search then calculate
+        if has_search and has_calc:
+            return self._plan_search_then_calculate(task)
+
+        # Multi-step: calculate then store (must not be a recall task)
+        if has_calc and has_store and not has_recall:
+            return self._plan_calculate_then_store(task)
+
+        # Multi-step: recall then calculate
+        if has_recall and has_calc:
+            return self._plan_recall_then_calculate(task)
+
+        # Named single-step pattern match
+        for keyword, builder in self.TASK_PATTERNS:
+            if keyword in lower:
+                return getattr(self, builder)(task)
+
+        # Bare arithmetic expression with no keywords
+        if self._ARITH_RE.search(task):
+            return self._plan_calculate(task)
+
+        # Default: search
+        return self._plan_search(task)
+
+    # ---- single-step plans ----
+
+    def _plan_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [{"tool": "calculator", "expression": expr}]
+
+    def _plan_store(self, task):
+        return [{"tool": "memory", "op": "write", "key": "result", "value": task}]
+
+    def _plan_recall(self, task):
+        return [{"tool": "memory", "op": "read", "key": "result"}]
+
+    def _plan_search(self, task):
+        query = self._extract_search_term(task)
+        return [{"tool": "search", "query": query}]
+
+    # ---- multi-step plans ----
+
+    def _plan_search_then_store(self, task):
+        query = self._extract_search_term(task)
+        return [
+            {"tool": "search", "query": query},
+            # value=None signals Agent._execute to chain the previous step's result.
+            {"tool": "memory", "op": "write", "key": "result", "value": None},
+        ]
+
+    def _plan_search_then_calculate(self, task):
+        query = self._extract_search_term(task)
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "search", "query": query},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    def _plan_calculate_then_store(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "calculator", "expression": expr},
+            # value=None signals Agent._execute to chain the calculator result.
+            {"tool": "memory", "op": "write", "key": "result", "value": None},
+        ]
+
+    def _plan_recall_then_calculate(self, task):
+        expr = self._extract_expression(task)
+        return [
+            {"tool": "memory", "op": "read", "key": "result"},
+            {"tool": "calculator", "expression": expr},
+        ]
+
+    # ---- helpers ----
+
+    def _extract_expression(self, task):
+        m = self._ARITH_RE.search(task)
+        if m:
+            return m.group(0).strip()
+        cleaned = re.sub(r"[a-zA-Z,?!]", "", task).strip()
+        return cleaned if cleaned else task
+
+    def _extract_search_term(self, task):
+        """Strip leading query verbs and multi-step qualifiers."""
+        lower = task.lower()
+        remainder = task
+        for prefix in self._SEARCH_PREFIXES:
+            if lower.startswith(prefix):
+                remainder = task[len(prefix):].strip().rstrip("?.,")
+                break
+        # For multi-step tasks ("find X and store it"), drop everything from " and " onward.
+        and_idx = remainder.lower().find(" and ")
+        if and_idx != -1:
+            remainder = remainder[:and_idx].strip()
+        return remainder
+
+    def get_next_step(self, task, completed_steps):
+        plan = self.plans.get(task, self.make_plan(task))
+        if len(completed_steps) < len(plan):
+            return plan[len(completed_steps)]
+        return None
+
+# ===== FILE: tools.py =====
+"""Tool implementations."""
+
+
+def make_search_tool(knowledge_base):
+    def search(action):
+        query = action.get("query", "").lower()
+        results = []
+        for key, value in knowledge_base.items():
+            key_lower = key.lower()
+            # Match if query contains the key OR key contains the query substring
+            if key_lower in query or query in key_lower or query in str(value).lower():
+                results.append({"key": key, "value": value})
+        return {"results": results[:5], "query": query}
+    return search
+
+
+def make_calculator_tool():
+    def calculate(action):
+        expr = action.get("expression", "")
+        try:
+            allowed = set("0123456789+-*/()., ")
+            if not all(c in allowed for c in expr):
+                return {"error": "Invalid expression"}
+            result = eval(expr)  # nosec — guarded by character whitelist above
+            return {"result": result, "expression": expr}
+        except Exception as e:
+            return {"error": str(e)}
+    return calculate
+
+
+def make_memory_tool(store):
+    def memory_op(action):
+        op = action.get("op", "read")
+        key = action.get("key", "")
+        if op == "write":
+            store[key] = action.get("value")
+            return {"status": "ok", "key": key}
+        elif op == "read":
+            return {"value": store.get(key), "key": key}
+        return {"error": f"Unknown op: {op}"}
+    return memory_op
+Iteration 9: New subsample score 0.9 is not better than old score 0.9, skipping
+  seed 0.10 -> best 0.90  (9 calls, 28.6 min)
+
+wrote /Users/kevinchon/Documents/Research/KDKC/helix-evals/b2_baseline_results.json

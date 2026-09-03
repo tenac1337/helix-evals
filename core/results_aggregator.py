@@ -124,6 +124,42 @@ class ResultsAggregator:
         err = [r for r in self._results if r.get("status") == "error"]
         timeout = [r for r in self._results if r.get("status") == "timeout"]
 
+        # Null-run detection.
+        #
+        # A run in which EVERY problem scored zero did not optimize anything. It is
+        # either an authentication failure (the mutation agent never reached a
+        # model) or a total harness failure -- and in both cases the numbers must
+        # not be reported. This is not hypothetical: Track C run 20260508_153525
+        # stored status="ok" for all 172 problems while making no LLM calls and
+        # scoring 0 everywhere, which would have been published as a real result.
+        #
+        # The signal is the SCORE distribution, not token telemetry. TokenLogger is
+        # not wired into GEPA's LiteLLM path (and records nothing for HELIX either),
+        # so total_calls == 0 appears on perfectly good runs -- e.g. the GEPA
+        # qwen3-coder runs report zero calls alongside 44 solved problems.
+        _scored = [r.get("best_score") or 0.0 for r in ok]
+        if _scored and not any(s > 0 for s in _scored):
+            import sys as _sys
+            print(
+                f"\n!! WARNING: all {len(_scored)} problems in {self.run_dir.name} "
+                f"scored 0.\n"
+                f"   This is a NULL RUN -- nothing was optimized. Most likely the "
+                f"mutation agent never reached a model (backend auth, or a "
+                f"credential stripped by the subprocess env scrub).\n"
+                f"   Do not report these numbers; fix authentication and re-run.\n",
+                file=_sys.stderr,
+            )
+
+        # Telemetry health is reported separately -- missing tokens make the
+        # efficiency columns (tokens per accepted mutation) unavailable, but say
+        # nothing about whether the run itself was valid.
+        _no_tel = sum(1 for r in ok
+                      if int((r.get("token_summary") or {}).get("total_calls") or 0) == 0)
+        if _no_tel == len(ok) and ok:
+            import sys as _sys
+            print(f"   note: no token telemetry recorded for {self.run_dir.name}; "
+                  f"per-mutation cost columns will be empty.\n", file=_sys.stderr)
+
         scores = [r.get("best_score", 0.0) for r in ok]
         scores_by_problem = {
             str(r.get("problem_id", "?")): r.get("best_score", 0.0)

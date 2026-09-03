@@ -1,0 +1,373 @@
+
+=== AdaEvolve (concatenated): b3_1_api_versioning  seed=0.40 ===
+13:00:53 [search.utils] Logging to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/logs/adaevolve_20260831_130053.log
+13:00:53 [search.adaevolve] AdaEvolveDatabase initialized: num_islands=2, decay=0.9, intensity=[0.15, 0.5], migration=True (interval=15), unified_archive=True, adaptive_search=True, ucb_selection=True, dynamic_islands=True, paradigm_breakthrough=True, multiobjective=False
+13:00:53 [runner] Runner ready: search=adaevolve, program=/var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/program_4c9b3cdf.py
+13:00:53 [llm] OpenAI LLM: sonnet
+13:00:53 WARNING [evaluator] cascade_evaluation is true but /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_33bfa60c.py has no evaluate_stage1 — will fall back to direct evaluation
+13:00:53 [evaluator] Initialized evaluator with /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_33bfa60c.py
+13:00:53 [default_discovery_controller] DiscoveryController initialized: num_context_programs=4
+13:00:53 [search.adaevolve] Paradigm LLM: using guide_models [sonnet]
+13:00:53 [search.adaevolve] AdaEvolveController initialized (language=python, paradigm_breakthrough=True)
+13:00:53 [runner] Adding initial program to database
+13:00:53 [evaluator] Evaluated program 6313e295-7ea9-4f83-88d8-b03f0cefd44d in 0.17s: combined_score=0.4000, solve_rate=0.4000
+13:00:53 [base_database] Database has 1 programs, best program score is combined_score=0.4000, solve_rate=0.4000
+13:00:53 [search.adaevolve] AdaEvolve: Running 10 iterations across 2 islands
+13:00:53 [search.adaevolve] AdaEvolve iteration stats will be logged to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/adaevolve_iteration_stats_20260831_130053.jsonl
+13:00:53 [search.adaevolve] Seeded island 1
+13:01:32 [evaluator] Evaluated program 3c95c109-03f6-4fa4-8f4e-2f00bcc52d17 in 0.23s: combined_score=0.4000, solve_rate=0.4000
+13:01:32 [search.adaevolve] Iteration 1: Program 3c95c109 (parent: 6313e295) completed in 38.23s (llm: 38.00s, eval: 0.23s)
+13:01:32 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:02:15 [evaluator] Evaluated program 0154cf21-b4e1-407f-a22f-32aad10ffc25 in 0.17s: combined_score=0.4000, solve_rate=0.4000
+13:02:15 [search.adaevolve] Iteration 2: Program 0154cf21 (parent: 788ed79e) completed in 43.40s (llm: 43.23s, eval: 0.17s)
+13:02:15 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:03:31 [evaluator] Evaluated program 11361829-8af9-4d5e-8b30-b6d3455fc707 in 0.17s: combined_score=0.4000, solve_rate=0.4000
+13:03:31 [search.adaevolve] Iteration 3: Program 11361829 (parent: 3c95c109) completed in 75.59s (llm: 75.42s, eval: 0.17s)
+13:03:31 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:04:04 [evaluator] Evaluated program fd99498d-926a-42f3-9161-e9f5b56b2549 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:04:04 [search.adaevolve] Iteration 4: Program fd99498d (parent: 788ed79e) completed in 33.10s (llm: 32.94s, eval: 0.17s)
+13:04:04 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:05:47 [evaluator] Evaluated program 07c4bc7e-3b6a-48fc-bedf-90a3357c1929 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:05:47 [search.adaevolve] Iteration 5: Program 07c4bc7e (parent: 788ed79e) completed in 102.89s (llm: 102.73s, eval: 0.16s)
+13:05:47 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:06:17 [evaluator] Evaluated program c62dc9a4-fb66-4ba9-9bcd-fd6118bae1d2 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:06:17 [search.adaevolve] Iteration 6: Program c62dc9a4 (parent: 6313e295) completed in 30.25s (llm: 30.08s, eval: 0.16s)
+13:06:17 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:08:01 [evaluator] Evaluated program 0188c127-5640-454a-8dcf-c891cf20a11b in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:08:01 [search.adaevolve] Iteration 7: Program 0188c127 (parent: 3c95c109) completed in 104.52s (llm: 104.36s, eval: 0.16s)
+13:08:01 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:09:33 [evaluator] Evaluated program 1e7213ef-01ce-4d84-8075-791066d5a946 in 0.17s: combined_score=0.4000, solve_rate=0.4000
+13:09:33 [search.adaevolve] Iteration 8: Program 1e7213ef (parent: 788ed79e) completed in 91.85s (llm: 91.68s, eval: 0.17s)
+13:09:33 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:11:01 [evaluator] Evaluated program 845912d0-a6aa-4a49-bc1c-d950c5b65793 in 0.17s: combined_score=0.4000, solve_rate=0.4000
+13:11:01 [search.adaevolve] Iteration 9: Program 845912d0 (parent: 0188c127) completed in 87.38s (llm: 87.22s, eval: 0.17s)
+13:11:01 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:11:01 [search.adaevolve] Global paradigm stagnation detected, generating breakthrough ideas...
+13:11:53 [search.adaevolve] Generated 3 paradigms:
+13:11:53 [search.adaevolve]   [1] Standardize process_data to accept only string format, update all callers to pass format string directly (approach: api.refactoring.string_parameter)
+13:11:53 [search.adaevolve]   [2] Use json.dumps and csv.writer for proper serialization instead of str() and join() (approach: json.dumps)
+13:11:53 [search.adaevolve]   [3] Adopt an options dict pattern uniformly: all callers pass {'format': value} and process_data always receives a dict (approach: dict.options_pattern)
+13:11:53 [search.adaevolve] Set 3 new paradigms (best score: 0.400000)
+13:11:53 [search.adaevolve] Generated 3 breakthrough paradigms
+13:11:53 [search.adaevolve] Using paradigm 1/3 (1/2): Standardize process_data to accept only string format, update all callers to pass format string directly
+13:12:14 [evaluator] Evaluated program 1b51a46b-e585-44c1-a537-a357ba88be5d in 0.27s: combined_score=0.4000, solve_rate=0.4000
+13:12:14 [search.adaevolve] Iteration 10: Program 1b51a46b (parent: 6313e295) completed in 21.04s (llm: 20.77s, eval: 0.27s)
+13:12:14 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:12:14 [search.adaevolve] Checkpoint interval reached at iteration 10
+13:12:14 [base_database] Database has 12 programs, best program score is combined_score=0.4000, solve_rate=0.4000
+13:12:14 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/checkpoints/checkpoint_10
+13:12:14 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/checkpoints/checkpoint_10
+13:12:14 [runner] Checkpoint 10: best=combined_score=0.4000, solve_rate=0.4000
+13:12:14 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/checkpoints/checkpoint_10
+13:12:14 [search.adaevolve] AdaEvolve completed
+13:12:14 [base_database] Database has 12 programs, best program score is combined_score=0.4000, solve_rate=0.4000
+13:12:14 [search.adaevolve] AdaEvolve iteration stats saved to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/adaevolve_iteration_stats_20260831_130053.jsonl
+13:12:14 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/checkpoints/checkpoint_10
+13:12:14 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/checkpoints/checkpoint_10
+13:12:14 [runner] Checkpoint 10: best=combined_score=0.4000, solve_rate=0.4000
+13:12:14 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/checkpoints/checkpoint_10
+13:12:14 [evaluator] Evaluated program 6313e295-7ea9-4f83-88d8-b03f0cefd44d in 0.15s: combined_score=0.4000, solve_rate=0.4000
+13:12:14 [runner] Test evaluation for best program: combined_score=0.4000, solve_rate=0.4000
+13:12:14 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/best
+13:12:14 [runner] Discovery completed. Best: combined_score=0.4000, solve_rate=0.4000, test_combined_score=0.4000, test_solve_rate=0.4000
+13:12:14 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_s8i9myq9/best
+  seed 0.40 -> best 0.40  (11.4 min)
+
+=== AdaEvolve (concatenated): b3_2_config_refactor  seed=0.25 ===
+13:12:15 [search.utils] Logging to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/logs/adaevolve_20260831_131215.log
+13:12:15 [search.adaevolve] AdaEvolveDatabase initialized: num_islands=2, decay=0.9, intensity=[0.15, 0.5], migration=True (interval=15), unified_archive=True, adaptive_search=True, ucb_selection=True, dynamic_islands=True, paradigm_breakthrough=True, multiobjective=False
+13:12:15 [runner] Runner ready: search=adaevolve, program=/var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/program_b38477b4.py
+13:12:15 WARNING [evaluator] cascade_evaluation is true but /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_be5d37fa.py has no evaluate_stage1 — will fall back to direct evaluation
+13:12:15 [evaluator] Initialized evaluator with /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_be5d37fa.py
+13:12:15 [default_discovery_controller] DiscoveryController initialized: num_context_programs=4
+13:12:15 [search.adaevolve] Paradigm LLM: using guide_models [sonnet]
+13:12:15 [search.adaevolve] AdaEvolveController initialized (language=python, paradigm_breakthrough=True)
+13:12:15 [runner] Adding initial program to database
+13:12:15 [evaluator] Evaluated program abee0463-0026-4617-bbc4-d450fd53d05f in 0.15s: combined_score=0.2500, solve_rate=0.2500
+13:12:15 [base_database] Database has 1 programs, best program score is combined_score=0.2500, solve_rate=0.2500
+13:12:15 [search.adaevolve] AdaEvolve: Running 10 iterations across 2 islands
+13:12:15 [search.adaevolve] AdaEvolve iteration stats will be logged to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/adaevolve_iteration_stats_20260831_131215.jsonl
+13:12:15 [search.adaevolve] Seeded island 1
+13:12:51 [evaluator] Evaluated program 83920d8d-6d0a-4810-b20a-f2da8017ae19 in 0.16s: combined_score=0.2500, solve_rate=0.2500
+13:12:51 [search.adaevolve] Iteration 1: Program 83920d8d (parent: abee0463) completed in 35.59s (llm: 35.43s, eval: 0.16s)
+13:12:51 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:13:37 [evaluator] Evaluated program 8bb2df29-f678-4e4a-8016-a3b12c32b6b0 in 0.17s: combined_score=0.2500, solve_rate=0.2500
+13:13:37 [search.adaevolve] Iteration 2: Program 8bb2df29 (parent: abee0463) completed in 45.97s (llm: 45.80s, eval: 0.17s)
+13:13:37 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:14:21 [evaluator] Evaluated program 372f7725-0f6c-41a4-9203-b472c8bbcc4f in 0.17s: combined_score=0.2500, solve_rate=0.2500
+13:14:21 [search.adaevolve] Iteration 3: Program 372f7725 (parent: f0218037) completed in 44.42s (llm: 44.25s, eval: 0.17s)
+13:14:21 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:15:14 [evaluator] Evaluated program 30c190f9-9336-4a0e-867b-0aa113c5ba4e in 0.16s: combined_score=0.2500, solve_rate=0.2500
+13:15:14 [search.adaevolve] Iteration 4: Program 30c190f9 (parent: f0218037) completed in 52.87s (llm: 52.71s, eval: 0.16s)
+13:15:14 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:17:31 [evaluator] Evaluated program 1ff3ab5f-c923-4391-9afe-72eb43512fd2 in 0.16s: combined_score=0.2500, solve_rate=0.2500
+13:17:31 [search.adaevolve] Iteration 5: Program 1ff3ab5f (parent: f0218037) completed in 137.20s (llm: 137.04s, eval: 0.16s)
+13:17:31 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:18:17 [evaluator] Evaluated program 1624101a-7c1c-4953-9008-b7c7c7d01192 in 0.16s: combined_score=0.2500, solve_rate=0.2500
+13:18:17 [search.adaevolve] Iteration 6: Program 1624101a (parent: 8bb2df29) completed in 45.69s (llm: 45.53s, eval: 0.16s)
+13:18:17 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:19:42 [evaluator] Evaluated program c9a46326-ff4b-4fa7-b97d-74744b188627 in 0.17s: combined_score=0.2500, solve_rate=0.2500
+13:19:42 [search.adaevolve] Iteration 7: Program c9a46326 (parent: abee0463) completed in 85.29s (llm: 85.12s, eval: 0.17s)
+13:19:42 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:20:48 [evaluator] Evaluated program b3ab32ce-d936-43ee-9573-2415f2688b37 in 0.16s: combined_score=0.2500, solve_rate=0.2500
+13:20:48 [search.adaevolve] Iteration 8: Program b3ab32ce (parent: f0218037) completed in 66.43s (llm: 66.27s, eval: 0.16s)
+13:20:48 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:21:31 [evaluator] Evaluated program acbb185b-b6e9-4b1f-900e-5cd4d1551cf3 in 0.16s: combined_score=0.2500, solve_rate=0.2500
+13:21:31 [search.adaevolve] Iteration 9: Program acbb185b (parent: c9a46326) completed in 42.67s (llm: 42.51s, eval: 0.16s)
+13:21:31 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:21:31 [search.adaevolve] Global paradigm stagnation detected, generating breakthrough ideas...
+13:22:17 [search.adaevolve] Generated 3 paradigms:
+13:22:17 [search.adaevolve]   [1] Expand each module with complete, robust implementations including error handling, type annotations, and full return contracts (approach: stdlib.exception_handling)
+13:22:17 [search.adaevolve]   [2] Implement a class-based architecture with proper OOP patterns: ConnectionManager, Authenticator, and Logger classes with standard dunder methods (approach: stdlib.dataclasses)
+13:22:17 [search.adaevolve]   [3] Add a central orchestration module (main.py or __init__.py) that imports and re-exports all components, with integration tests that verify cross-module correctness (approach: stdlib.importlib)
+13:22:17 [search.adaevolve] Set 3 new paradigms (best score: 0.250000)
+13:22:17 [search.adaevolve] Generated 3 breakthrough paradigms
+13:22:17 [search.adaevolve] Using paradigm 1/3 (1/2): Expand each module with complete, robust implementations including error handling, type annotations, and full return contracts
+13:23:04 [evaluator] Evaluated program c0d6bf17-3f49-4be2-834a-87a8f5b31f0a in 0.23s: combined_score=0.2500, solve_rate=0.2500
+13:23:04 [search.adaevolve] Iteration 10: Program c0d6bf17 (parent: abee0463) completed in 46.98s (llm: 46.76s, eval: 0.23s)
+13:23:04 [search.adaevolve] Metrics: combined_score=0.2500, solve_rate=0.2500
+13:23:04 [search.adaevolve] Checkpoint interval reached at iteration 10
+13:23:04 [base_database] Database has 12 programs, best program score is combined_score=0.2500, solve_rate=0.2500
+13:23:04 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/checkpoints/checkpoint_10
+13:23:04 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/checkpoints/checkpoint_10
+13:23:04 [runner] Checkpoint 10: best=combined_score=0.2500, solve_rate=0.2500
+13:23:04 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/checkpoints/checkpoint_10
+13:23:04 [search.adaevolve] AdaEvolve completed
+13:23:04 [base_database] Database has 12 programs, best program score is combined_score=0.2500, solve_rate=0.2500
+13:23:04 [search.adaevolve] AdaEvolve iteration stats saved to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/adaevolve_iteration_stats_20260831_131215.jsonl
+13:23:04 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/checkpoints/checkpoint_10
+13:23:04 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/checkpoints/checkpoint_10
+13:23:04 [runner] Checkpoint 10: best=combined_score=0.2500, solve_rate=0.2500
+13:23:04 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/checkpoints/checkpoint_10
+13:23:04 [evaluator] Evaluated program abee0463-0026-4617-bbc4-d450fd53d05f in 0.15s: combined_score=0.2500, solve_rate=0.2500
+13:23:04 [runner] Test evaluation for best program: combined_score=0.2500, solve_rate=0.2500
+13:23:04 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/best
+13:23:04 [runner] Discovery completed. Best: combined_score=0.2500, solve_rate=0.2500, test_combined_score=0.2500, test_solve_rate=0.2500
+13:23:04 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_w7k4pjdk/best
+  seed 0.25 -> best 0.25  (10.8 min)
+
+=== AdaEvolve (concatenated): b3_3_enum_migration  seed=0.20 ===
+13:23:04 [search.utils] Logging to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/logs/adaevolve_20260831_132304.log
+13:23:04 [search.adaevolve] AdaEvolveDatabase initialized: num_islands=2, decay=0.9, intensity=[0.15, 0.5], migration=True (interval=15), unified_archive=True, adaptive_search=True, ucb_selection=True, dynamic_islands=True, paradigm_breakthrough=True, multiobjective=False
+13:23:04 [runner] Runner ready: search=adaevolve, program=/var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/program_97188a77.py
+13:23:04 WARNING [evaluator] cascade_evaluation is true but /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_98844dbd.py has no evaluate_stage1 — will fall back to direct evaluation
+13:23:04 [evaluator] Initialized evaluator with /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_98844dbd.py
+13:23:04 [default_discovery_controller] DiscoveryController initialized: num_context_programs=4
+13:23:04 [search.adaevolve] Paradigm LLM: using guide_models [sonnet]
+13:23:04 [search.adaevolve] AdaEvolveController initialized (language=python, paradigm_breakthrough=True)
+13:23:04 [runner] Adding initial program to database
+13:23:05 [evaluator] Evaluated program 9bcb3fb8-89ec-41cf-bb81-384d12271727 in 0.17s: combined_score=0.2000, solve_rate=0.2000
+13:23:05 [base_database] Database has 1 programs, best program score is combined_score=0.2000, solve_rate=0.2000
+13:23:05 [search.adaevolve] AdaEvolve: Running 10 iterations across 2 islands
+13:23:05 [search.adaevolve] AdaEvolve iteration stats will be logged to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/adaevolve_iteration_stats_20260831_132305.jsonl
+13:23:05 [search.adaevolve] Seeded island 1
+13:23:29 [evaluator] Evaluated program 8c33ff4e-a155-4005-b505-6c37859799a4 in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:23:29 [search.adaevolve] Iteration 1: Program 8c33ff4e (parent: 9bcb3fb8) completed in 23.99s (llm: 23.83s, eval: 0.16s)
+13:23:29 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:24:24 [evaluator] Evaluated program d080160d-a661-4d01-969e-7b38120b019a in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:24:24 [search.adaevolve] Iteration 2: Program d080160d (parent: 9bcb3fb8) completed in 55.24s (llm: 55.08s, eval: 0.16s)
+13:24:24 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:24:43 [evaluator] Evaluated program 73d4f6da-92dd-48cd-8aba-0f78a35d8457 in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:24:43 [search.adaevolve] Iteration 3: Program 73d4f6da (parent: 7729747d) completed in 19.31s (llm: 19.15s, eval: 0.16s)
+13:24:43 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:25:20 [evaluator] Evaluated program 987d4f81-92ee-4da3-bfb1-797495aa284e in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:25:20 [search.adaevolve] Iteration 4: Program 987d4f81 (parent: 7729747d) completed in 36.44s (llm: 36.29s, eval: 0.16s)
+13:25:20 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:25:38 [evaluator] Evaluated program 4949fdc4-e0d2-4dc6-abe8-1f68df243c15 in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:25:38 [search.adaevolve] Iteration 5: Program 4949fdc4 (parent: 7729747d) completed in 18.78s (llm: 18.62s, eval: 0.16s)
+13:25:38 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:25:51 [evaluator] Evaluated program 6a9c701e-11c9-43aa-9c39-1ded0ad861b7 in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:25:51 [search.adaevolve] Iteration 6: Program 6a9c701e (parent: 9bcb3fb8) completed in 12.83s (llm: 12.67s, eval: 0.16s)
+13:25:51 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:26:15 [evaluator] Evaluated program 56963037-9770-4de7-982f-86012802ea8c in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:26:15 [search.adaevolve] Iteration 7: Program 56963037 (parent: 9bcb3fb8) completed in 23.58s (llm: 23.42s, eval: 0.16s)
+13:26:15 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:27:05 [evaluator] Evaluated program 46f0ee2b-1fb8-464f-bb24-6383a826923d in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:27:05 [search.adaevolve] Iteration 8: Program 46f0ee2b (parent: 4949fdc4) completed in 50.14s (llm: 49.98s, eval: 0.16s)
+13:27:05 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:27:28 [evaluator] Evaluated program 63997ae8-ec67-42cd-b4fd-60a8d98faa17 in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:27:28 [search.adaevolve] Iteration 9: Program 63997ae8 (parent: 9bcb3fb8) completed in 22.60s (llm: 22.45s, eval: 0.16s)
+13:27:28 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:27:28 [search.adaevolve] Global paradigm stagnation detected, generating breakthrough ideas...
+13:28:12 [search.adaevolve] Generated 3 paradigms:
+13:28:12 [search.adaevolve]   [1] Return comprehensive status breakdown dict from generate_status_report using collections.Counter (approach: collections.Counter)
+13:28:12 [search.adaevolve]   [2] Integrate Status enum throughout all modules using enum membership checks and Status.value lookups (approach: enum.Enum)
+13:28:12 [search.adaevolve]   [3] Make get_user_status a true lookup function that reads from a provided user dict or mapping using a users registry pattern (approach: dict.get)
+13:28:12 [search.adaevolve] Set 3 new paradigms (best score: 0.200000)
+13:28:12 [search.adaevolve] Generated 3 breakthrough paradigms
+13:28:12 [search.adaevolve] Using paradigm 1/3 (1/2): Return comprehensive status breakdown dict from generate_status_report using collections.Counter
+13:28:36 [evaluator] Evaluated program 0afe625d-3761-4a27-a023-077d04b18634 in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:28:36 [search.adaevolve] Iteration 10: Program 0afe625d (parent: 9bcb3fb8) completed in 24.29s (llm: 24.13s, eval: 0.16s)
+13:28:36 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+13:28:36 [search.adaevolve] Checkpoint interval reached at iteration 10
+13:28:36 [base_database] Database has 12 programs, best program score is combined_score=0.2000, solve_rate=0.2000
+13:28:36 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/checkpoints/checkpoint_10
+13:28:36 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/checkpoints/checkpoint_10
+13:28:36 [runner] Checkpoint 10: best=combined_score=0.2000, solve_rate=0.2000
+13:28:36 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/checkpoints/checkpoint_10
+13:28:36 [search.adaevolve] AdaEvolve completed
+13:28:36 [base_database] Database has 12 programs, best program score is combined_score=0.2000, solve_rate=0.2000
+13:28:36 [search.adaevolve] AdaEvolve iteration stats saved to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/adaevolve_iteration_stats_20260831_132305.jsonl
+13:28:36 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/checkpoints/checkpoint_10
+13:28:36 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/checkpoints/checkpoint_10
+13:28:36 [runner] Checkpoint 10: best=combined_score=0.2000, solve_rate=0.2000
+13:28:36 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/checkpoints/checkpoint_10
+13:28:36 [evaluator] Evaluated program 9bcb3fb8-89ec-41cf-bb81-384d12271727 in 0.16s: combined_score=0.2000, solve_rate=0.2000
+13:28:36 [runner] Test evaluation for best program: combined_score=0.2000, solve_rate=0.2000
+13:28:36 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/best
+13:28:36 [runner] Discovery completed. Best: combined_score=0.2000, solve_rate=0.2000, test_combined_score=0.2000, test_solve_rate=0.2000
+13:28:36 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_ffnl9w1q/best
+  seed 0.20 -> best 0.20  (5.5 min)
+
+=== AdaEvolve (concatenated): b3_4_typed_dict  seed=0.40 ===
+13:28:37 [search.utils] Logging to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/logs/adaevolve_20260831_132837.log
+13:28:37 [search.adaevolve] AdaEvolveDatabase initialized: num_islands=2, decay=0.9, intensity=[0.15, 0.5], migration=True (interval=15), unified_archive=True, adaptive_search=True, ucb_selection=True, dynamic_islands=True, paradigm_breakthrough=True, multiobjective=False
+13:28:37 [runner] Runner ready: search=adaevolve, program=/var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/program_564a0a2a.py
+13:28:37 WARNING [evaluator] cascade_evaluation is true but /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_1272b6e1.py has no evaluate_stage1 — will fall back to direct evaluation
+13:28:37 [evaluator] Initialized evaluator with /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_1272b6e1.py
+13:28:37 [default_discovery_controller] DiscoveryController initialized: num_context_programs=4
+13:28:37 [search.adaevolve] Paradigm LLM: using guide_models [sonnet]
+13:28:37 [search.adaevolve] AdaEvolveController initialized (language=python, paradigm_breakthrough=True)
+13:28:37 [runner] Adding initial program to database
+13:28:37 [evaluator] Evaluated program 51380a90-7641-4a9f-9d33-d4bdba24ed61 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:28:37 [base_database] Database has 1 programs, best program score is combined_score=0.4000, solve_rate=0.4000
+13:28:37 [search.adaevolve] AdaEvolve: Running 10 iterations across 2 islands
+13:28:37 [search.adaevolve] AdaEvolve iteration stats will be logged to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/adaevolve_iteration_stats_20260831_132837.jsonl
+13:28:37 [search.adaevolve] Seeded island 1
+13:28:49 [evaluator] Evaluated program 8ea18e08-9a0b-4d44-85d2-f29e549833d7 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:28:49 [search.adaevolve] Iteration 1: Program 8ea18e08 (parent: 51380a90) completed in 11.94s (llm: 11.78s, eval: 0.16s)
+13:28:49 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:29:29 [evaluator] Evaluated program dda0fe3a-8076-4b4e-888d-8ca1750809dc in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:29:29 [search.adaevolve] Iteration 2: Program dda0fe3a (parent: 51380a90) completed in 39.82s (llm: 39.66s, eval: 0.16s)
+13:29:29 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:29:39 [evaluator] Evaluated program 54fbe438-83f6-48f9-9e13-e520c980253b in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:29:39 [search.adaevolve] Iteration 3: Program 54fbe438 (parent: c28d2a04) completed in 10.13s (llm: 9.97s, eval: 0.16s)
+13:29:39 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:30:09 [evaluator] Evaluated program ce6b546a-1dc3-418d-880d-5411b76b97a1 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:30:09 [search.adaevolve] Iteration 4: Program ce6b546a (parent: c28d2a04) completed in 30.34s (llm: 30.17s, eval: 0.16s)
+13:30:09 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:30:26 [evaluator] Evaluated program ca94b240-03db-4250-8bac-a8151b8edd54 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:30:26 [search.adaevolve] Iteration 5: Program ca94b240 (parent: c28d2a04) completed in 16.93s (llm: 16.77s, eval: 0.16s)
+13:30:26 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:30:46 [evaluator] Evaluated program 3d8c5dc4-6e04-4947-95cb-3dea1d35ed3b in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:30:46 [search.adaevolve] Iteration 6: Program 3d8c5dc4 (parent: dda0fe3a) completed in 19.96s (llm: 19.80s, eval: 0.17s)
+13:30:46 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:31:24 [evaluator] Evaluated program ae1d2230-af33-4c79-a1bf-a2a9b95c6a83 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:31:24 [search.adaevolve] Iteration 7: Program ae1d2230 (parent: 51380a90) completed in 38.19s (llm: 38.02s, eval: 0.16s)
+13:31:24 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:32:42 [evaluator] Evaluated program a98fe52b-18cf-4755-b55b-ae270733ea63 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:32:42 [search.adaevolve] Iteration 8: Program a98fe52b (parent: c28d2a04) completed in 77.56s (llm: 77.40s, eval: 0.16s)
+13:32:42 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:33:46 [evaluator] Evaluated program 8215e4b5-c16b-4a7b-9c55-495acfb4a79e in 0.22s: combined_score=0.4000, solve_rate=0.4000
+13:33:46 [search.adaevolve] Iteration 9: Program 8215e4b5 (parent: ae1d2230) completed in 64.20s (llm: 63.98s, eval: 0.22s)
+13:33:46 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:33:46 [search.adaevolve] Global paradigm stagnation detected, generating breakthrough ideas...
+13:34:22 [search.adaevolve] Generated 3 paradigms:
+13:34:22 [search.adaevolve]   [1] Implement in-memory dictionary-based storage with proper store/retrieve round-trip (approach: dict-based in-memory storage)
+13:34:22 [search.adaevolve]   [2] Add type-checked, attribute-complete UserRecord with robust validation covering edge cases (approach: defensive-validation pattern)
+13:34:22 [search.adaevolve]   [3] Implement a complete UserRegistry class in storage.py with store, retrieve, list, and existence-check operations (approach: stateful-registry pattern)
+13:34:22 [search.adaevolve] Set 3 new paradigms (best score: 0.400000)
+13:34:22 [search.adaevolve] Generated 3 breakthrough paradigms
+13:34:22 [search.adaevolve] Using paradigm 1/3 (1/2): Implement in-memory dictionary-based storage with proper store/retrieve round-trip
+13:34:30 [evaluator] Evaluated program adef4d75-3d49-4fff-858c-9cf6aae2e72e in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:34:30 [search.adaevolve] Iteration 10: Program adef4d75 (parent: 51380a90) completed in 7.72s (llm: 7.56s, eval: 0.16s)
+13:34:30 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:34:30 [search.adaevolve] Checkpoint interval reached at iteration 10
+13:34:30 [base_database] Database has 12 programs, best program score is combined_score=0.4000, solve_rate=0.4000
+13:34:30 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/checkpoints/checkpoint_10
+13:34:30 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/checkpoints/checkpoint_10
+13:34:30 [runner] Checkpoint 10: best=combined_score=0.4000, solve_rate=0.4000
+13:34:30 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/checkpoints/checkpoint_10
+13:34:30 [search.adaevolve] AdaEvolve completed
+13:34:30 [base_database] Database has 12 programs, best program score is combined_score=0.4000, solve_rate=0.4000
+13:34:30 [search.adaevolve] AdaEvolve iteration stats saved to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/adaevolve_iteration_stats_20260831_132837.jsonl
+13:34:30 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/checkpoints/checkpoint_10
+13:34:30 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/checkpoints/checkpoint_10
+13:34:30 [runner] Checkpoint 10: best=combined_score=0.4000, solve_rate=0.4000
+13:34:30 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/checkpoints/checkpoint_10
+13:34:30 [evaluator] Evaluated program 51380a90-7641-4a9f-9d33-d4bdba24ed61 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:34:30 [runner] Test evaluation for best program: combined_score=0.4000, solve_rate=0.4000
+13:34:30 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/best
+13:34:30 [runner] Discovery completed. Best: combined_score=0.4000, solve_rate=0.4000, test_combined_score=0.4000, test_solve_rate=0.4000
+13:34:30 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_veadmo9f/best
+  seed 0.40 -> best 0.40  (5.9 min)
+
+=== AdaEvolve (concatenated): b3_5_module_restructure  seed=0.40 ===
+13:34:30 [search.utils] Logging to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/logs/adaevolve_20260831_133430.log
+13:34:30 [search.adaevolve] AdaEvolveDatabase initialized: num_islands=2, decay=0.9, intensity=[0.15, 0.5], migration=True (interval=15), unified_archive=True, adaptive_search=True, ucb_selection=True, dynamic_islands=True, paradigm_breakthrough=True, multiobjective=False
+13:34:30 [runner] Runner ready: search=adaevolve, program=/var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/program_477e37f7.py
+13:34:30 WARNING [evaluator] cascade_evaluation is true but /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_1c9b2896.py has no evaluate_stage1 — will fall back to direct evaluation
+13:34:30 [evaluator] Initialized evaluator with /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/evaluator_1c9b2896.py
+13:34:30 [default_discovery_controller] DiscoveryController initialized: num_context_programs=4
+13:34:30 [search.adaevolve] Paradigm LLM: using guide_models [sonnet]
+13:34:30 [search.adaevolve] AdaEvolveController initialized (language=python, paradigm_breakthrough=True)
+13:34:30 [runner] Adding initial program to database
+13:34:30 [evaluator] Evaluated program e087c646-f6f7-46c5-88cc-eb5a8fd3d626 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:34:30 [base_database] Database has 1 programs, best program score is combined_score=0.4000, solve_rate=0.4000
+13:34:30 [search.adaevolve] AdaEvolve: Running 10 iterations across 2 islands
+13:34:30 [search.adaevolve] AdaEvolve iteration stats will be logged to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/adaevolve_iteration_stats_20260831_133430.jsonl
+13:34:30 [search.adaevolve] Seeded island 1
+13:38:32 [evaluator] Evaluated program 54674762-0dc1-4c9b-ad0f-141f9845edcd in 0.16s: combined_score=0.4000, solve_rate=0.4000
+13:38:32 [search.adaevolve] Iteration 1: Program 54674762 (parent: e087c646) completed in 241.47s (llm: 241.31s, eval: 0.16s)
+13:38:32 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+13:48:32 WARNING [llm] Timeout attempt 1/4, retrying...
+13:58:37 WARNING [llm] Timeout attempt 2/4, retrying...
+14:00:53 [evaluator] Evaluated program d80596fb-6fa8-4ab6-b7d0-33ed281b2a72 in 0.29s: combined_score=0.4000, solve_rate=0.4000
+14:00:53 [search.adaevolve] Iteration 2: Program d80596fb (parent: 4bbdbcf0) completed in 1341.68s (llm: 1341.39s, eval: 0.29s)
+14:00:53 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+14:10:02 [evaluator] Evaluated program 1dcebd8c-9886-423e-a557-72e3b235b999 in 0.21s: combined_score=0.2000, solve_rate=0.2000
+14:10:02 [search.adaevolve] Iteration 3: Program 1dcebd8c (parent: e087c646) completed in 548.59s (llm: 548.39s, eval: 0.21s)
+14:10:02 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+14:14:26 [evaluator] Evaluated program bcf96422-a2b0-4f95-aaf7-9e1deea5276a in 0.30s: combined_score=0.4000, solve_rate=0.4000
+14:14:26 [search.adaevolve] Iteration 4: Program bcf96422 (parent: 4bbdbcf0) completed in 264.18s (llm: 263.89s, eval: 0.30s)
+14:14:26 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+14:24:26 WARNING [llm] Timeout attempt 1/4, retrying...
+14:29:37 [evaluator] Evaluated program 3fea8be2-0873-45d2-98e0-4c6d7fd4a7fb in 1.32s: combined_score=0.4000, solve_rate=0.4000
+14:29:37 [search.adaevolve] Iteration 5: Program 3fea8be2 (parent: 4bbdbcf0) completed in 910.75s (llm: 909.42s, eval: 1.32s)
+14:29:37 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+14:39:37 WARNING [llm] Timeout attempt 1/4, retrying...
+14:46:58 [evaluator] Evaluated program 953f2795-13ef-4c1b-bdf0-3aa6044e91da in 0.29s: combined_score=0.4000, solve_rate=0.4000
+14:46:58 [search.adaevolve] Iteration 6: Program 953f2795 (parent: e087c646) completed in 1040.95s (llm: 1040.66s, eval: 0.29s)
+14:46:58 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+14:53:18 [evaluator] Evaluated program 7d6c4b7b-c73c-464a-b114-226c346b0048 in 0.17s: combined_score=0.4000, solve_rate=0.4000
+14:53:18 [search.adaevolve] Iteration 7: Program 7d6c4b7b (parent: e087c646) completed in 380.26s (llm: 380.08s, eval: 0.17s)
+14:53:18 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+15:03:18 WARNING [llm] Timeout attempt 1/4, retrying...
+15:12:26 [evaluator] Evaluated program 76063a74-a285-4b14-ba10-9180cc23e085 in 0.27s: combined_score=0.2000, solve_rate=0.2000
+15:12:26 [search.adaevolve] Iteration 8: Program 76063a74 (parent: 4bbdbcf0) completed in 1148.13s (llm: 1147.86s, eval: 0.27s)
+15:12:26 [search.adaevolve] Metrics: combined_score=0.2000, solve_rate=0.2000
+15:16:40 [evaluator] Evaluated program 7e421775-d565-47c3-a1f2-9b2b9b393614 in 0.16s: combined_score=0.4000, solve_rate=0.4000
+15:16:40 [search.adaevolve] Iteration 9: Program 7e421775 (parent: 953f2795) completed in 253.33s (llm: 253.16s, eval: 0.16s)
+15:16:40 [search.adaevolve] Metrics: combined_score=0.4000, solve_rate=0.4000
+15:16:40 [search.adaevolve] Global paradigm stagnation detected, generating breakthrough ideas...
+15:17:16 [search.adaevolve] Generated 3 paradigms:
+15:17:16 [search.adaevolve]   [1] Replace linear doubling with scipy.signal median/Savitzky-Golay filtering for noise-robust transformation (approach: scipy.signal.savgol_filter)
+15:17:16 [search.adaevolve]   [2] Apply numpy-based adaptive z-score normalization with optional rescaling instead of fixed x*2 multiplication (approach: numpy.ndarray.mean)
+15:17:16 [search.adaevolve]   [3] Use scipy.optimize.minimize with Nelder-Mead to learn optimal per-element transformation parameters directly from evaluator feedback (approach: scipy.optimize.minimize)
+15:17:16 [search.adaevolve] Set 3 new paradigms (best score: 0.400000)
+15:17:16 [search.adaevolve] Generated 3 breakthrough paradigms
+15:17:16 [search.adaevolve] Using paradigm 1/3 (1/2): Replace linear doubling with scipy.signal median/Savitzky-Golay filtering for noise-robust transformation
+15:19:04 [evaluator] Evaluated program 92abc629-c333-4847-a845-0d25f530a013 in 0.61s: combined_score=0.0000, solve_rate=0.0000
+15:19:04 [search.adaevolve] Iteration 10: Program 92abc629 (parent: e087c646) completed in 107.25s (llm: 106.63s, eval: 0.61s)
+15:19:04 [search.adaevolve] Metrics: combined_score=0.0000, solve_rate=0.0000
+15:19:04 [search.adaevolve] Checkpoint interval reached at iteration 10
+15:19:04 [base_database] Database has 12 programs, best program score is combined_score=0.4000, solve_rate=0.4000
+15:19:04 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/checkpoints/checkpoint_10
+15:19:04 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/checkpoints/checkpoint_10
+15:19:04 [runner] Checkpoint 10: best=combined_score=0.4000, solve_rate=0.4000
+15:19:04 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/checkpoints/checkpoint_10
+15:19:04 [search.adaevolve] AdaEvolve completed
+15:19:04 [base_database] Database has 12 programs, best program score is combined_score=0.4000, solve_rate=0.4000
+15:19:04 [search.adaevolve] AdaEvolve iteration stats saved to: /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/adaevolve_iteration_stats_20260831_133430.jsonl
+15:19:04 [search.utils] [CHECKPOINT] Saved database with 12 programs to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/checkpoints/checkpoint_10
+15:19:04 [search.adaevolve] Saved AdaEvolve state to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/checkpoints/checkpoint_10
+15:19:04 [runner] Checkpoint 10: best=combined_score=0.4000, solve_rate=0.4000
+15:19:04 [runner] Checkpoint saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/checkpoints/checkpoint_10
+15:19:04 [evaluator] Evaluated program e087c646-f6f7-46c5-88cc-eb5a8fd3d626 in 0.14s: combined_score=0.4000, solve_rate=0.4000
+15:19:04 [runner] Test evaluation for best program: combined_score=0.4000, solve_rate=0.4000
+15:19:04 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/best
+15:19:04 [runner] Discovery completed. Best: combined_score=0.4000, solve_rate=0.4000, test_combined_score=0.4000, test_solve_rate=0.4000
+15:19:04 [runner] Best program saved to /var/folders/4w/f9tvgqw117z_km9vthzv3yg00000gn/T/skydiscover_jhlih15k/best
+  seed 0.40 -> best 0.40  (104.6 min)
+
+wrote /Users/kevinchon/Documents/Research/KDKC/helix-evals/adaevolve_b3_results.json

@@ -1,0 +1,32 @@
+[
+  {
+    "task": "b3_1_api_versioning",
+    "method": "adaevolve-concat",
+    "seed_score": 0.4,
+    "best_score": 0.4
+  },
+  {
+    "task": "b3_2_config_refactor",
+    "method": "adaevolve-concat",
+    "seed_score": 0.25,
+    "best_score": 0.25
+  },
+  {
+    "task": "b3_3_enum_migration",
+    "method": "adaevolve-concat",
+    "seed_score": 0.2,
+    "best_score": 0.2
+  },
+  {
+    "task": "b3_4_typed_dict",
+    "method": "adaevolve-concat",
+    "seed_score": 0.4,
+    "best_score": 0.4
+  },
+  {
+    "task": "b3_5_module_restructure",
+    "method": "adaevolve-concat",
+    "seed_score": 0.4,
+    "best_score": 0.4
+  }
+]

@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 REFLECTION_FALLBACKS = [
     "openrouter/qwen/qwen3-coder",       # 480B paid — primary fallback
     "openrouter/qwen/qwen3-coder:free",  # 480B free — secondary fallback
-    "ollama/qwen3-coder:30b",            # local 30B — last resort
+    "openrouter/qwen/qwen3-coder",            # local 30B — last resort
 ]
 _LITELLM_PATCHED = False
 
@@ -71,6 +71,7 @@ class RunConfig:
     task_model: str = ""
     reflection_model: str = ""
     helix_claude_model: str = "sonnet"
+    helix_backend: str = "claude"
     max_metric_calls: int = 30
     max_generations: int = 2
     max_evaluations: int = 6
@@ -402,15 +403,15 @@ class BatchRunner:
         import subprocess
         proj = out_dir / "helix_project"
         adapter_dir = str(pathlib.Path(__file__).parent.parent.resolve())
-        self._write_helix_project(proj, problem_id, adapter_dir)
+        _stmt_path = pathlib.Path(os.environ.get('FRONTIER_CS_REPO', '../Frontier-CS')) / 'algorithmic' / 'problems' / str(problem_id) / 'statement.txt'
+        _stmt_text = _stmt_path.read_text()[:4000] if _stmt_path.exists() else f'Problem {problem_id}'
+        self._write_helix_project(proj, problem_id, adapter_dir, _stmt_text)
         env = os.environ.copy()
-        # Pass ANTHROPIC_API_KEY to Claude Code subprocess
-        import pathlib as _pl
-        for _line in (_pl.Path(__file__).parent.parent / ".env").read_text().splitlines():
-            _line = _line.strip()
-            if _line.startswith("ANTHROPIC_API_KEY="):
-                env["ANTHROPIC_API_KEY"] = _line.split("=",1)[1].strip().strip('"').strip("'")
-                break
+        # Force Claude Code (helix) to use the user's Max-plan subscription auth,
+        # not the API key. If ANTHROPIC_API_KEY is set, Claude Code bills the API
+        # instead of the subscription, so strip it from the subprocess env.
+        env.pop("ANTHROPIC_API_KEY", None)
+        env.pop("ANTHROPIC_AUTH_TOKEN", None)
         # Clean any previous helix state before fresh run
         subprocess.call(["helix", "clean"], cwd=proj, env=env,
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -430,37 +431,58 @@ class BatchRunner:
         if candidate_path.exists():
             best_path = candidate_path
         return best_score, best_path
-
-    def _write_helix_project(self, proj, problem_id, adapter_dir):
+    def _write_helix_project(self, proj, problem_id, adapter_dir, stmt_text=''):
         import subprocess
         proj.mkdir(parents=True, exist_ok=True)
-        (proj/"helix.toml").write_text("\n".join([
-            f'objective = "Maximize Frontier-CS score for problem {problem_id}."',
-            '', 'seed = "."', 'rng_seed = 0', '',
-            'passthrough_env = ["ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL", "PATH", "HOME"]', '', '[evaluator]', 'command = "/Users/kevinchon/Documents/Research/KDKC/helix-evals/.venv/bin/python3 evaluate.py"', 'score_parser = "json_score"',
-            'include_stdout = true', 'include_stderr = true',
-            'protected_files = ["evaluate.py", "problem.json"]', '',
-            '[evolution]', f'max_generations = {self.cfg.max_generations}',
-            f'max_evaluations = {self.cfg.max_evaluations}',
-            'merge_enabled = false', 'minibatch_size = 1', 'cache_evaluation = true',
-            'acceptance_criterion = "strict_improvement"', '',
-            '[agent]', f'backend = "{self.cfg.helix_backend}"',
-            f'model = "{"openrouter/anthropic/claude-sonnet-4.6" if self.cfg.helix_backend == "opencode" else self.cfg.helix_claude_model}"',
-            'effort = "medium"',
-            f'max_turns = {self.cfg.max_turns}',
-            'allowed_tools = ["Read", "Edit", "Write", "Bash", "Glob", "Grep"]',
-            'background = "Only modify solve.cpp."', '', '[worktree]',
-            'base_dir = ".helix/worktrees"']) + "\n")
-        (proj/"evaluate.py").write_text('import subprocess, sys, json, pathlib, tempfile, os\n# Write inner script to temp file\n_inner = "import json, pathlib, sys, io, traceback, warnings, os\\nwarnings.filterwarnings(\'ignore\')\\nos.environ[\'FRONTIER_CS_REPO\'] = \'/Users/kevinchon/Documents/Research/KDKC/Frontier-CS\'\\nsys.path.insert(0, \'/Users/kevinchon/Documents/Research/KDKC/helix-evals\')\\nfrom frontier_adapter import FrontierCSAdapter, FrontierTask\\nroot = pathlib.Path(__file__).parent\\nspec = json.loads((root/\'problem.json\').read_text())\\ncode = (root/\'solve.cpp\').read_text()\\n_real_stdout = sys.stdout\\nsys.stdout = io.StringIO()\\ntry:\\n    adapter = FrontierCSAdapter(backend=\'docker\')\\n    score, asi = adapter.evaluate(code, FrontierTask(\\n        track=spec[\'track\'], problem_id=spec[\'problem_id\'], language=\'cpp\'))\\n    _out = json.dumps({\'score\': score, \'instance_scores\': {str(spec[\'problem_id\']): score}, \'asi\': asi[:4000]})\\nexcept Exception as exc:\\n    _out = json.dumps({\'score\': 0.0, \'instance_scores\': {str(spec[\'problem_id\']): 0.0},\\n        \'error\': f\'{type(exc).__name__}: {exc}\', \'traceback\': traceback.format_exc()})\\nfinally:\\n    sys.stdout = _real_stdout\\nprint(_out)\\n"\n_tmp = pathlib.Path(__file__).parent / "_inner_eval.py"\n_tmp.write_text(_inner)\nresult = subprocess.run(\n    [\'/Users/kevinchon/Documents/Research/KDKC/helix-evals/.venv/bin/python3\', str(_tmp)],\n    capture_output=True, text=True,\n    cwd=str(pathlib.Path(__file__).parent)\n)\n# Find the JSON line in stdout\nfor line in result.stdout.strip().splitlines():\n    line = line.strip()\n    if line.startswith(\'{"score"\') or line.startswith(\'{"error"\'):\n        print(line)\n        sys.exit(0)\n# fallback\nprint(json.dumps({"score": 0.0, "instance_scores": {}, "error": "no json found", "stdout": result.stdout[:500], "stderr": result.stderr[:500]}))\n')
+        safe_stmt = stmt_text[:600].replace("'", " ").replace("\\", " ").replace("\n", " ").replace(chr(10), " ").strip()
+        model_str = "tencent/hy3-preview:free" if self.cfg.helix_backend == "opencode" else self.cfg.helix_claude_model
+        # passthrough_env intentionally omits ANTHROPIC_API_KEY so Claude Code
+        # falls back to the Max-plan subscription auth (stored credentials).
+        toml = f"""objective = "Maximize Frontier-CS score for problem {problem_id}."
+
+seed = "."
+rng_seed = 0
+
+passthrough_env = ["PATH", "HOME"]
+
+[evaluator]
+command = "/Users/kevinchon/Documents/Research/KDKC/helix-evals/.venv/bin/python3 evaluate.py"
+score_parser = "json_score"
+include_stdout = true
+include_stderr = true
+protected_files = ["evaluate.py", "problem.json"]
+
+[evolution]
+max_generations = {self.cfg.max_generations}
+max_evaluations = {self.cfg.max_evaluations}
+merge_enabled = false
+minibatch_size = 1
+cache_evaluation = true
+acceptance_criterion = "strict_improvement"
+
+[agent]
+backend = "{self.cfg.helix_backend}"
+model = "{model_str}"
+effort = "medium"
+max_turns = {self.cfg.max_turns}
+allowed_tools = ["Read", "Edit", "Write", "Bash", "Glob", "Grep"]
+background = 'Problem {problem_id}: {safe_stmt}. Only modify solve.cpp. Compile: g++ -std=c++17 -O2 -o sol solve.cpp. Rewrite solve.cpp completely for THIS specific problem type - ignore the current code if it solves a different problem. Any valid output scores > 0. Output [MUTATION COMPLETE] when done.'
+
+[worktree]
+base_dir = ".helix/worktrees"
+"""
+        (proj/"helix.toml").write_text(toml)
+        import shutil
+        shutil.copy(str(pathlib.Path(__file__).parent / "frontier_evaluate_template.py"), str(proj / "evaluate.py"))
         (proj/"problem.json").write_text(json.dumps(
             {"track": self.cfg.track, "problem_id": problem_id, "backend": "docker"}, indent=2))
         from seed_cpp import SEED_CPP
         (proj/"solve.cpp").write_text(SEED_CPP)
         if not (proj/".git").exists():
             subprocess.run(["git","init","-q"], cwd=proj, check=True)
-            subprocess.run(["git","add","-A"], cwd=proj, check=True)
-            subprocess.run(["git","-c","user.email=x@x","-c","user.name=x",
-                            "commit","-q","-m","init"], cwd=proj, check=True)
+        subprocess.run(["git","add","-A"], cwd=proj, check=True)
+        subprocess.run(["git","-c","user.email=x@x","-c","user.name=x",
+                        "commit","-q","--allow-empty","-m","init"], cwd=proj, check=True)
 
     def _log_result(self, result: ProblemResult) -> None:
         path = self.results_root / str(result.problem_id) / "result.json"

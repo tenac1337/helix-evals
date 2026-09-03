@@ -80,6 +80,7 @@ class HelixReader:
         return self._score_from_state_json() or 0.0
 
     def _score_from_stdout_log(self) -> Optional[float]:
+        return None  # disabled: path math wrong, falls through to evaluations
         """Parse score from helix_stdout.log in parent's parent directory."""
         import re
         # helix_stdout.log is at: result_dir/problem_id/helix_stdout.log

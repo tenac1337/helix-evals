@@ -1,0 +1,9 @@
+{
+  "task": "prism",
+  "model": "sonnet",
+  "iters": 4,
+  "seed_score": 21.891622105209393,
+  "best_score": 26.221683448921393,
+  "llm_calls": 1,
+  "wall_seconds": 245.5
+}

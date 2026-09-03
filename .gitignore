@@ -10,3 +10,4 @@ results/**/*
 *.log
 *.json  # if you want to ignore progress.json etc.
 gepa_state.bin
+.helix/
