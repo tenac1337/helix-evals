@@ -59,19 +59,29 @@ def best(rel, key, exclude_flagged=True):
     return vals[top], top, len(flagged)
 
 # claim, path, metric, bar to beat, who holds it, higher-is-better
+# BARS ARE THE STRONGEST KNOWN RESULT PER PROBLEM -- STRONGEST-COMPETITOR basis.
+# Until 2026-09-04 these were set to AlphaEvolve's published value, which made
+# this script report 7/9 wins. That was measuring against a convenient baseline
+# rather than the field:
+#   B.2  AdaEvolve reaches 0.9250655 on OUR OWN same-backbone run  -> we lose
+#   B.12 ShinkaEvolve holds 2.635983283 (tasks.tsv records it)      -> we lose
+#   B.9  AlphaEvolve's own value is 0.036529889880030156, not 0.036 -> we tie
+# A verification script that grades against the weakest available comparator is
+# worse than none: it manufactures confidence in claims that do not survive a
+# reviewer opening the same table.
 CLAIMS = [
  ("second_autocorr_ineq (B.2)", "helix-skydiscover-bench/signal/second_autocorr_ineq__claude-sonnet__s0",
-  "c2", 0.8962799441554086, "AlphaEvolve", True),
+  "c2", 0.9250654588263493, "AdaEvolve @same backbone", True),
  ("heilbronn_triangle s0 (B.9)", "helix-skydiscover-bench/signal/heilbronn_triangle__claude-sonnet__s0",
-  "min_area_normalized", 0.036, "Friedman/AdaEvolve", True),
+  "min_area_normalized", 0.036529889880030156, "AlphaEvolve (strongest)", True),
  ("heilbronn_triangle s1 (B.9)", "helix-skydiscover-bench/signal/heilbronn_triangle__claude-sonnet__s1",
-  "min_area_normalized", 0.036, "Friedman/AdaEvolve", True),
+  "min_area_normalized", 0.036529889880030156, "AlphaEvolve (strongest)", True),
  ("heilbronn_triangle s2 (B.9)", "helix-skydiscover-bench/signal/heilbronn_triangle__claude-sonnet__s2",
-  "min_area_normalized", 0.036, "Friedman/AdaEvolve", True),
+  "min_area_normalized", 0.036529889880030156, "AlphaEvolve (strongest)", True),
  ("third_autocorr_ineq (B.3)", "helix-skydiscover-bench/signal/third_autocorr_ineq__claude-sonnet__s0",
   "combined_score", 1.0, "AlphaEvolve (normalised)", True),
  ("circle_packing n=26 (B.12)", "helix-skydiscover-bench/signal/circle_packing__claude-sonnet__s0",
-  "sum_radii", 2.63586276, "AlphaEvolve", True),
+  "sum_radii", 2.635983283, "ShinkaEvolve (strongest)", True),
  ("B3.1 api_versioning", "b3_tasks/b3_1_api_versioning", "solve_rate", 0.40, "GEPA (measured)", True),
  ("B3.2 config_refactor", "b3_tasks/b3_2_config_refactor", "solve_rate", 0.25, "GEPA (measured)", True),
  ("B3.4 typed_dict", "b3_tasks/b3_4_typed_dict", "solve_rate", 0.40, "GEPA (measured)", True),

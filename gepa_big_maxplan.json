@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "backbone": "claude-sonnet-4-6 (Max plan, no API key) on BOTH sides",
+    "budget": "20 evaluations each (HELIX max_evaluations=20; GEPA max_metric_calls=20)",
+    "evaluator": "the repo's own pytest suite, fraction passing",
+    "gepa_variant": "concatenated (stronger variant; per-file cannot edit call sites in unseen modules)",
+    "harness_validated": "HELIX's known-good solution scored 1.0 through GEPA's own evaluator path, so a 0.0 is GEPA failing to solve, not the harness failing to score"
+  },
+  "results": {
+    "tenacity_retrystate": {
+      "loc": 1713,
+      "modules_to_change": 10,
+      "helix": 1.0,
+      "gepa": 0.0
+    },
+    "tenacity_stop_after_attempt": {
+      "loc": 1713,
+      "modules_to_change": 3,
+      "helix": 1.0,
+      "gepa": 0.0
+    },
+    "boltons_cachedproperty": {
+      "loc": 13455,
+      "modules_to_change": 2,
+      "helix": 1.0,
+      "gepa": 0.0
+    }
+  },
+  "summary": {
+    "helix_solved": 3,
+    "gepa_solved": 0,
+    "of": 3
+  },
+  "caveat": "GEPA's single artifact for tenacity is 13 files / 83,501 chars, which it must emit correctly in one shot. Its failure may reflect artifact size rather than reasoning quality -- but that limit is itself a property of single-artifact optimisation on real codebases, which is the comparison being made."
+}

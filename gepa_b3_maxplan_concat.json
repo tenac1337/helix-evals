@@ -1,0 +1,47 @@
+{
+  "conditions": {
+    "backbone": "claude-sonnet-4-6 (Max plan, no API key) on BOTH sides",
+    "budget": "20 evaluations each (HELIX max_evaluations=20; GEPA max_metric_calls=20)",
+    "evaluator": "identical pytest suite, scored as fraction passing",
+    "gepa_variant": "concatenated (the STRONGER GEPA variant; per-file cannot edit call sites in modules it never sees)",
+    "note": "The draft's GEPA numbers came from reflection_lm='claude-opus-4-5-20251101', which GEPA resolves over LiteLLM with an API key -- Opus-via-API GEPA against Max-plan-Sonnet HELIX. These replace them."
+  },
+  "results": {
+    "b3_1_api_versioning": {
+      "seed": 0.4,
+      "gepa_concat_matched": 0.4,
+      "helix_t20": 1.0
+    },
+    "b3_2_config_refactor": {
+      "seed": 0.25,
+      "gepa_concat_matched": 0.25,
+      "helix_t20": 1.0
+    },
+    "b3_3_enum_migration": {
+      "seed": 0.2,
+      "gepa_concat_matched": 1.0,
+      "helix_t20": 1.0
+    },
+    "b3_4_typed_dict": {
+      "seed": 0.4,
+      "gepa_concat_matched": 0.4,
+      "helix_t20": 1.0
+    },
+    "b3_5_module_restructure": {
+      "seed": 0.4,
+      "gepa_concat_matched": 0.6,
+      "helix_t20": 1.0
+    }
+  },
+  "summary": {
+    "helix_solved": 5,
+    "gepa_solved": 1,
+    "of": 5,
+    "gepa_partial": "b3_5 improved 0.40 -> 0.60 without solving",
+    "gepa_stuck_at_seed": [
+      "b3_1_api_versioning",
+      "b3_2_config_refactor",
+      "b3_4_typed_dict"
+    ]
+  }
+}
