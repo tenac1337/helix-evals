@@ -65,6 +65,10 @@ Copy `.env.template` to `.env` and fill in your keys:
 cp .env.template .env
 ```
 
+Keep credentials in the ignored `.env` file. Install the local secret-scanning
+hook with `pip install pre-commit && pre-commit install`; see
+[SECURITY.md](SECURITY.md) for credential handling and history cleanup guidance.
+
 ```bash
 # LLM inference (OpenRouter)
 OPENAI_BASE_URL="https://openrouter.ai/api/v1"

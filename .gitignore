@@ -8,5 +8,20 @@ results/**/*
 
 # Also ignore common log files everywhere
 *.log
-*.json  # if you want to ignore progress.json etc.
 gepa_state.bin
+# Local credentials (only the blank template belongs in Git)
+.env
+.env.*
+!.env.template
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local Python and editor artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.helix/
